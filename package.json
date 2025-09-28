@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "update:podcasts": "node scripts/update-podcasts.cjs",
+    "prebuild": "npm run update:podcasts",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
