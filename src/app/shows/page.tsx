@@ -1,8 +1,11 @@
 // app/shows/page.tsx
 import ShowsClient from "./ShowsClient";
+import { Suspense } from "react";
 
-export default async function ShowsPage() {
-  // Ici on ne fait pas de fetch côté serveur
-  // -> ShowsClient se charge de récupérer via /api/podcasts
-  return <ShowsClient />;
+export default function ShowsPage() {
+  return (
+    <Suspense fallback={<p className="text-center">Chargement...</p>}>
+      <ShowsClient />
+    </Suspense>
+  );
 }
