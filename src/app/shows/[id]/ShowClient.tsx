@@ -21,7 +21,7 @@ export default function ShowClient({ episode }: ShowClientProps) {
   if (episode.sharing && episode.sharing !== "public") {
     return (
       <div className="p-4 text-center text-muted-foreground">
-        Cet épisode n’est pas public.
+        Cet épisode n&apos;est pas public.
       </div>
     );
   }
@@ -40,7 +40,10 @@ export default function ShowClient({ episode }: ShowClientProps) {
         {/* Artwork + bouton play */}
         <div className="relative w-full md:w-1/3 aspect-square">
           <Image
-            src={episode.artworkUrl?.replace("-large", "-t500x500") || "/default-artwork.jpg"}
+            src={
+              episode.artworkUrl?.replace("-large", "-t500x500") ||
+              "/default-artwork.jpg"
+            }
             alt={episode.title}
             width={500}
             height={500}
@@ -53,7 +56,7 @@ export default function ShowClient({ episode }: ShowClientProps) {
                 if (episode.audioUrl) {
                   void playPodcast(episode); // ✅ lance dans le player global
                 } else {
-                  console.warn("⚠️ Pas d’URL audio disponible pour:", episode);
+                  console.warn("⚠️ Pas d&apos;URL audio disponible pour:", episode);
                 }
               }}
               className="rounded-full h-16 w-16 bg-primary hover:bg-primary/90"

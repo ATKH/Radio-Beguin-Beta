@@ -16,21 +16,21 @@ export default function AboutPage() {
           Radio Béguin est une webradio basée à Lyon qui, à travers sa jungle musicale, donne une place importante à la scène émergente et locale. 7/7 et 24/24, la programmation de Radio Béguin est réfléchie et évolutive pour vous accompagner au fil de vos journées.
         </p>
         <p>
-          Ponctuée de nombreuses émissions : talk radios, DJ sets variés et événements en direct, la voix est donnée à celleux que l’on entend que trop rarement. Un espace d’expression qui regorge de nouvelles idées et s’aventure où les rencontres l'amènent à Lyon ou ailleurs. Personne n’est à l’abri d’avoir le béguin !
+          Ponctuée de nombreuses émissions : talk radios, DJ sets variés et événements en direct, la voix est donnée à celleux que l&apos;on entend que trop rarement. Un espace d&apos;expression qui regorge de nouvelles idées et s&apos;aventure où les rencontres l&apos;amènent à Lyon ou ailleurs. Personne n&apos;est à l&apos;abri d&apos;avoir le béguin !
         </p>
         <p className="italic">
-          Radio Béguin is a 7/7 and 24/24 webradio located in Lyon, France. Through its musical jungle, the radio gives an important place to the emerging and local scene. Radio Béguin's programming is thoughtful and evolving to accompany you throughout your days. Punctuated by numerous broadcasts: talk radio, various DJ sets and live events, the voice is given to those who are rarely heard. A space for safe and free expression that is full of new ideas and ventures where encounters take it to Lyon or elsewhere. “Béguin” is an old word to say “crush” in French!
+          Radio Béguin is a 7/7 and 24/24 webradio located in Lyon, France. Through its musical jungle, the radio gives an important place to the emerging and local scene. Radio Béguin&apos;s programming is thoughtful and evolving to accompany you throughout your days. Punctuated by numerous broadcasts: talk radio, various DJ sets and live events, the voice is given to those who are rarely heard. A space for safe and free expression that is full of new ideas and ventures where encounters take it to Lyon or elsewhere. “Béguin” is an old word to say “crush” in French!
         </p>
       </section>
 
       {/* L'équipe */}
       <section className="mb-12 space-y-6">
-        <h2 className="text-3xl font-title font-bold mb-4">L'ÉQUIPE</h2>
+        <h2 className="text-3xl font-title font-bold mb-4">L&apos;ÉQUIPE</h2>
         <p>
-          Radio Béguin est une association constituée d’une équipe bénévole passionnée et s’entoure de nombreuses personnes de tous horizons : artistes résident·es, créateur·ices de contenu sonore...
+          Radio Béguin est une association constituée d&apos;une équipe bénévole passionnée et s&apos;entoure de nombreuses personnes de tous horizons : artistes résident·es, créateur·ices de contenu sonore...
         </p>
         <p>
-          Aucun membre de l’équipe n’est salarié, seules nos motivations et notre temps libre permettent l’existence de Radio Béguin. Merci de le prendre en considération avec indulgence :)
+          Aucun membre de l&apos;équipe n&apos;est salarié, seules nos motivations et notre temps libre permettent l&apos;existence de Radio Béguin. Merci de le prendre en considération avec indulgence :)
         </p>
         <p>
           <a
