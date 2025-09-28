@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ExternalLink, Play, Pause } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePlayer } from '@/lib/PlayerContext';
-import type { PodcastEpisode } from '@/lib/podcasts'; // <-- type global
 
 interface SoundCloudPlayerProps {
   hidden?: boolean;

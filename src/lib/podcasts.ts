@@ -1,10 +1,6 @@
 import { readFile } from "fs/promises";
 import path from "path";
-import type {
-  PodcastAggregatedData,
-  PodcastEpisode,
-  PodcastPlaylist,
-} from "./podcasts.types";
+import type { PodcastAggregatedData, PodcastEpisode } from "./podcasts.types";
 
 const CACHE_FILE = path.join(process.cwd(), "src/data/podcasts.json");
 const CACHE_TTL_MS = 60_000; // 1 minute en mémoire
