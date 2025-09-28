@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "prebuild": "ts-node -r tsconfig-paths/register scripts/update-podcasts.ts",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
