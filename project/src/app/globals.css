@@ -44,45 +44,6 @@
   }
 }
 
-@layer components {
-  .tag-pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 9999px;
-    border: 1px solid var(--pink);
-    background-color: #ffffff;
-    color: var(--pink);
-    font-weight: 500;
-    line-height: 1;
-    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-    white-space: nowrap;
-  }
-
-  .tag-pill:hover {
-    background-color: var(--pink);
-    color: #ffffff;
-    border-color: var(--pink);
-  }
-
-  .tag-pill.active {
-    background-color: var(--pink);
-    color: #ffffff;
-    border-color: var(--pink);
-  }
-
-  .tag-pill-xs {
-    padding: 0.2rem 0.6rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.01em;
-  }
-
-  .tag-pill-sm {
-    padding: 0.3rem 0.75rem;
-    font-size: 0.75rem;
-  }
-}
-
 /* Barre de progression du player */
 input[type="range"].soundcloud-range {
   -webkit-appearance: none;
@@ -182,5 +143,6 @@ a, button, [role="button"], .clickable {
 
 /* petit util pour debugging (retire ensuite) */
 /* .podcast-artwork-wrapper { outline: 1px dashed rgba(255,0,128,0.25); } */
+
 
 

@@ -7,21 +7,14 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "refresh-token": "ts-node scripts/refresh-token.ts",
-    "soundcloud:callback-server": "ts-node scripts/request-code.ts",
-    "soundcloud:authorize": "ts-node --transpile-only scripts/authorize-soundcloud.ts",
-    "debug:soundcloud": "node scripts/debug-soundcloud.cjs",
-    "check-token": "ts-node scripts/check-token.ts"
+    "refresh-token": "ts-node scripts/refresh-token.ts"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
-    "@types/express": "^5.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "hls.js": "^1.6.13",
     "lucide-react": "^0.544.0",
     "next": "15.5.3",
     "node-fetch": "^3.3.2",
@@ -41,7 +34,6 @@
     "eslint-config-next": "15.5.3",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5.9.2"
   }

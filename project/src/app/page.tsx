@@ -1,12 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { readFile } from "fs/promises";
-import path from "path";
 import PlayButton from "@/components/PlayButton";
-import type { PodcastEpisode } from "@/lib/podcasts";
-
-export const dynamic = "force-dynamic";
 
 const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 const schedule = [
@@ -17,16 +12,27 @@ const schedule = [
   { time: "19h", label: "Playlist Soirée" },
 ];
 
-const PODCASTS_PATH = path.join(process.cwd(), "src/data/podcasts.json");
+type PodcastEpisode = {
+  id: string;
+  title: string;
+  pubDate: string;
+  audioUrl: string;
+  link: string;
+  description: string;
+  artworkUrl: string;
+};
+
+export const revalidate = 3600; // ISR 1h
 
 async function getEpisodes(): Promise<PodcastEpisode[]> {
   try {
-    const raw = await readFile(PODCASTS_PATH, "utf8");
-    const payload = JSON.parse(raw);
-    const list: PodcastEpisode[] = Array.isArray(payload?.episodes) ? payload.episodes : [];
-    return list.slice(0, 10);
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/podcasts`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const data: PodcastEpisode[] = await res.json();
+    return data.slice(0, 10); // 10 derniers
   } catch (error) {
-    console.error("Erreur lecture podcasts.json:", error);
+    console.error("Erreur fetch podcasts:", error);
     return [];
   }
 }
@@ -117,19 +123,6 @@ export default async function HomePage() {
                   <time className="text-xs text-muted-foreground" dateTime={episode.pubDate}>
                     {formatDate(episode.pubDate)}
                   </time>
-                  {episode.tags?.length ? (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {episode.tags.map(tag => (
-                        <Link
-                          key={tag}
-                          href={`/shows?tag=${encodeURIComponent(tag)}`}
-                          className="tag-pill tag-pill-xs"
-                        >
-                          {tag}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : null}
                 </div>
               </div>
             ))}
