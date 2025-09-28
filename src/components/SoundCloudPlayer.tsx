@@ -19,20 +19,36 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  // Charger et lancer automatiquement le podcast
+  // Charger et lancer automatiquement le podcast via notre API proxy
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio || !currentEpisode?.audioUrl || activePlayer !== 'podcast') return;
+    if (!audio || !currentEpisode?.id || activePlayer !== 'podcast') return;
 
-    audio.src = currentEpisode.audioUrl;
-    audio.load();
-    setProgress(0);
-    setDuration(0);
+    const loadStream = async () => {
+      try {
+        // Appel vers ton API proxy
+        const res = await fetch(`/api/podcast-stream/${currentEpisode.id}?format=json`);
+        const data = await res.json();
 
-    audio.play().then(() => setIsPlaying(true)).catch((err) => {
-      console.warn("Impossible de lire le podcast automatiquement:", err);
-      setIsPlaying(false);
-    });
+        if (!data.url) {
+          console.warn("Pas d’URL de stream trouvée pour", currentEpisode.id);
+          return;
+        }
+
+        audio.src = data.url;
+        audio.load();
+        setProgress(0);
+        setDuration(0);
+
+        await audio.play();
+        setIsPlaying(true);
+      } catch (err) {
+        console.warn("Impossible de lire le podcast:", err);
+        setIsPlaying(false);
+      }
+    };
+
+    loadStream();
   }, [currentEpisode, activePlayer]);
 
   // Durée totale
@@ -75,7 +91,7 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
     setProgress(newTime);
   };
 
-  if (!currentEpisode?.audioUrl || activePlayer !== 'podcast') return null;
+  if (!currentEpisode?.id || activePlayer !== 'podcast') return null;
 
   return (
     <div
