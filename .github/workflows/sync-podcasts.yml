@@ -1,0 +1,35 @@
+name: Sync Podcasts
+
+on:
+  schedule:
+    - cron: "0 */12 * * *" # tous les 12h
+  workflow_dispatch:       # permet de lancer manuellement depuis GitHub
+
+jobs:
+  update-podcasts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run sync-podcasts
+        run: npm run sync-podcasts
+        env:
+          SOUNDCLOUD_CLIENT_ID: ${{ secrets.SOUNDCLOUD_CLIENT_ID }}
+          SOUNDCLOUD_CLIENT_SECRET: ${{ secrets.SOUNDCLOUD_CLIENT_SECRET }}
+          SOUNDCLOUD_REFRESH_TOKEN: ${{ secrets.SOUNDCLOUD_REFRESH_TOKEN }}
+
+      - name: Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git push
