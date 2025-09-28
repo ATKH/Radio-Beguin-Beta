@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "update:podcasts": "node scripts/update-podcasts.cjs",
-    "prebuild": "npm run update:podcasts",
+    "prebuild": "ts-node -r tsconfig-paths/register scripts/update-podcasts.ts",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
@@ -13,7 +12,11 @@
     "soundcloud:callback-server": "ts-node scripts/request-code.ts",
     "soundcloud:authorize": "ts-node --transpile-only scripts/authorize-soundcloud.ts",
     "debug:soundcloud": "node scripts/debug-soundcloud.cjs",
-    "check-token": "ts-node scripts/check-token.ts"
+    "check-token": "ts-node scripts/check-token.ts",
+    "update:podcasts": "ts-node -r tsconfig-paths/register scripts/update-podcasts.ts",
+    "sync-podcasts": "npm run soundcloud:authorize -- --refresh-data && git add src/data/podcasts.json && git commit -m 'chore: sync podcasts data [skip ci]' || echo 'No changes to commit' && git push",
+    "deploy": "vercel --prod --force",
+    "deploy:preview": "vercel --force"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
