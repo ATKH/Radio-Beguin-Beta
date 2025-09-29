@@ -13,15 +13,10 @@ export async function GET(
 
   try {
     const episodes = await fetchPodcastEpisodes();
-    const episode = episodes.find(
-      (ep) => ep.id === id && ep.sharing === "public"
-    );
+    const episode = episodes.find((ep) => ep.id === id && ep.sharing === "public");
 
-    if (!episode || !episode.audioUrl) {
-      return NextResponse.json(
-        { error: "Episode not found or private" },
-        { status: 404 }
-      );
+    if (!episode) {
+      return NextResponse.json({ error: "Episode not found or private" }, { status: 404 });
     }
 
     const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
@@ -86,7 +81,11 @@ export async function GET(
       return null;
     };
 
-    const targetUrl = (await tryFreshUrl()) ?? episode.audioUrl;
+    const targetUrl = await tryFreshUrl();
+
+    if (!targetUrl) {
+      return NextResponse.json({ error: "Impossible de récupérer un flux valide" }, { status: 502 });
+    }
 
     if (wantsJson) {
       return NextResponse.json({ url: targetUrl });
