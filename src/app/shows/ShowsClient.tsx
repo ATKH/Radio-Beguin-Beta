@@ -119,7 +119,7 @@ export default function ShowsClient() {
     let isMounted = true;
     setLoading(true);
 
-    fetch("/api/podcasts")
+    + fetch("/data/podcasts.json")
       .then(res => {
         if (!res.ok) {
           throw new Error(`HTTP ${res.status}`);

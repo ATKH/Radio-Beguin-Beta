@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import type { PodcastEpisode } from '@/lib/podcasts'; // ✅ import unique
+import type { PodcastEpisode } from '@/lib/podcasts';
 
 type PlayerContextType = {
   currentEpisode: PodcastEpisode | null;
@@ -24,12 +24,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   };
 
   const playPodcast = (episode: PodcastEpisode) => {
-    if (!episode.audioUrl) {
-      console.warn('⚠️ Episode sans flux audio:', episode);
+    if (!episode.id) {
+      console.warn('⚠️ Episode sans ID:', episode);
       return;
     }
 
+    // Utiliser la route dynamique Next.js
     const playbackUrl = `/api/podcast-stream/${episode.id}?ts=${Date.now()}`;
+
     const wrappedEpisode: PodcastEpisode = {
       ...episode,
       audioUrl: playbackUrl,

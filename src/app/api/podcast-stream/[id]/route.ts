@@ -1,33 +1,35 @@
+// app/api/podcast-stream/[id]/route.ts
 import { NextResponse } from "next/server";
 import { fetchPodcastEpisodes } from "@/lib/podcasts";
 import { getAccessToken, invalidateAccessToken } from "@/lib/soundcloud/auth";
 
-export async function GET(req: Request, context: { params: Promise<{ id: string }> | { id: string } }) {
-  const params = await context.params;
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = params;
   const requestUrl = new URL(req.url);
-  const wantsJson = requestUrl.searchParams.get('format') === 'json';
+  const wantsJson = requestUrl.searchParams.get("format") === "json";
 
   try {
     const episodes = await fetchPodcastEpisodes();
-    const episode = episodes.find(ep => ep.id === id && ep.sharing === "public");
+    const episode = episodes.find(ep => String(ep.id) === String(id));
 
-    if (!episode || !episode.audioUrl) {
-      return NextResponse.json({ error: "Episode not found or private" }, { status: 404 });
+    if (!episode) {
+      return NextResponse.json({ error: "Episode not found" }, { status: 404 });
     }
+
     const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
     const trackAuthorization = episode.trackAuthorization ?? undefined;
+
+    // Ordre de priorité des flux
     const streamProtocols: string[] = [
-      'http_mp3_320_url',
-      'http_mp3_192_url',
-      'http_mp3_128_url',
-      'http_mp3_64_url',
-      'http_mp3_32_url',
-      'hls_mp3_320_url',
-      'hls_mp3_192_url',
-      'hls_mp3_128_url',
-      'hls_mp3_64_url',
-      'hls_mp3_32_url',
+      "http_mp3_320_url",
+      "http_mp3_192_url",
+      "http_mp3_128_url",
+      "hls_mp3_128_url",
+      "http_mp3_64_url",
+      "hls_mp3_64_url",
     ];
 
     const pickUrl = (data?: Record<string, string | undefined> | null) => {
@@ -41,8 +43,8 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
 
     const fetchStreams = async (withAuth: boolean) => {
       const apiUrl = new URL(`https://api.soundcloud.com/i1/tracks/${id}/streams`);
-      if (!withAuth && clientId) apiUrl.searchParams.set('client_id', clientId);
-      if (trackAuthorization) apiUrl.searchParams.set('track_authorization', trackAuthorization);
+      if (!withAuth && clientId) apiUrl.searchParams.set("client_id", clientId);
+      if (trackAuthorization) apiUrl.searchParams.set("track_authorization", trackAuthorization);
 
       const headers: Record<string, string> = {};
       if (withAuth) {
@@ -50,7 +52,7 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
         headers.Authorization = `OAuth ${accessToken}`;
       }
 
-      const res = await fetch(apiUrl, { headers, cache: 'no-store' });
+      const res = await fetch(apiUrl, { headers, cache: "no-store" });
 
       if (withAuth && (res.status === 401 || res.status === 403)) {
         invalidateAccessToken();
@@ -69,12 +71,8 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
 
       for (let i = 0; i < 2; i++) {
         const result = await fetchStreams(true);
-        if (result.retry) {
-          continue;
-        }
-        if (result.data) {
-          return pickUrl(result.data);
-        }
+        if (result.retry) continue;
+        if (result.data) return pickUrl(result.data);
       }
 
       return null;
@@ -82,24 +80,30 @@ export async function GET(req: Request, context: { params: Promise<{ id: string 
 
     const targetUrl = (await tryFreshUrl()) ?? episode.audioUrl;
 
+    if (!targetUrl) {
+      return NextResponse.json(
+        { error: "No playable stream available" },
+        { status: 404 }
+      );
+    }
+
     if (wantsJson) {
       return NextResponse.json({ url: targetUrl });
     }
 
     try {
-      const upstream = await fetch(targetUrl, { cache: 'no-store' });
+      const upstream = await fetch(targetUrl, { cache: "no-store" });
       if (!upstream.ok || !upstream.body) {
         console.warn(`⚠️ Lecture directe impossible (${upstream.status}) pour ${targetUrl}`);
         return NextResponse.redirect(targetUrl);
       }
 
-      const response = new NextResponse(upstream.body, {
+      return new NextResponse(upstream.body, {
         headers: {
-          'Content-Type': upstream.headers.get('content-type') ?? 'audio/mpeg',
-          'Cache-Control': 'no-store',
+          "Content-Type": upstream.headers.get("content-type") ?? "audio/mpeg",
+          "Cache-Control": "no-store",
         },
       });
-      return response;
     } catch (error) {
       console.warn(`⚠️ Impossible de proxifier ${targetUrl}:`, error);
       return NextResponse.redirect(targetUrl);
