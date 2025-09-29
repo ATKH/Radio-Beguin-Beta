@@ -29,13 +29,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Utiliser la route dynamique Next.js
+    // ⚡️ On passe toujours par notre API interne qui gère les tokens SoundCloud
     const playbackUrl = `/api/podcast-stream/${episode.id}?ts=${Date.now()}`;
 
     const wrappedEpisode: PodcastEpisode = {
       ...episode,
-      audioUrl: playbackUrl,
-      streamProtocol: 'progressive',
+      audioUrl: playbackUrl,     // l’URL proxifiée
+      streamProtocol: 'progressive', // on force MP3/hls via notre API
     };
 
     setCurrentEpisode(wrappedEpisode);

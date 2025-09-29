@@ -1,10 +1,10 @@
-// app/api/podcast-stream/[id]/route.ts
-import { NextResponse } from "next/server";
+// src/app/api/podcast-stream/[id]/route.ts
+import { NextRequest, NextResponse } from "next/server";
 import { fetchPodcastEpisodes } from "@/lib/podcasts";
 import { getAccessToken, invalidateAccessToken } from "@/lib/soundcloud/auth";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
@@ -13,23 +13,31 @@ export async function GET(
 
   try {
     const episodes = await fetchPodcastEpisodes();
-    const episode = episodes.find(ep => String(ep.id) === String(id));
+    const episode = episodes.find(
+      (ep) => ep.id === id && ep.sharing === "public"
+    );
 
-    if (!episode) {
-      return NextResponse.json({ error: "Episode not found" }, { status: 404 });
+    if (!episode || !episode.audioUrl) {
+      return NextResponse.json(
+        { error: "Episode not found or private" },
+        { status: 404 }
+      );
     }
 
     const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
     const trackAuthorization = episode.trackAuthorization ?? undefined;
 
-    // Ordre de priorité des flux
     const streamProtocols: string[] = [
       "http_mp3_320_url",
       "http_mp3_192_url",
       "http_mp3_128_url",
-      "hls_mp3_128_url",
       "http_mp3_64_url",
+      "http_mp3_32_url",
+      "hls_mp3_320_url",
+      "hls_mp3_192_url",
+      "hls_mp3_128_url",
       "hls_mp3_64_url",
+      "hls_mp3_32_url",
     ];
 
     const pickUrl = (data?: Record<string, string | undefined> | null) => {
@@ -79,13 +87,6 @@ export async function GET(
     };
 
     const targetUrl = (await tryFreshUrl()) ?? episode.audioUrl;
-
-    if (!targetUrl) {
-      return NextResponse.json(
-        { error: "No playable stream available" },
-        { status: 404 }
-      );
-    }
 
     if (wantsJson) {
       return NextResponse.json({ url: targetUrl });
