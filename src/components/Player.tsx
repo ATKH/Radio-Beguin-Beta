@@ -35,6 +35,7 @@ export default function Player() {
   const initialEpisodeRef = useRef(true);
   const previousEpisodeIdRef = useRef<string | null>(null);
   const playbackRestoredRef = useRef(false);
+  const wasLivePlayingRef = useRef(false);
 
   const PLAYER_MIN_HEIGHT = 58;
   const HEADER_HEIGHT = 56;
@@ -75,6 +76,13 @@ export default function Player() {
       // ignore
     }
   }, [isPlaying, activePlayer]);
+  useEffect(() => {
+    if (activePlayer === 'live') {
+      wasLivePlayingRef.current = isPlaying;
+    } else {
+      wasLivePlayingRef.current = false;
+    }
+  }, [activePlayer, isPlaying]);
 
   // Détecter les changements d'épisode pour relancer automatiquement la lecture
   useEffect(() => {
@@ -213,7 +221,8 @@ export default function Player() {
       setDuration(0);
 
       const shouldAutoPlay =
-        resumeIntentRef.current.shouldResume && resumeIntentRef.current.target === 'live';
+        (resumeIntentRef.current.shouldResume && resumeIntentRef.current.target === 'live') ||
+        wasLivePlayingRef.current;
 
       if (shouldAutoPlay) {
         audio
@@ -225,10 +234,12 @@ export default function Player() {
           })
           .finally(() => {
             resetResumeIntent();
+            wasLivePlayingRef.current = true;
           });
       } else {
         setIsPlaying(false);
         resetResumeIntent();
+        wasLivePlayingRef.current = false;
       }
 
       return () => {
