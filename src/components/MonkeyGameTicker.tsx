@@ -279,11 +279,8 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     dprRef.current = Math.max(1, Math.min(window.devicePixelRatio || 1, 2));
 
     updateIsMobile();
-    if ("addEventListener" in pointerQuery) {
-      pointerQuery.addEventListener("change", handlePointerChange);
-    } else {
-      pointerQuery.addListener(handlePointerChange);
-    }
+    pointerQuery.addEventListener?.("change", handlePointerChange);
+    pointerQuery.addListener?.(handlePointerChange);
     window.addEventListener("resize", handlePointerChange);
 
     const resizeCanvas = () => {
@@ -602,11 +599,8 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       window.removeEventListener("keyup", handleKeyUp);
       clearScheduledExit();
       isGameOverRef.current = false;
-      if ("removeEventListener" in pointerQuery) {
-        pointerQuery.removeEventListener("change", handlePointerChange);
-      } else {
-        pointerQuery.removeListener(handlePointerChange);
-      }
+      pointerQuery.removeEventListener?.("change", handlePointerChange);
+      pointerQuery.removeListener?.(handlePointerChange);
       window.removeEventListener("resize", handlePointerChange);
       resizeObserver.disconnect();
       exitGameRef.current = () => {};
