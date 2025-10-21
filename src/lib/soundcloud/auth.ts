@@ -1,4 +1,4 @@
-import { readRefreshToken, readRefreshTokenCandidates, writeRefreshToken } from "./tokenStore";
+import { readRefreshToken, readRefreshTokenCandidates } from "./tokenStore";
 
 let cachedAccessToken: string | null = null;
 let cachedRefreshToken: string | null = readRefreshToken();
@@ -13,8 +13,10 @@ type ClientCredentialsCache = {
 let clientCredentialsCache: ClientCredentialsCache | null = null;
 let clientCredentialsCooldownUntil = 0;
 
+const TOKEN_ENDPOINT = "https://api.soundcloud.com/oauth2/token";
+
 async function requestAccessToken(refreshToken: string) {
-  const res = await fetch("https://secure.soundcloud.com/oauth/token", {
+  const res = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -62,7 +64,7 @@ async function requestClientCredentialsToken() {
     return null;
   }
 
-  const res = await fetch("https://secure.soundcloud.com/oauth/token", {
+  const res = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -162,11 +164,7 @@ export async function getAccessToken(): Promise<string> {
       }
 
       cachedAccessToken = data.access_token;
-      cachedRefreshToken = data.refresh_token || refreshToken;
-
-      if (data.refresh_token) {
-        writeRefreshToken(data.refresh_token);
-      }
+      cachedRefreshToken = refreshToken;
 
       pendingRequest = null;
       return cachedAccessToken;

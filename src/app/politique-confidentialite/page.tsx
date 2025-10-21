@@ -3,18 +3,18 @@ import Link from 'next/link';
 
 export default function PolitiqueConfidentialitePage() {
   return (
-    <main className="max-w-4xl mx-auto px-4 md:px-8 py-12 text-pink-500 space-y-10">
+    <main className="max-w-4xl mx-auto px-4 md:px-8 py-12 text-foreground space-y-10">
       <header className="space-y-3 text-center">
-        <h1 className="text-4xl md:text-5xl font-title font-bold">Politique de confidentialité</h1>
+      <h1 className="text-4xl md:text-5xl font-serif font-bold">Politique de confidentialité</h1>
         <p className="text-sm text-muted-foreground">Dernière mise à jour : {new Date().toLocaleDateString('fr-FR')}</p>
       </header>
 
       <section className="space-y-3">
         <h2 className="text-2xl font-semibold">Responsable du traitement</h2>
         <p>
-          Les données personnelles collectées via <Link href="/" className="underline hover:text-pink-600">radiobeguin.com</Link> sont traitées par l&apos;Association Radio Béguin (SIREN 889&nbsp;114&nbsp;161),
+          Les données personnelles collectées via <Link href="/" className="underline hover:text-primary">radiobeguin.com</Link> sont traitées par l&apos;Association Radio Béguin (SIREN 889&nbsp;114&nbsp;161),
           dont le siège est situé 2B rue Louis Thevenet, 69004 Lyon, France. Vous pouvez contacter le délégué à la protection des données à l&apos;adresse
-          <a href="mailto:lebeguin@radiobeguin.com" className="underline"> lebeguin@radiobeguin.com</a>.
+          <a href="mailto:lebeguin@radiobeguin.com" className="underline hover:text-primary"> lebeguin@radiobeguin.com</a>.
         </p>
       </section>
 
@@ -76,10 +76,10 @@ export default function PolitiqueConfidentialitePage() {
         <p>
           Vous disposez d&apos;un droit d&apos;accès, de rectification, d&apos;effacement, de limitation, d&apos;opposition, de portabilité et de définition de directives post-mortem.
           Pour exercer ces droits, adressez un courrier à Association Radio Béguin – 2B rue Louis Thevenet, 69004 Lyon, ou un email à
-          <a href="mailto:lebeguin@radiobeguin.com" className="underline"> lebeguin@radiobeguin.com</a>. Une pièce d&apos;identité pourra être demandée afin de confirmer votre identité.
+          <a href="mailto:lebeguin@radiobeguin.com" className="underline hover:text-primary"> lebeguin@radiobeguin.com</a>. Une pièce d&apos;identité pourra être demandée afin de confirmer votre identité.
         </p>
         <p>
-          Vous pouvez également déposer une réclamation auprès de la CNIL (<a className="underline" href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">cnil.fr</a>).
+          Vous pouvez également déposer une réclamation auprès de la CNIL (<a className="underline hover:text-primary" href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener noreferrer">cnil.fr</a>).
         </p>
       </section>
 
@@ -88,7 +88,7 @@ export default function PolitiqueConfidentialitePage() {
         <p>
           Nous mettons en œuvre des mesures techniques et organisationnelles adaptées pour protéger vos données (hébergement sécurisé, chiffrement des
           communications, restriction des accès). Malgré tout, aucun système n&apos;étant infaillible, nous vous invitons à nous signaler toute anomalie à
-          <a href="mailto:lebeguin@radiobeguin.com" className="underline"> lebeguin@radiobeguin.com</a>. En cas d&apos;incident affectant vos données, vous serez informé dans les meilleurs délais.
+          <a href="mailto:lebeguin@radiobeguin.com" className="underline hover:text-primary"> lebeguin@radiobeguin.com</a>. En cas d&apos;incident affectant vos données, vous serez informé dans les meilleurs délais.
         </p>
       </section>
 
@@ -101,7 +101,7 @@ export default function PolitiqueConfidentialitePage() {
           Association Radio Béguin<br />
           2B rue Louis Thevenet<br />
           69007 Lyon – France<br />
-          Email : <a href="mailto:lebeguin@radiobeguin.com" className="underline">lebeguin@radiobeguin.com</a>
+          Email : <a href="mailto:lebeguin@radiobeguin.com" className="underline hover:text-primary">lebeguin@radiobeguin.com</a>
         </address>
       </section>
     </main>

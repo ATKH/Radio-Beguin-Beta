@@ -2,21 +2,70 @@
 import { NextRequest, NextResponse } from "next/server";
 import { fetchPodcastEpisodes } from "@/lib/podcasts";
 import { getAccessToken, invalidateAccessToken } from "@/lib/soundcloud/auth";
+import type { PodcastEpisode } from "@/lib/podcasts";
+
+const EPISODE_CACHE_TTL = 1000 * 60 * 5; // 5 minutes
+const STREAM_URL_CACHE_TTL = 1000 * 60 * 5;
+
+type EpisodeCacheEntry = {
+  expiresAt: number;
+  map: Map<string, PodcastEpisode>;
+};
+
+const episodeCache: EpisodeCacheEntry = {
+  expiresAt: 0,
+  map: new Map(),
+};
+
+const streamUrlCache = new Map<string, { url: string; expiresAt: number }>();
+
+async function getEpisodeById(id: string) {
+  const now = Date.now();
+  if (episodeCache.expiresAt < now) {
+    const episodes = await fetchPodcastEpisodes();
+    episodeCache.map = new Map(
+      episodes.map((episode) => [episode.id, episode])
+    );
+    episodeCache.expiresAt = now + EPISODE_CACHE_TTL;
+  }
+
+  return episodeCache.map.get(id);
+}
+
+function getCachedStreamUrl(id: string) {
+  const entry = streamUrlCache.get(id);
+  if (!entry) return null;
+  if (entry.expiresAt < Date.now()) {
+    streamUrlCache.delete(id);
+    return null;
+  }
+  return entry.url;
+}
+
+function setCachedStreamUrl(id: string, url: string) {
+  streamUrlCache.set(id, { url, expiresAt: Date.now() + STREAM_URL_CACHE_TTL });
+}
+
+function invalidateStreamUrl(id: string) {
+  streamUrlCache.delete(id);
+}
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const { id } = params;
+  const { id } = await context.params;
   const requestUrl = new URL(req.url);
   const wantsJson = requestUrl.searchParams.get("format") === "json";
 
   try {
-    const episodes = await fetchPodcastEpisodes();
-    const episode = episodes.find((ep) => ep.id === id && ep.sharing === "public");
+    const episode = await getEpisodeById(id);
 
-    if (!episode) {
-      return NextResponse.json({ error: "Episode not found or private" }, { status: 404 });
+    if (!episode || episode.sharing !== "public" || !episode.audioUrl) {
+      return NextResponse.json(
+        { error: "Episode not found or private" },
+        { status: 404 }
+      );
     }
 
     const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
@@ -81,10 +130,12 @@ export async function GET(
       return null;
     };
 
-    const targetUrl = await tryFreshUrl();
-
+    let targetUrl = getCachedStreamUrl(id);
+    const usedCachedUrl = Boolean(targetUrl);
     if (!targetUrl) {
-      return NextResponse.json({ error: "Impossible de récupérer un flux valide" }, { status: 502 });
+      const freshUrl = await tryFreshUrl();
+      targetUrl = freshUrl ?? episode.audioUrl;
+      if (freshUrl) setCachedStreamUrl(id, freshUrl);
     }
 
     if (wantsJson) {
@@ -92,19 +143,71 @@ export async function GET(
     }
 
     try {
-      const upstream = await fetch(targetUrl, { cache: "no-store" });
+      const range = req.headers.get("range");
+      const upstream = await fetch(targetUrl, {
+        cache: "no-store",
+        headers: range ? { Range: range } : undefined,
+      });
+
+      const passthroughHeaders = [
+        "accept-ranges",
+        "content-length",
+        "content-range",
+        "content-type",
+        "content-encoding",
+        "content-disposition",
+        "transfer-encoding",
+      ];
+
       if (!upstream.ok || !upstream.body) {
+        invalidateStreamUrl(id);
         console.warn(`⚠️ Lecture directe impossible (${upstream.status}) pour ${targetUrl}`);
+
+        if (usedCachedUrl) {
+          const refreshedUrl = await tryFreshUrl();
+          if (refreshedUrl) {
+            setCachedStreamUrl(id, refreshedUrl);
+            targetUrl = refreshedUrl;
+            const retryHeaders = range ? { Range: range } : undefined;
+            const retryUpstream = await fetch(targetUrl, {
+              cache: "no-store",
+              headers: retryHeaders,
+            });
+
+            if (retryUpstream.ok && retryUpstream.body) {
+              const retryResponseHeaders = new Headers();
+              passthroughHeaders.forEach((key) => {
+                const value = retryUpstream.headers.get(key);
+                if (value) retryResponseHeaders.set(key, value);
+              });
+              if (!retryResponseHeaders.has("accept-ranges")) retryResponseHeaders.set("accept-ranges", "bytes");
+              retryResponseHeaders.set("cache-control", "no-store");
+
+              return new NextResponse(retryUpstream.body, {
+                status: retryUpstream.status,
+                headers: retryResponseHeaders,
+              });
+            }
+          }
+        }
+
         return NextResponse.redirect(targetUrl);
       }
 
+      const headers = new Headers();
+      passthroughHeaders.forEach((key) => {
+        const value = upstream.headers.get(key);
+        if (value) headers.set(key, value);
+      });
+      if (!headers.has("accept-ranges")) headers.set("accept-ranges", "bytes");
+      headers.set("cache-control", "no-store");
+
       return new NextResponse(upstream.body, {
-        headers: {
-          "Content-Type": upstream.headers.get("content-type") ?? "audio/mpeg",
-          "Cache-Control": "no-store",
-        },
+        status: upstream.status,
+        headers,
       });
     } catch (error) {
+      invalidateStreamUrl(id);
       console.warn(`⚠️ Impossible de proxifier ${targetUrl}:`, error);
       return NextResponse.redirect(targetUrl);
     }

@@ -45,9 +45,9 @@ export default function PodcastCover({ episode, onPlay }: Props) {
       {/* Tags overlay */}
       {episode.tags && episode.tags.length > 0 && (
         <div className="absolute bottom-2 left-2 flex flex-wrap gap-1">
-          {episode.tags.map(tag => (
+          {episode.tags.map((tag, index) => (
             <span
-              key={tag}
+              key={`${tag}-${index}`}
               className="text-xs bg-jungle-accent/20 text-jungle-accent px-2 py-0.5 rounded-full"
             >
               {tag}

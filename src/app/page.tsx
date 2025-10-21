@@ -1,141 +1,124 @@
-import React from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { readFile } from "fs/promises";
+// @ts-nocheck
+import React, { cache } from "react";
 import path from "path";
-import PlayButton from "@/components/PlayButton";
+import { readFile } from "fs/promises";
+import WeeklySchedule, { WeeklyScheduleConfig } from "@/components/WeeklySchedule";
+import SelectionSection from "@/components/SelectionSection";
+import { fetchPodcastPlaylists } from "@/lib/podcasts";
 import type { PodcastEpisode } from "@/lib/podcasts";
 
 export const dynamic = "force-dynamic";
 
-const days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
-const schedule = [
-  { time: "00h", label: "Playlist Nuit" },
-  { time: "5h", label: "Playlist Ambient" },
-  { time: "8h", label: "Playlist Matin" },
-  { time: "13h", label: "Playlist Journée" },
-  { time: "19h", label: "Playlist Soirée" },
-];
+const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
+  Lundi: [
+    { time: "00h", label: "Playlist Nuit" },
+    { time: "05h", label: "Playlist Ambient" },
+    { time: "07h", label: "Playlist Matin" },
+    { time: "13h", label: "Playlist Journée" },
+  ],
+  Mardi: [
+    { time: "00h", label: "Playlist Nuit" },
+    { time: "05h", label: "Playlist Ambient" },
+    { time: "07h", label: "Playlist Matin" },
+    { time: "13h", label: "Playlist Journée" },
+  ],
+  Mercredi: [
+    { time: "00h", label: "Playlist Nuit" },
+    { time: "05h", label: "Playlist Ambient" },
+    { time: "07h", label: "Playlist Matin" },
+    { time: "13h", label: "Playlist Journée" },
+  ],
+  Jeudi: [
+    { time: "00h", label: "Playlist Nuit" },
+    { time: "05h", label: "Playlist Ambient" },
+    { time: "07h", label: "Playlist Matin" },
+    { time: "13h", label: "Playlist Journée" },
+    { time: "19h", label: "Carnavália Sounds • DJ âMy B. invite Discolada", highlight: true },
+    { time: "21h", label: "Playlist Soirée" },  ],
+  Vendredi: [
+    { time: "00h", label: "Playlist Soirée" },
+    { time: "01h", label: "Playlist Nuit" },
+    { time: "05h", label: "Playlist Ambient" },
+    { time: "07h", label: "Playlist Matin" },
+    { time: "13h", label: "Playlist Journée" },
+    { time: "21h", label: "Playlist Soirée" },
+  ],
+  Samedi: [
+    { time: "00h", label: "Playlist Soirée" },
+    { time: "01h", label: "Playlist Nuit" },
+    { time: "05h", label: "Playlist Ambient" },
+    { time: "07h", label: "Playlist Matin" },
+    { time: "13h", label: "Playlist Journée" },
+    { time: "14h", label: "Ça Jacte • Clarisse Teyssandier", highlight: true },
+    { time: "21h", label: "Playlist Soirée" },
+  ],
+  Dimanche: [
+    { time: "00h", label: "Playlist Soirée" },
+    { time: "01h", label: "Playlist Nuit" },
+    { time: "05h", label: "Playlist Ambient" },
+    { time: "08h", label: "Playlist Matin" },
+    { time: "13h", label: "Playlist Journée" },
+    { time: "15h", label: "Événement : Mangez Bougez au Grrrd Zero"},
+  ],
+};
 
 const PODCASTS_PATH = path.join(process.cwd(), "src/data/podcasts.json");
 
-async function getEpisodes(): Promise<PodcastEpisode[]> {
+// ✅ On prend les 200 épisodes les plus récents grâce à pubDate
+const SELECTION_POOL_SIZE = 96;
+
+const normalizeTitle = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const getEpisodesPool = cache(async (): Promise<PodcastEpisode[]> => {
   try {
     const raw = await readFile(PODCASTS_PATH, "utf8");
     const payload = JSON.parse(raw);
-    const list: PodcastEpisode[] = Array.isArray(payload?.episodes) ? payload.episodes : [];
-    return list.slice(0, 10);
+    let list: PodcastEpisode[] = Array.isArray(payload?.episodes) ? payload.episodes : [];
+
+    // Tri du plus récent au plus ancien
+    list = list.sort(
+      (a, b) => new Date((b as any).pubDate).getTime() - new Date((a as any).pubDate).getTime()
+    );
+
+    // On garde une fenêtre raisonnable d'épisodes récents pour la sélection
+    const trimmed = list.slice(0, SELECTION_POOL_SIZE).map(({ description, ...episode }) => ({
+      ...episode,
+    }));
+
+    return trimmed;
   } catch (error) {
     console.error("Erreur lecture podcasts.json:", error);
     return [];
   }
-}
+});
 
-export default async function HomePage() {
-  const episodes = await getEpisodes();
+export default async function Page() {
+  const [pool, playlists] = await Promise.all([getEpisodesPool(), fetchPodcastPlaylists()]);
 
-  const formatDate = (dateStr: string) =>
-    new Date(dateStr).toLocaleDateString("fr-FR", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
+  const highlightTargets = playlists.reduce<Record<string, string>>((acc, playlist) => {
+    if (!playlist?.title || !playlist.id) return acc;
+    const key = normalizeTitle(playlist.title);
+    if (!key || acc[key]) return acc;
+    acc[key] = playlist.id;
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 py-6">
-      {/* Programme */}
+      {/* Programme hebdo */}
       <section className="mb-8">
-        <h2 className="text-2xl font-bold mb-3 text-pink-500">Programme</h2>
-
-        <div className="hidden md:grid grid-cols-7 gap-4">
-          {days.map((day) => (
-            <div key={day}>
-              <h3 className="font-semibold text-pink-500 mb-1 text-center">{day}</h3>
-              <ul className="space-y-1 text-sm">
-                {schedule.map(({ time, label }) => (
-                  <li key={time} className="flex justify-center items-center space-x-1">
-                    <span className="font-mono text-pink-500">{time}</span>
-                    <span>{label}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="md:hidden flex overflow-x-auto space-x-4 px-2 pb-2">
-          {days.map((day) => (
-            <div key={day} className="min-w-[60%] flex-shrink-0 text-center">
-              <h3 className="font-semibold text-pink-500 mb-1">{day}</h3>
-              <ul className="space-y-1 text-xs">
-                {schedule.map(({ time, label }) => (
-                  <li key={time} className="flex justify-center items-center space-x-1">
-                    <span className="font-mono text-pink-500">{time}</span>
-                    <span>{label}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <WeeklySchedule schedule={WEEKLY_SCHEDULE} highlightTargets={highlightTargets} />
       </section>
 
-      {/* Derniers podcasts */}
-      <section>
-        <h2 className="text-2xl font-bold mb-6">Derniers podcasts</h2>
-
-        {episodes.length === 0 ? (
-          <p className="text-center text-muted-foreground">Aucun podcast disponible.</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-            {episodes.map((episode) => (
-              <div
-                key={episode.id}
-                className="group bg-muted rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-200"
-              >
-                <div className="relative w-full aspect-square">
-                  <Image
-                    src={episode.artworkUrl}
-                    alt={episode.title}
-                    width={300}
-                    height={300}
-                    className="object-cover rounded-lg"
-                    priority
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <PlayButton episode={episode} />
-                  </div>
-                </div>
-                <div className="p-3">
-                  <Link
-                    href={`/shows/${encodeURIComponent(episode.id)}`}
-                    className="block font-semibold text-sm hover:underline line-clamp-2"
-                    title={episode.title}
-                  >
-                    {episode.title}
-                  </Link>
-                  <time className="text-xs text-muted-foreground" dateTime={episode.pubDate}>
-                    {formatDate(episode.pubDate)}
-                  </time>
-                  {episode.tags?.length ? (
-                    <div className="mt-2 flex flex-wrap gap-1">
-                      {episode.tags.map(tag => (
-                        <Link
-                          key={tag}
-                          href={`/shows?tag=${encodeURIComponent(tag)}`}
-                          className="tag-pill tag-pill-xs"
-                        >
-                          {tag}
-                        </Link>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </section>
+      {/* Sélection : 8 épisodes tirés des 200 plus récents */}
+      <SelectionSection initialEpisodes={pool} />
     </div>
   );
 }

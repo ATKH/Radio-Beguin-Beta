@@ -2,12 +2,19 @@ const fetch = (...args) => import("node-fetch").then(({default: fetch}) => fetch
 
 let cachedAccessToken = null;
 
+function getStaticAccessToken() {
+  const raw = process.env.SOUNDCLOUD_ACCESS_TOKEN?.trim();
+  if (!raw) return null;
+  console.log("✅ SoundCloud access_token fourni via SOUNDCLOUD_ACCESS_TOKEN");
+  return raw;
+}
+
 async function tryRefreshToken() {
   const refreshToken = process.env.SOUNDCLOUD_REFRESH_TOKEN;
   if (!refreshToken) return null;
 
   try {
-    const res = await fetch("https://secure.soundcloud.com/oauth/token", {
+    const res = await fetch("https://api.soundcloud.com/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({
@@ -34,6 +41,12 @@ async function tryRefreshToken() {
 
 async function getAccessToken() {
   if (cachedAccessToken) return cachedAccessToken;
+
+  const staticToken = getStaticAccessToken();
+  if (staticToken) {
+    cachedAccessToken = staticToken;
+    return staticToken;
+  }
 
   let token = await tryRefreshToken();
 

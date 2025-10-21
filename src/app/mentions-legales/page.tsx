@@ -3,9 +3,9 @@ import Link from 'next/link';
 
 export default function MentionsLegalesPage() {
   return (
-    <main className="max-w-4xl mx-auto px-4 md:px-8 py-12 text-pink-500 space-y-10">
+    <main className="max-w-4xl mx-auto px-4 md:px-8 py-12 text-foreground space-y-10">
       <header className="space-y-3 text-center">
-        <h1 className="text-4xl md:text-5xl font-title font-bold">Mentions légales</h1>
+      <h1 className="text-4xl md:text-5xl font-serif font-bold">Mentions légales</h1>
         <p className="text-sm text-muted-foreground">
           Conformément à la loi n°2004-575 du 21 juin 2004 pour la confiance dans l&apos;économie numérique.
         </p>
@@ -14,15 +14,15 @@ export default function MentionsLegalesPage() {
       <section className="space-y-3">
         <h2 className="text-2xl font-semibold">1. Présentation du site</h2>
         <p>
-          Le site <Link href="/" className="underline hover:text-pink-600">radiobeguin.com</Link> est édité par l&apos;Association Radio Béguin,
+          Le site <Link href="/" className="underline hover:text-primary">radiobeguin.com</Link> est édité par l&apos;Association Radio Béguin,
           association loi 1901 déclarée, dont le siège social est situé au 2B rue Louis Thevenet, 69004 Lyon, France.
         </p>
         <ul className="space-y-1 text-sm md:text-base">
           <li><strong>Raison sociale :</strong> Association Radio Béguin</li>
           <li><strong>SIREN :</strong> 889&nbsp;114&nbsp;161</li>
-          <li><strong>Responsable de la publication :</strong> Bureau de l&apos;association Radio Béguin – <a className="underline" href="mailto:lebeguin@radiobeguin.com">lebeguin@radiobeguin.com</a></li>
-          <li><strong>Hébergeur :</strong> OVHcloud – 2 rue Kellermann, 59100 Roubaix, France – <a className="underline" href="https://www.ovhcloud.com/fr/" target="_blank" rel="noopener noreferrer">ovhcloud.com</a> – 1007</li>
-          <li><strong>Contact :</strong> <a className="underline" href="mailto:lebeguin@radiobeguin.com">lebeguin@radiobeguin.com</a></li>
+          <li><strong>Responsable de la publication :</strong> Bureau de l&apos;association Radio Béguin – <a className="underline hover:text-primary" href="mailto:lebeguin@radiobeguin.com">lebeguin@radiobeguin.com</a></li>
+          <li><strong>Hébergeur :</strong> OVHcloud – 2 rue Kellermann, 59100 Roubaix, France – <a className="underline hover:text-primary" href="https://www.ovhcloud.com/fr/" target="_blank" rel="noopener noreferrer">ovhcloud.com</a> – 1007</li>
+          <li><strong>Contact :</strong> <a className="underline hover:text-primary" href="mailto:lebeguin@radiobeguin.com">lebeguin@radiobeguin.com</a></li>
         </ul>
       </section>
 

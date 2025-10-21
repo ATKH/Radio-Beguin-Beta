@@ -5,65 +5,73 @@ import Header from "@/components/Header";
 import Player from "@/components/Player";
 import Footer from "@/components/Footer";
 import { PlayerProvider } from "@/lib/PlayerContext";
+import { ThemeProvider } from "@/lib/ThemeContext";
+import TickerBar from "@/components/TickerBar";
 
 export const metadata: Metadata = {
   title: "Radio Béguin",
-  description: "Radio indépendante dédiée à la découverte musicale",
+  description: "",
 };
+
+const HEADER_HEIGHT = 56;
+const PLAYER_HEIGHT = 58;
+const NEWS_TICKER_TEXT = "MANGEZ BOUGEZ • EVENEMENT AU GRRRND ZERO LE DIMANCHE 26 OCTOBRE";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
-      <body className="antialiased bg-white text-pink-500">
-        <PlayerProvider>
-          <div className="flex flex-col min-h-screen">
-            {/* Header sticky */}
-            <header className="sticky top-0 z-50 bg-white">
-              <Header />
-            </header>
+    <html lang="fr" className="theme-light" suppressHydrationWarning>
+      <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
+        <ThemeProvider>
+          <PlayerProvider>
+            <div className="relative min-h-screen">
+              <div className="flex flex-col min-h-screen relative z-10">
+                {/* Header */}
+                <header className="sticky top-0 z-50">
+                  <Header />
+                </header>
 
-            {/* Ligne rose sticky */}
-            <div className="sticky top-[70px] z-50 w-full h-[2px] bg-pink-500" />
+                {/* Bandeau d'information */}
+                <TickerBar text={NEWS_TICKER_TEXT} />
 
-            {/* Player sticky */}
-            <div className="sticky top-[72px] z-40 bg-white h-[70px]">
-              <Player />
+                {/* Player */}
+                <div
+                  className="sticky z-40"
+                  style={{ top: `${HEADER_HEIGHT}px`, height: `${PLAYER_HEIGHT}px` }}
+                >
+                  <Player />
+                </div>
+
+                {/* Contenu principal */}
+                <main className="flex-1 pt-16 sm:pt-0">{children}</main>
+
+                {/* Footer */}
+                <Footer />
+
+                {/* Filtres SVG */}
+                <svg className="hidden">
+                  <filter id="halftone">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" result="turb" />
+                    <feColorMatrix type="saturate" values="0" />
+                    <feComponentTransfer>
+                      <feFuncR type="discrete" tableValues="0 1" />
+                      <feFuncG type="discrete" tableValues="0 1" />
+                      <feFuncB type="discrete" tableValues="0 1" />
+                    </feComponentTransfer>
+                    <feComposite
+                      in="SourceGraphic"
+                      in2="turb"
+                      operator="arithmetic"
+                      k1="1"
+                      k2="0.8"
+                      k3="0"
+                      k4="0"
+                    />
+                  </filter>
+                </svg>
+              </div>
             </div>
-
-            {/* Contenu principal */}
-            <main className="flex-1">{children}</main>
-
-            {/* Footer global */}
-            <Footer />
-
-            {/* Définitions de filtres SVG invisibles */}
-            <svg className="hidden">
-              <filter id="halftone">
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.8"
-                  numOctaves="3"
-                  result="turb"
-                />
-                <feColorMatrix type="saturate" values="0" />
-                <feComponentTransfer>
-                  <feFuncR type="discrete" tableValues="0 1" />
-                  <feFuncG type="discrete" tableValues="0 1" />
-                  <feFuncB type="discrete" tableValues="0 1" />
-                </feComponentTransfer>
-                <feComposite
-                  in="SourceGraphic"
-                  in2="turb"
-                  operator="arithmetic"
-                  k1="1"
-                  k2="0.8"
-                  k3="0"
-                  k4="0"
-                />
-              </filter>
-            </svg>
-          </div>
-        </PlayerProvider>
+          </PlayerProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

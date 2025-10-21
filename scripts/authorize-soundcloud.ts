@@ -73,7 +73,7 @@ async function exchangeCode(code: string) {
     code,
   });
 
-  const response = await fetch('https://secure.soundcloud.com/oauth/token', {
+  const response = await fetch('https://api.soundcloud.com/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: params,

@@ -19,7 +19,7 @@ type TokenResponse = {
 };
 
 async function refreshSoundCloudToken(): Promise<TokenResponse> {
-  const res = await fetch('https://secure.soundcloud.com/oauth/token', {
+  const res = await fetch('https://api.soundcloud.com/oauth2/token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({

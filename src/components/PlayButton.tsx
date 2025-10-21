@@ -26,7 +26,7 @@ export default function PlayButton({ episode, className }: PlayButtonProps) {
   return (
     <Button
       onClick={handleClick}
-      className={`rounded-full h-12 w-12 ${className || ''}`}
+      className={`rounded-full h-12 w-12 bg-primary text-primary-foreground hover:bg-primary/90 ${className || ''}`}
     >
       <Play className="h-5 w-5 ml-0.5" />
     </Button>

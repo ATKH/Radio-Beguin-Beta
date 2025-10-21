@@ -24,7 +24,7 @@ export default function PlaylistTracksClient({ tracks }: PlaylistTracksClientPro
       {tracks.map((track) => (
         <div
           key={track.id}
-          className="bg-gray-100 rounded-lg overflow-hidden shadow hover:shadow-lg transition p-2"
+          className="bg-gray-100 rounded-lg overflow-hidden transition px-3 py-2"
         >
           {track.artwork_url ? (
             <Image

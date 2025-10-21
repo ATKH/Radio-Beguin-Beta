@@ -1,5 +1,6 @@
 // scripts/check-token.ts
-import "dotenv/config";
+import { config } from "dotenv";
+config({ path: ".env.local", override: true });
 import fetch from "node-fetch";
 
 interface TokenResponse {
@@ -23,7 +24,7 @@ async function main() {
   console.log("🔑 Refresh token actuel:", refreshToken);
 
   try {
-    const res = await fetch("https://secure.soundcloud.com/oauth/token", {
+    const res = await fetch("https://api.soundcloud.com/oauth2/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({

@@ -11,13 +11,32 @@ interface BackLinkProps {
   className?: string;
 }
 
-export default function BackLink({ href = "/shows", label = "Retour", className }: BackLinkProps) {
+export default function BackLink({ href = "/shows", label = "retour", className }: BackLinkProps) {
   const router = useRouter();
+  const FALLBACK_QUERY_KEY = "shows:last-query";
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    if (typeof window !== "undefined" && window.history.length > 1) {
+    if (typeof window !== "undefined") {
+      const cancelFallback = () => {
+        window.clearTimeout(fallbackTimer);
+        window.removeEventListener("popstate", cancelFallback);
+      };
+
+      const fallbackTimer = window.setTimeout(() => {
+        cancelFallback();
+        let target = href;
+        if (href === "/shows") {
+          const storedQuery = window.sessionStorage.getItem(FALLBACK_QUERY_KEY);
+          if (storedQuery) {
+            target = `${href}${storedQuery}`;
+          }
+        }
+        router.push(target);
+      }, 200);
+
+      window.addEventListener("popstate", cancelFallback);
       router.back();
       return;
     }
@@ -30,11 +49,12 @@ export default function BackLink({ href = "/shows", label = "Retour", className 
       type="button"
       onClick={handleClick}
       className={cn(
-        "inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition",
+        "inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         className
       )}
+      aria-label={label}
     >
-      <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+      <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
       <span>{label}</span>
     </button>
   );

@@ -95,7 +95,7 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 bg-[var(--pink)] text-white shadow-lg z-50 transition-opacity duration-300 ${
+      className={`fixed bottom-0 left-0 right-0 bg-[var(--primary)] text-[var(--primary-foreground)] shadow-lg z-50 transition-opacity duration-300 ${
         hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       aria-hidden={hidden}

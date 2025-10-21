@@ -1,10 +1,35 @@
 import { getAccessToken, invalidateAccessToken } from "./auth";
+import overrides from "@/data/podcast-overrides.json";
 import type { PodcastEpisode, PodcastPlaylist, PodcastAggregatedData } from "../podcasts.types";
 
 const USER_ID = "815775241";
 // src/lib/soundcloud/fetcher.ts
 const MIN_PUBLICATION_DATE = new Date("2018-01-01T00:00:00Z");
 // ou carrément new Date(0) pour tout récupérer
+
+type EpisodeOverride = {
+  tags?: string[];
+};
+
+type PodcastOverrides = {
+  episodes?: Record<string, EpisodeOverride>;
+};
+
+const PODCAST_OVERRIDES: PodcastOverrides = overrides;
+
+function applyEpisodeOverrides(episodes: PodcastEpisode[]): void {
+  const map = PODCAST_OVERRIDES.episodes;
+  if (!map) return;
+
+  episodes.forEach(episode => {
+    const override = map[episode.id];
+    if (!override) return;
+
+    if (override.tags) {
+      episode.tags = [...override.tags];
+    }
+  });
+}
 
 
 function canonicalKey(value: string): string {
@@ -43,6 +68,60 @@ function formatDisplayTag(raw?: string | null): string | null {
   return words.join(" ").replace(/\s+,/g, ",").trim();
 }
 
+const TAG_SYNONYMS: Record<string, string> = {
+  "latin": "Latin Music",
+  "latin music": "Latin Music",
+  "musique latine": "Latin Music",
+  "musica latina": "Latin Music",
+  "brazil": "Brazil",
+  "brasil": "Brazil",
+  "bresil": "Brazil",
+  "brasilia": "Brazil",
+  "musique bresilienne": "Brazil",
+  "field recording": "Field Recording",
+  "field recordings": "Field Recording",
+  "fields recording": "Field Recording",
+  "fields recordings": "Field Recording",
+  "letfield techno": "Leftfield Techno",
+  "letfield": "Leftfield",
+  "leftfield": "Leftfield",
+  "leftfield tehcno": "Leftfield Techno",
+  "gqom": "Gqom",
+  "drum n bass": "Drum & Bass",
+  "drumnbass": "Drum & Bass",
+  "hyper pop": "Hyperpop",
+  "hyperpop": "Hyperpop",
+  "synth pop": "Synth Pop",
+  "synthpop": "Synth Pop",
+  "dub": "Dub",
+};
+
+const TAG_EXCLUSIONS = new Set<string>([
+  "radio beguin",
+  "radio",
+  "beguin",
+  "terrasse",
+  "terrasses",
+  "reveil",
+  "playlist",
+  "live",
+]);
+
+function normalizeDisplayTag(raw?: string | null): string | null {
+  const formatted = formatDisplayTag(raw);
+  if (!formatted) return null;
+
+  const initialKey = canonicalKey(formatted);
+  if (TAG_EXCLUSIONS.has(initialKey)) return null;
+
+  const synonym = TAG_SYNONYMS[initialKey];
+  const value = synonym ?? formatted;
+  const finalKey = canonicalKey(value);
+  if (TAG_EXCLUSIONS.has(finalKey)) return null;
+
+  return value;
+}
+
 interface SCTrack {
   id: number;
   title: string;
@@ -78,7 +157,7 @@ interface SCPlaylist {
   tracks?: SCTrack[];
 }
 
-function parseTagList(raw?: string): string[] {
+function parseTagList(raw?: string, limit = Infinity): string[] {
   if (!raw) return [];
   const tags: string[] = [];
   const regex = /"([^"]+)"|(\S+)/g;
@@ -86,6 +165,7 @@ function parseTagList(raw?: string): string[] {
   while ((match = regex.exec(raw))) {
     const tag = (match[1] || match[2] || "").trim();
     if (tag) tags.push(tag);
+    if (tags.length >= limit) break;
   }
   return tags;
 }
@@ -281,15 +361,16 @@ function transformTrackToEpisode(track: SCTrack, trackData: SCTrack): PodcastEpi
   const tagMap = new Map<string, string>();
 
   const pushTag = (raw?: string | null) => {
-    const formatted = formatDisplayTag(raw);
-    if (!formatted) return;
-    const key = canonicalKey(formatted);
-    if (!key || tagMap.has(key)) return;
-    tagMap.set(key, formatted);
+    if (!raw) return;
+    const cleaned = raw.replace(/^#+/, "").trim();
+    if (!cleaned) return;
+    if (tagMap.has(cleaned)) return;
+    tagMap.set(cleaned, cleaned);
   };
 
-  pushTag(trackData.genre);
-  parseTagList(trackData.tag_list).forEach(tag => pushTag(tag));
+  pushTag(trackData.genre ?? track.genre);
+
+  parseTagList(trackData.tag_list, 3).forEach(tag => pushTag(tag));
 
   return {
     id: String(trackData.id ?? track.id),
@@ -415,15 +496,14 @@ async function buildPlaylists(episodes: PodcastEpisode[]): Promise<PodcastPlayli
 
     const tagMap = new Map<string, string>();
     const pushTag = (raw?: string | null) => {
-    const formatted = formatDisplayTag(raw);
-    if (!formatted) return;
-    const key = canonicalKey(formatted);
-    if (!key || tagMap.has(key)) return;
-    tagMap.set(key, formatted);
-  };
+      const formatted = normalizeDisplayTag(raw);
+      if (!formatted) return;
+      const key = canonicalKey(formatted);
+      if (!key || tagMap.has(key)) return;
+      tagMap.set(key, formatted);
+    };
 
-    pushTag(playlist.genre);
-    parseTagList(playlist.tag_list).forEach(tag => pushTag(tag));
+    parseTagList(playlist.tag_list, 3).forEach(tag => pushTag(tag));
 
     const episodeIds = (playlist.tracks ?? [])
       .map(track => (track?.id ? String(track.id) : null))
@@ -456,6 +536,7 @@ async function buildPlaylists(episodes: PodcastEpisode[]): Promise<PodcastPlayli
 
 export async function fetchAggregatedSoundCloudData(): Promise<PodcastAggregatedData> {
   const episodes = await buildEpisodes();
+  applyEpisodeOverrides(episodes);
   const playlists = await buildPlaylists(episodes);
 
   const tagCounts = new Map<string, number>();

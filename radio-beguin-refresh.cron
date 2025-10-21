@@ -1,2 +1,3 @@
-0 8 * * *  cd /Users/theophiledemolin/radio-beguin && /usr/local/bin/npm run soundcloud:authorize -- --refresh-data >> /tmp/radio-beguin.log 2>&1
-0 20 * * * cd /Users/theophiledemolin/radio-beguin && /usr/local/bin/npm run soundcloud:authorize -- --refresh-data >> /tmp/radio-beguin.log 2>&1
+# Sync automatique SoundCloud désactivé (ancienne taches conservées en commentaire)
+#0 8 * * *  cd /Users/theophiledemolin/radio-beguin && /usr/local/bin/npm run soundcloud:authorize -- --refresh-data >> /tmp/radio-beguin.log 2>&1
+#0 20 * * * cd /Users/theophiledemolin/radio-beguin && /usr/local/bin/npm run soundcloud:authorize -- --refresh-data >> /tmp/radio-beguin.log 2>&1

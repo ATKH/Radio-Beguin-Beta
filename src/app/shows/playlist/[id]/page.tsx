@@ -3,8 +3,8 @@ import { notFound } from "next/navigation";
 import PlaylistClient from "../PlaylistClient";
 import { fetchPodcastEpisodes, fetchPodcastPlaylists } from "@/lib/podcasts";
 
-export default async function PlaylistPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default async function PlaylistPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const playlistId = decodeURIComponent(id);
 
   const [playlists, episodes] = await Promise.all([
