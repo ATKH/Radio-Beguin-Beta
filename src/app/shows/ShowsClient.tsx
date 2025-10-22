@@ -41,7 +41,7 @@ const MOOD_BASE = [
   { id: "talk", label: "Talk", tag: "Talk", image: "/Talk.png" },
   { id: "meditation-core", label: "Meditation Core", tag: "Meditation Core", image: "/Meditation Core.png" },
   { id: "metro-boulot", label: "Métro Boulot", tag: "Métro Boulot", image: "/Metro Boulot.png" },
-  { id: "curiosites", label: "Curiosités", tag: "Curiosités", image: "/Curiosités.png" },
+  { id: "curiosites", label: "Curiosités", tag: "Curiosités", image: "/Curiosites.png" },
   { id: "bain-de-soleil", label: "Bain de Soleil", tag: "Bain de Soleil", image: "/Bain de Soleil.png" },
   { id: "crepuscule", label: "Crépuscule", tag: "Crépuscule", image: "/Singe2.png" },
   { id: "appels-de-phares", label: "Appels de Phares", tag: "Appels de Phares", image: "/Appels de Phares.png" },

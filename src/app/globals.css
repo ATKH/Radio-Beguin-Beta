@@ -379,7 +379,7 @@ input[type="range"].soundcloud-range::-ms-thumb {
 
 /* Curseur cœur pour tous les éléments cliquables */
 a, button, [role="button"], .clickable {
-  cursor: url('/heart.svg') 16 16, pointer;
+  cursor: pointer;
 }
 
 .podcast-card-overlay {

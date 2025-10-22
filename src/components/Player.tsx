@@ -50,9 +50,11 @@ export default function Player() {
   // Restaurer l'intention de lecture après navigation (live ou podcast)
   useEffect(() => {
     if (typeof window === 'undefined' || playbackRestoredRef.current) return;
+    const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    const isReload = navEntry?.type === 'reload';
     try {
       const raw = window.sessionStorage.getItem(PLAYBACK_STORAGE_KEY);
-      if (raw) {
+      if (raw && !isReload) {
         const parsed = JSON.parse(raw) as { isPlaying?: boolean; activePlayer?: 'live' | 'podcast' };
         if (parsed?.isPlaying && (parsed.activePlayer === 'live' || parsed.activePlayer === 'podcast')) {
           resumeIntentRef.current = { shouldResume: true, target: parsed.activePlayer };

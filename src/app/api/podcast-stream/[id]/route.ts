@@ -131,7 +131,6 @@ export async function GET(
     };
 
     let targetUrl = getCachedStreamUrl(id);
-    const usedCachedUrl = Boolean(targetUrl);
     if (!targetUrl) {
       const freshUrl = await tryFreshUrl();
       targetUrl = freshUrl ?? episode.audioUrl;
@@ -142,75 +141,8 @@ export async function GET(
       return NextResponse.json({ url: targetUrl });
     }
 
-    try {
-      const range = req.headers.get("range");
-      const upstream = await fetch(targetUrl, {
-        cache: "no-store",
-        headers: range ? { Range: range } : undefined,
-      });
-
-      const passthroughHeaders = [
-        "accept-ranges",
-        "content-length",
-        "content-range",
-        "content-type",
-        "content-encoding",
-        "content-disposition",
-        "transfer-encoding",
-      ];
-
-      if (!upstream.ok || !upstream.body) {
-        invalidateStreamUrl(id);
-        console.warn(`⚠️ Lecture directe impossible (${upstream.status}) pour ${targetUrl}`);
-
-        if (usedCachedUrl) {
-          const refreshedUrl = await tryFreshUrl();
-          if (refreshedUrl) {
-            setCachedStreamUrl(id, refreshedUrl);
-            targetUrl = refreshedUrl;
-            const retryHeaders = range ? { Range: range } : undefined;
-            const retryUpstream = await fetch(targetUrl, {
-              cache: "no-store",
-              headers: retryHeaders,
-            });
-
-            if (retryUpstream.ok && retryUpstream.body) {
-              const retryResponseHeaders = new Headers();
-              passthroughHeaders.forEach((key) => {
-                const value = retryUpstream.headers.get(key);
-                if (value) retryResponseHeaders.set(key, value);
-              });
-              if (!retryResponseHeaders.has("accept-ranges")) retryResponseHeaders.set("accept-ranges", "bytes");
-              retryResponseHeaders.set("cache-control", "no-store");
-
-              return new NextResponse(retryUpstream.body, {
-                status: retryUpstream.status,
-                headers: retryResponseHeaders,
-              });
-            }
-          }
-        }
-
-        return NextResponse.redirect(targetUrl);
-      }
-
-      const headers = new Headers();
-      passthroughHeaders.forEach((key) => {
-        const value = upstream.headers.get(key);
-        if (value) headers.set(key, value);
-      });
-      if (!headers.has("accept-ranges")) headers.set("accept-ranges", "bytes");
-      headers.set("cache-control", "no-store");
-
-      return new NextResponse(upstream.body, {
-        status: upstream.status,
-        headers,
-      });
-    } catch (error) {
-      invalidateStreamUrl(id);
-      console.warn(`⚠️ Impossible de proxifier ${targetUrl}:`, error);
-      return NextResponse.redirect(targetUrl);
-    }
+    // On redirige le lecteur vers l'URL SoundCloud : Vercel ne stream pas le fichier.
+    return NextResponse.redirect(targetUrl, { status: 302 });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur inconnue";
     return NextResponse.json({ error: message }, { status: 500 });

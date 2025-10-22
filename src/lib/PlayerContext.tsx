@@ -81,7 +81,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (restoredRef.current) return;
-    const stored = loadStoredState();
+    const navEntry = typeof window !== 'undefined' ? (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined) : undefined;
+    const isReload = navEntry?.type === 'reload';
+    const stored = !isReload ? loadStoredState() : null;
     if (stored) {
       if (stored.activePlayer === 'podcast') {
         const revived = reviveEpisode(stored.episode);
@@ -94,6 +96,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       } else {
         setActivePlayer('live');
       }
+    } else {
+      setActivePlayer('live');
     }
     restoredRef.current = true;
   }, []);

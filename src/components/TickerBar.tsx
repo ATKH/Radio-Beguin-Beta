@@ -10,16 +10,15 @@ type TickerBarProps = {
 const REPEAT_COUNT = 4;
 const MONKEY_CLEAN_THRESHOLD = 235;
 
-export default function TickerBar({ text }: TickerBarProps) {
-  const [isGameActive, setIsGameActive] = useState(false);
-  const [monkeyUrl, setMonkeyUrl] = useState<string | null>(null);
+let cachedMonkeyUrl: string | null = null;
+let processingPromise: Promise<string | null> | null = null;
 
-  useEffect(() => {
-    let cancelled = false;
-    if (typeof window === "undefined") {
-      return;
-    }
+const processMonkeyImage = () => {
+  if (typeof window === "undefined") return Promise.resolve(null);
+  if (cachedMonkeyUrl) return Promise.resolve(cachedMonkeyUrl);
+  if (processingPromise) return processingPromise;
 
+  processingPromise = new Promise<string | null>((resolve) => {
     const img = new window.Image();
     img.crossOrigin = "anonymous";
     img.src = "/Singe4.png";
@@ -30,7 +29,11 @@ export default function TickerBar({ text }: TickerBarProps) {
         canvas.width = img.width;
         canvas.height = img.height;
         const ctx = canvas.getContext("2d");
-        if (!ctx) return;
+        if (!ctx) {
+          resolve(null);
+          processingPromise = null;
+          return;
+        }
         ctx.drawImage(img, 0, 0);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
@@ -55,18 +58,43 @@ export default function TickerBar({ text }: TickerBarProps) {
           ctx.putImageData(imageData, 0, 0);
         }
 
-        if (!cancelled) {
-          setMonkeyUrl(canvas.toDataURL("image/png"));
-        }
+        const url = canvas.toDataURL("image/png");
+        cachedMonkeyUrl = url;
+        resolve(url);
       } catch (error) {
         console.error("Impossible de nettoyer l'image du singe", error);
-        if (!cancelled) setMonkeyUrl(null);
+        resolve(null);
+      } finally {
+        processingPromise = null;
       }
     };
 
+    img.onerror = () => {
+      resolve(null);
+      processingPromise = null;
+    };
+  });
+
+  return processingPromise;
+};
+
+export default function TickerBar({ text }: TickerBarProps) {
+  const [isGameActive, setIsGameActive] = useState(false);
+  const [monkeyUrl, setMonkeyUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    processMonkeyImage().then((url) => {
+      if (cancelled) return;
+      if (url) {
+        setMonkeyUrl(url);
+      } else {
+        setMonkeyUrl(null);
+      }
+    });
+
     return () => {
       cancelled = true;
-      img.onload = null;
     };
   }, []);
 
