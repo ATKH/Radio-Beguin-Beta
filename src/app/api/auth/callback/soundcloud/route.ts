@@ -4,7 +4,7 @@ import path from "path";
 
 const CLIENT_ID = process.env.SOUNDCLOUD_CLIENT_ID!;
 const CLIENT_SECRET = process.env.SOUNDCLOUD_CLIENT_SECRET!;
-const REDIRECT_URI = process.env.SOUNDCLOUD_REDIRECT_URI!; // Ex : http://localhost:3000/api/auth/callback/soundcloud
+const CONFIGURED_REDIRECT_URI = process.env.SOUNDCLOUD_REDIRECT_URI; // Ex : http://localhost:3000/api/auth/callback/soundcloud
 
 const tokensFile = path.join(process.cwd(), "src/lib/soundcloud/tokens.json");
 
@@ -12,16 +12,23 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const code = searchParams.get("code");
+    const requestUrl = new URL(req.url);
+    const actualRedirectUri = `${requestUrl.origin}${requestUrl.pathname}`;
 
     if (!code) {
       return NextResponse.json({ error: "Code manquant dans l'URL" }, { status: 400 });
+    }
+    if (CONFIGURED_REDIRECT_URI && CONFIGURED_REDIRECT_URI !== actualRedirectUri) {
+      console.warn(
+        `⚠️ Redirect URI différent entre la configuration (${CONFIGURED_REDIRECT_URI}) et la requête (${actualRedirectUri}). Utilisation de l'URL de la requête.`
+      );
     }
 
     // On échange le code contre un access_token
     const form = new URLSearchParams();
     form.append("client_id", CLIENT_ID);
     form.append("client_secret", CLIENT_SECRET);
-    form.append("redirect_uri", REDIRECT_URI);
+    form.append("redirect_uri", actualRedirectUri);
     form.append("grant_type", "authorization_code");
     form.append("code", code);
 
@@ -34,7 +41,7 @@ export async function GET(req: Request) {
     if (!res.ok) {
       const text = await res.text();
       console.error("Erreur SoundCloud token:", text);
-      return NextResponse.json({ error: "Impossible de récupérer le token" }, { status: 500 });
+      return NextResponse.json({ error: "Impossible de récupérer le token", details: text }, { status: 500 });
     }
 
     const data = await res.json();

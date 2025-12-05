@@ -16,6 +16,7 @@ let clientCredentialsCooldownUntil = 0;
 const TOKEN_ENDPOINT = "https://api.soundcloud.com/oauth2/token";
 
 async function requestAccessToken(refreshToken: string) {
+  console.log("[soundcloud] requesting new access token via refresh…");
   const res = await fetch(TOKEN_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -192,5 +193,4 @@ export function invalidateAccessToken() {
   cachedRefreshToken = readRefreshToken();
   pendingRequest = null;
   clientCredentialsCache = null;
-  staticAccessToken = null;
 }

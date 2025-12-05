@@ -32,7 +32,7 @@ export async function GET(
 
     // Dernier épisode
     const latestEpisode = playlistEpisodes[0];
-    const audioUrl = `/api/podcast-stream/${latestEpisode.id}?ts=${Date.now()}`;
+    const audioUrl = `/api/sc-play/${latestEpisode.id}?ts=${Date.now()}`;
 
     if (wantsJson) {
       return NextResponse.json({

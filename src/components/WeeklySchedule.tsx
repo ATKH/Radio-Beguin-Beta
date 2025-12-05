@@ -3,21 +3,30 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useLocale } from '@/lib/LocaleContext';
+import type { Locale } from '@/lib/LocaleContext';
 
 export type ScheduleSlot = {
   time: string;
   label: string;
   highlight?: boolean;
+  translations?: Partial<Record<Locale, string>>;
+  link?: string;
 };
 
 export type WeeklyScheduleConfig = Record<string, ScheduleSlot[]>;
 
 const DAY_ORDER = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
-function formatDayLabel(date: Date) {
-  const weekday = new Intl.DateTimeFormat('fr-FR', { weekday: 'long' }).format(date);
-  return weekday.charAt(0).toUpperCase() + weekday.slice(1);
-}
+const DAY_TRANSLATIONS: Record<string, { fr: string; en: string }> = {
+  Lundi: { fr: 'Lundi', en: 'Monday' },
+  Mardi: { fr: 'Mardi', en: 'Tuesday' },
+  Mercredi: { fr: 'Mercredi', en: 'Wednesday' },
+  Jeudi: { fr: 'Jeudi', en: 'Thursday' },
+  Vendredi: { fr: 'Vendredi', en: 'Friday' },
+  Samedi: { fr: 'Samedi', en: 'Saturday' },
+  Dimanche: { fr: 'Dimanche', en: 'Sunday' },
+};
 
 function getOrderedDays(schedule: WeeklyScheduleConfig) {
   const ordered = DAY_ORDER.filter(day => (schedule[day] ?? []).length > 0).map(day => ({ day, slots: schedule[day]! }));
@@ -60,13 +69,15 @@ export default function WeeklySchedule({
   schedule: WeeklyScheduleConfig;
   highlightTargets?: Record<string, string>;
 }) {
+  const { locale, t } = useLocale();
   const days = useMemo(() => getOrderedDays(schedule), [schedule]);
-  const initialIndex = useMemo(() => getTodayIndex(days), [days]);
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    setCurrentIndex(initialIndex);
-  }, [initialIndex]);
+    setIsHydrated(true);
+    setCurrentIndex(getTodayIndex(days));
+  }, [days]);
 
   if (days.length === 0) {
     return null;
@@ -74,34 +85,31 @@ export default function WeeklySchedule({
 
   const safeIndex = Math.min(Math.max(currentIndex, 0), days.length - 1);
   const { day, slots } = days[safeIndex];
+  const localizedDayLabel = DAY_TRANSLATIONS[day]?.[locale] ?? day;
 
   const formatDateLabel = (label: string) => {
     const baseDate = new Date();
-    const todayName = formatDayLabel(baseDate);
-    let targetDate: Date | undefined;
+    baseDate.setHours(0, 0, 0, 0);
+    const baseDay = baseDate.getDay(); // 0 = Sunday
+    const offsetToMonday = (baseDay + 6) % 7; // days since Monday
+    const monday = new Date(baseDate);
+    monday.setDate(baseDate.getDate() - offsetToMonday);
 
-    if (label === todayName) {
-      targetDate = baseDate;
-    } else {
-      for (let i = 1; i < 7; i++) {
-        const candidate = new Date(baseDate);
-        candidate.setDate(baseDate.getDate() + i);
-        if (formatDayLabel(candidate) === label) {
-          targetDate = candidate;
-          break;
-        }
-      }
-    }
+    const labelIndex = DAY_ORDER.indexOf(label);
+    if (labelIndex < 0) return localizedDayLabel;
 
-    if (!targetDate) return label;
+    const targetDate = new Date(monday);
+    targetDate.setDate(monday.getDate() + labelIndex);
 
     const formatter = new Intl.DateTimeFormat('fr-FR', {
       day: '2-digit',
       month: '2-digit',
     });
 
-    return `${label} ${formatter.format(targetDate).replace(/\//g, '.')}`;
+    const formattedDate = formatter.format(targetDate).replace(/\//g, '.');
+    return `${localizedDayLabel} ${formattedDate}`;
   };
+  const displayDayLabel = isHydrated ? formatDateLabel(day) : localizedDayLabel;
 
   const goPrev = () => {
     setCurrentIndex(prev => (prev - 1 + days.length) % days.length);
@@ -115,7 +123,7 @@ export default function WeeklySchedule({
     <div className="space-y-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="text-3xl font-bold text-[var(--foreground)]">
-          Programme
+          {t("home.program.title")}
         </h2>
         <div className="flex items-center justify-center gap-3 sm:justify-end">
           <button
@@ -127,7 +135,7 @@ export default function WeeklySchedule({
             <ChevronLeft className="h-4 w-4 text-primary" />
           </button>
           <h3 className="text-lg font-bold uppercase tracking-[0.1em] text-[var(--foreground)] sm:text-xl">
-            {formatDateLabel(day)}
+            {displayDayLabel}
           </h3>
           <button
             type="button"
@@ -147,15 +155,20 @@ export default function WeeklySchedule({
           const playlistId =
             slot.highlight && normalizedShowName
               ? highlightTargets?.[normalizedShowName]
-              : undefined;
+          : undefined;
           const queryValue = baseShowName || slot.label;
           const highlightHref = slot.highlight
-            ? playlistId
-              ? `/shows/playlist/${encodeURIComponent(playlistId)}`
-              : queryValue
-                ? `/shows?query=${encodeURIComponent(queryValue)}`
-                : '/shows'
+            ? slot.link ??
+              (playlistId
+                ? `/shows/playlist/${encodeURIComponent(playlistId)}`
+                : queryValue
+                  ? `/shows?query=${encodeURIComponent(queryValue)}`
+                  : '/shows')
             : null;
+          const isExternalLink = typeof slot.link === 'string' && /^https?:\/\//i.test(slot.link);
+          const displayLabel = slot.translations?.[locale] ?? slot.label;
+          const srLabel = baseShowName || displayLabel;
+          const srPrefix = locale === "en" ? "View show" : "Voir l'émission";
 
           return (
             <li key={`${day}-${slot.time}-${slotIndex}`} className="flex items-baseline justify-between gap-3">
@@ -164,16 +177,18 @@ export default function WeeklySchedule({
                 {slot.highlight && highlightHref ? (
                   <Link
                     href={highlightHref}
+                    target={isExternalLink ? '_blank' : undefined}
+                    rel={isExternalLink ? 'noopener noreferrer' : undefined}
                     className="inline-flex items-center gap-1 font-semibold schedule-highlight hover:underline"
                   >
-                    <span>{slot.label}</span>
+                    <span>{displayLabel}</span>
                     <span aria-hidden="true">↗</span>
                     <span className="sr-only">
-                      {`Voir l'émission ${baseShowName || slot.label}`}
+                      {`${srPrefix} ${srLabel}`}
                     </span>
                   </Link>
                 ) : (
-                  slot.label
+                  displayLabel
                 )}
               </span>
             </li>
@@ -182,7 +197,9 @@ export default function WeeklySchedule({
       </ul>
 
       <div className="mt-4 flex items-center justify-center gap-2 text-xs text-primary/60">
-        {days.map((item, index) => (
+        {days.map((item, index) => {
+          const translatedDay = DAY_TRANSLATIONS[item.day]?.[locale] ?? item.day;
+          return (
           <button
             key={item.day}
             type="button"
@@ -191,9 +208,9 @@ export default function WeeklySchedule({
               index === safeIndex ? '' : 'bg-primary/20 hover:bg-primary/35'
             }`}
             style={index === safeIndex ? { backgroundColor: 'var(--primary)' } : undefined}
-            aria-label={`Voir le programme du ${item.day}`}
+            aria-label={`Voir le programme du ${translatedDay}`}
           />
-        ))}
+        );})}
       </div>
     </div>
   );

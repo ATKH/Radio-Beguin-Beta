@@ -1,17 +1,53 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import MonkeyGameTicker from "@/components/MonkeyGameTicker";
 
 type TickerBarProps = {
-  text: string;
+  text?: string;
+  messages?: string[];
 };
 
 const REPEAT_COUNT = 4;
 const MONKEY_CLEAN_THRESHOLD = 235;
+const THIN_SPACE = "\u2009";
+const LETTER_VARIANTS = ["rise", "drop", "swing-left", "swing-right", "flat"] as const;
+
+type LetterBlueprint =
+  | { kind: "letter"; char: string; variant: typeof LETTER_VARIANTS[number]; index: number }
+  | { kind: "gap"; index: number };
+
+type Segment =
+  | { kind: "message"; key: string; blueprint: LetterBlueprint[] }
+  | { kind: "monkey"; key: string };
 
 let cachedMonkeyUrl: string | null = null;
 let processingPromise: Promise<string | null> | null = null;
+
+const createLetterBlueprint = (value: string): LetterBlueprint[] => {
+  const upper = value.toUpperCase().trim();
+  if (!upper) return [];
+
+  const words = upper.split(/\s+/);
+  const blueprint: LetterBlueprint[] = [];
+  let variantIndex = 0;
+  let globalIndex = 0;
+
+  words.forEach((word, wordIndex) => {
+    Array.from(word).forEach((char) => {
+      const variant = LETTER_VARIANTS[variantIndex % LETTER_VARIANTS.length];
+      blueprint.push({ kind: "letter", char, variant, index: globalIndex++ });
+      variantIndex += 1;
+    });
+
+    if (wordIndex < words.length - 1) {
+      blueprint.push({ kind: "gap", index: globalIndex++ });
+    }
+  });
+
+  return blueprint;
+};
 
 const processMonkeyImage = () => {
   if (typeof window === "undefined") return Promise.resolve(null);
@@ -78,7 +114,7 @@ const processMonkeyImage = () => {
   return processingPromise;
 };
 
-export default function TickerBar({ text }: TickerBarProps) {
+export default function TickerBar({ text, messages }: TickerBarProps) {
   const [isGameActive, setIsGameActive] = useState(false);
   const [monkeyUrl, setMonkeyUrl] = useState<string | null>(null);
 
@@ -98,13 +134,34 @@ export default function TickerBar({ text }: TickerBarProps) {
     };
   }, []);
 
-  const tickerSegments = useMemo(() => {
-    const trimmed = text?.trim();
-    if (!trimmed) {
-      return [];
+  const normalizedMessages = useMemo(() => {
+    if (messages?.length) {
+      return messages.map(message => message.trim()).filter(Boolean);
     }
-    return Array.from({ length: REPEAT_COUNT }, () => trimmed);
-  }, [text]);
+    const trimmed = text?.trim();
+    return trimmed ? [trimmed] : [];
+  }, [messages, text]);
+
+  const baseMessage = normalizedMessages[0] ?? "Radio Béguin";
+
+  const messageBlueprint = useMemo(() => createLetterBlueprint(baseMessage), [baseMessage]);
+
+  const tickerSegments = useMemo<Segment[]>(() => {
+    if (messageBlueprint.length === 0) return [];
+    const segments: Segment[] = [];
+    const effectiveRepeat = Math.max(REPEAT_COUNT, 4);
+
+    for (let repeat = 0; repeat < effectiveRepeat; repeat += 1) {
+      segments.push({ kind: "message", key: `msg-${repeat}`, blueprint: messageBlueprint });
+      segments.push({ kind: "message", key: `msg-gap-${repeat}`, blueprint: [] });
+      segments.push({ kind: "monkey", key: `monkey-${repeat}` });
+      segments.push({ kind: "message", key: `msg-gap-after-${repeat}`, blueprint: [] });
+    }
+
+    return segments;
+  }, [messageBlueprint]);
+
+  const scrollDuration = 200;
 
   return (
     <div className="ticker-gradient text-[var(--ticker-foreground)] border-y-2 border-black relative overflow-hidden">
@@ -117,35 +174,70 @@ export default function TickerBar({ text }: TickerBarProps) {
           />
         ) : (
           <div className="ticker-track flex-1">
-            <span className="ticker-text font-semibold tracking-[0.25em] uppercase text-sm">
-              {tickerSegments.map((segment, index) => (
-                <span key={`segment-${index}`} className="ticker-segment">
-                  <span>{segment}</span>
-                  {index < tickerSegments.length - 1 && (
-                    <span className="ticker-separator" aria-hidden="true">
-                      •
+            <span
+              className="ticker-text font-semibold tracking-[0.25em] uppercase text-sm"
+              style={{ animationDuration: `${scrollDuration}s` }}
+            >
+              {tickerSegments.map(segment => {
+                if (segment.kind === "monkey") {
+                  return (
+                    <span key={segment.key} className="ticker-segment">
+                      <button
+                        type="button"
+                        onClick={() => setIsGameActive(true)}
+                        className="ticker-monkey-button"
+                        aria-label="Lancer le jeu du Singe Béguin"
+                      >
+                        <span className="ticker-monkey">
+                          <Image
+                            src={monkeyUrl ?? "/Singe4.png"}
+                            alt=""
+                            width={36}
+                            height={36}
+                            className="ticker-monkey__image animate-monkey-step"
+                            draggable={false}
+                            unoptimized
+                          />
+                        </span>
+                      </button>
+                      {/* no separator après le singe */}
                     </span>
-                  )}
-                </span>
-              ))}
-              <span className="ticker-separator" aria-hidden="true">
-                •
-              </span>
-              <button
-                type="button"
-                onClick={() => setIsGameActive(true)}
-                className="ticker-monkey-button"
-                aria-label="Lancer le jeu du Singe Béguin"
-              >
-                <span className="ticker-monkey">
-                  <img
-                    src={monkeyUrl ?? "/Singe4.png"}
-                    alt=""
-                    className="ticker-monkey__image animate-monkey-step"
-                    draggable={false}
-                  />
-                </span>
-              </button>
+                  );
+                }
+
+                return (
+                  <span key={segment.key} className="ticker-segment ticker-segment--message">
+                    {segment.blueprint.length === 0 ? (
+                      <span className="ticker-gap-large" aria-hidden="true">
+                        {THIN_SPACE.repeat(16)}
+                      </span>
+                    ) : (
+                      segment.blueprint.map(unit => {
+                        if (unit.kind === "letter") {
+                          return (
+                            <span
+                              key={`${segment.key}-letter-${unit.index}`}
+                              className={`ticker-letter ticker-letter--${unit.variant}`}
+                            >
+                              {unit.char}
+                            </span>
+                          );
+                        }
+
+                        return (
+                          <span
+                            key={`${segment.key}-gap-${unit.index}`}
+                            className="ticker-spacing"
+                            aria-hidden="true"
+                          >
+                            {THIN_SPACE.repeat(4)}
+                          </span>
+                        );
+                      })
+                    )}
+                  </span>
+                );
+              })}
             </span>
           </div>
         )}

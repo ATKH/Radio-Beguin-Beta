@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import type { MouseEvent } from "react";
 import { cn } from "@/lib/utils";
+import { useLocale } from "@/lib/LocaleContext";
 
 interface BackLinkProps {
   href?: string;
@@ -11,9 +12,11 @@ interface BackLinkProps {
   className?: string;
 }
 
-export default function BackLink({ href = "/shows", label = "retour", className }: BackLinkProps) {
+export default function BackLink({ href = "/shows", label, className }: BackLinkProps) {
   const router = useRouter();
+  const { locale } = useLocale();
   const FALLBACK_QUERY_KEY = "shows:last-query";
+  const resolvedLabel = label ?? (locale === "en" ? "Back" : "Retour");
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -52,10 +55,10 @@ export default function BackLink({ href = "/shows", label = "retour", className 
         "inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
         className
       )}
-      aria-label={label}
+      aria-label={resolvedLabel}
     >
       <ArrowLeft className="h-3.5 w-3.5" aria-hidden="true" />
-      <span>{label}</span>
+      <span>{resolvedLabel}</span>
     </button>
   );
 }

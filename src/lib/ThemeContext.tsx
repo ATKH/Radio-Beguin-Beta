@@ -120,26 +120,21 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.style.setProperty("--primary-foreground", primaryForeground);
 
     if (isDark) {
-      const prismViolet = mixColor(palette.accent, "#7f5af0", 0.45);
-      const cobaltPulse = mixColor(palette.primary, "#00b7ff", 0.55);
-      const neonFuchsia = mixColor(palette.accent, "#ff6ec7", 0.55);
-      const midnightTeal = mixColor(palette.primary, "#0f766e", 0.5);
+      const coolViolet = mixColor(palette.accent, "#6366f1", 0.45);
+      const oceanBlue = mixColor(palette.primary, "#38bdf8", 0.4);
+      const softMagenta = mixColor(palette.accent, "#f472b6", 0.35);
+      const indigoNight = mixColor(palette.primary, "#312e81", 0.35);
+      const glowAccent = mixColor(palette.accent, "#a5f3fc", 0.3);
 
-      const darkStops = [
-        adjustAlpha(prismViolet, 0.82),
-        adjustAlpha(cobaltPulse, 0.78),
-        adjustAlpha(neonFuchsia, 0.8),
-        adjustAlpha(midnightTeal, 0.85),
-      ];
-      root.style.setProperty("--ticker-from", darkStops[0]);
-      root.style.setProperty("--ticker-mid", darkStops[1]);
-      root.style.setProperty("--ticker-to", darkStops[2]);
-      root.style.setProperty("--ticker-end", darkStops[3]);
-      root.style.setProperty("--ticker-highlight", adjustAlpha("#6fffe9", 0.28));
-      root.style.setProperty("--ticker-foreground", "#f8f8f8");
-      const vivid = mixColor(palette.primary, "#8affff", 0.35);
+      root.style.setProperty("--ticker-from", adjustAlpha(coolViolet, 0.85));
+      root.style.setProperty("--ticker-mid", adjustAlpha(oceanBlue, 0.8));
+      root.style.setProperty("--ticker-to", adjustAlpha(softMagenta, 0.78));
+      root.style.setProperty("--ticker-end", adjustAlpha(indigoNight, 0.82));
+      root.style.setProperty("--ticker-highlight", adjustAlpha(glowAccent, 0.24));
+      root.style.setProperty("--ticker-foreground", "#f8f9ff");
+      const vivid = mixColor(palette.primary, "#9da5ff", 0.4);
       root.style.setProperty("--schedule-highlight", vivid);
-      root.style.setProperty("--schedule-highlight-glow", adjustAlpha(vivid, 0.55));
+      root.style.setProperty("--schedule-highlight-glow", adjustAlpha(vivid, 0.45));
     } else {
       root.style.setProperty("--ticker-from", adjustAlpha(palette.ticker[0], 0.92));
       root.style.setProperty("--ticker-mid", adjustAlpha(palette.ticker[1], 0.92));

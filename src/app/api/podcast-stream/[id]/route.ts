@@ -1,11 +1,10 @@
 // src/app/api/podcast-stream/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { fetchPodcastEpisodes } from "@/lib/podcasts";
-import { getAccessToken, invalidateAccessToken } from "@/lib/soundcloud/auth";
 import type { PodcastEpisode } from "@/lib/podcasts";
+import { getAccessToken, invalidateAccessToken } from "@/lib/soundcloud/auth";
 
-const EPISODE_CACHE_TTL = 1000 * 60 * 5; // 5 minutes
-const STREAM_URL_CACHE_TTL = 1000 * 60 * 5;
+const EPISODE_CACHE_TTL = 1000 * 60 * 5;
 
 type EpisodeCacheEntry = {
   expiresAt: number;
@@ -17,37 +16,99 @@ const episodeCache: EpisodeCacheEntry = {
   map: new Map(),
 };
 
-const streamUrlCache = new Map<string, { url: string; expiresAt: number }>();
-
-async function getEpisodeById(id: string) {
+async function getEpisode(id: string) {
   const now = Date.now();
   if (episodeCache.expiresAt < now) {
     const episodes = await fetchPodcastEpisodes();
-    episodeCache.map = new Map(
-      episodes.map((episode) => [episode.id, episode])
-    );
+    episodeCache.map = new Map(episodes.map((ep) => [ep.id, ep]));
     episodeCache.expiresAt = now + EPISODE_CACHE_TTL;
   }
-
   return episodeCache.map.get(id);
 }
 
-function getCachedStreamUrl(id: string) {
-  const entry = streamUrlCache.get(id);
-  if (!entry) return null;
-  if (entry.expiresAt < Date.now()) {
-    streamUrlCache.delete(id);
+async function fetchTrackInfo(trackId: string, attempt = 0) {
+  const url = new URL(`https://api.soundcloud.com/tracks/${trackId}`);
+  const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
+  if (clientId && !url.searchParams.has("client_id")) {
+    url.searchParams.set("client_id", clientId);
+  }
+
+  const headers: Record<string, string> = {};
+  try {
+    const token = await getAccessToken();
+    if (token) {
+      headers.Authorization = `OAuth ${token}`;
+    }
+  } catch (error) {
+    console.warn("⚠️ fetchTrackInfo: impossible de récupérer un token:", error);
+  }
+
+  console.log("[fetchTrackInfo] Authorization header present:", Boolean(headers.Authorization));
+  const res = await fetch(url, { headers, cache: "no-store" });
+
+  if ((res.status === 401 || res.status === 403) && attempt < 1) {
+    invalidateAccessToken();
+    return fetchTrackInfo(trackId, attempt + 1);
+  }
+
+  if (!res.ok) {
+    console.warn("⚠️ fetchTrackInfo échoue:", trackId, res.status, await res.text());
     return null;
   }
-  return entry.url;
+
+  return res.json() as Promise<{ stream_url?: string | null; sharing?: string }>;
 }
 
-function setCachedStreamUrl(id: string, url: string) {
-  streamUrlCache.set(id, { url, expiresAt: Date.now() + STREAM_URL_CACHE_TTL });
-}
+async function streamTrack(
+  req: NextRequest,
+  streamUrl: string,
+  attempt = 0
+): Promise<Response | NextResponse> {
+  const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
+  const url = new URL(streamUrl);
+  if (clientId && !url.searchParams.has("client_id")) {
+    url.searchParams.set("client_id", clientId);
+  }
 
-function invalidateStreamUrl(id: string) {
-  streamUrlCache.delete(id);
+  const headers: Record<string, string> = {};
+  const range = req.headers.get("range");
+  if (range) headers.Range = range;
+
+  try {
+    const token = await getAccessToken();
+    if (token) headers.Authorization = `OAuth ${token}`;
+  } catch (error) {
+    console.warn("⚠️ streamTrack: impossible de récupérer un token:", error);
+  }
+
+  console.log("[streamTrack] Authorization header present:", Boolean(headers.Authorization));
+  const upstream = await fetch(url, { headers, cache: "no-store" });
+
+  if ((upstream.status === 401 || upstream.status === 403) && attempt < 1) {
+    invalidateAccessToken();
+    return streamTrack(req, streamUrl, attempt + 1);
+  }
+
+  if (!upstream.body) {
+    return NextResponse.json({ error: "Flux introuvable" }, { status: 502 });
+  }
+
+  if (!upstream.ok && upstream.status !== 206) {
+    const body = await upstream.text().catch(() => "");
+    return NextResponse.json({ error: body || "SoundCloud stream error" }, { status: upstream.status });
+  }
+
+  const responseHeaders = new Headers();
+  ["content-type", "content-length", "content-range", "accept-ranges"].forEach((key) => {
+    const value = upstream.headers.get(key);
+    if (value) responseHeaders.set(key, value);
+  });
+  responseHeaders.set("cache-control", "no-store");
+
+  return new Response(upstream.body, {
+    status: upstream.status,
+    headers: responseHeaders,
+  });
 }
 
 export async function GET(
@@ -59,90 +120,24 @@ export async function GET(
   const wantsJson = requestUrl.searchParams.get("format") === "json";
 
   try {
-    const episode = await getEpisodeById(id);
-
-    if (!episode || episode.sharing !== "public" || !episode.audioUrl) {
-      return NextResponse.json(
-        { error: "Episode not found or private" },
-        { status: 404 }
-      );
+    const episode = await getEpisode(id);
+    if (!episode || episode.sharing === "private") {
+      return NextResponse.json({ error: "Episode not found or private" }, { status: 404 });
     }
 
-    const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
-    const trackAuthorization = episode.trackAuthorization ?? undefined;
-
-    const streamProtocols: string[] = [
-      "http_mp3_320_url",
-      "http_mp3_192_url",
-      "http_mp3_128_url",
-      "http_mp3_64_url",
-      "http_mp3_32_url",
-      "hls_mp3_320_url",
-      "hls_mp3_192_url",
-      "hls_mp3_128_url",
-      "hls_mp3_64_url",
-      "hls_mp3_32_url",
-    ];
-
-    const pickUrl = (data?: Record<string, string | undefined> | null) => {
-      if (!data) return null;
-      for (const key of streamProtocols) {
-        const candidate = data[key];
-        if (candidate) return candidate;
-      }
-      return null;
-    };
-
-    const fetchStreams = async (withAuth: boolean) => {
-      const apiUrl = new URL(`https://api.soundcloud.com/i1/tracks/${id}/streams`);
-      if (!withAuth && clientId) apiUrl.searchParams.set("client_id", clientId);
-      if (trackAuthorization) apiUrl.searchParams.set("track_authorization", trackAuthorization);
-
-      const headers: Record<string, string> = {};
-      if (withAuth) {
-        const accessToken = await getAccessToken();
-        headers.Authorization = `OAuth ${accessToken}`;
-      }
-
-      const res = await fetch(apiUrl, { headers, cache: "no-store" });
-
-      if (withAuth && (res.status === 401 || res.status === 403)) {
-        invalidateAccessToken();
-        return { retry: true, data: null } as const;
-      }
-
-      if (!res.ok) return { retry: false, data: null } as const;
-
-      const data = (await res.json()) as Record<string, string | undefined>;
-      return { retry: false, data } as const;
-    };
-
-    const tryFreshUrl = async () => {
-      const firstAttempt = await fetchStreams(false);
-      if (firstAttempt.data) return pickUrl(firstAttempt.data);
-
-      for (let i = 0; i < 2; i++) {
-        const result = await fetchStreams(true);
-        if (result.retry) continue;
-        if (result.data) return pickUrl(result.data);
-      }
-
-      return null;
-    };
-
-    let targetUrl = getCachedStreamUrl(id);
-    if (!targetUrl) {
-      const freshUrl = await tryFreshUrl();
-      targetUrl = freshUrl ?? episode.audioUrl;
-      if (freshUrl) setCachedStreamUrl(id, freshUrl);
+    const trackInfo = await fetchTrackInfo(id);
+    if (!trackInfo?.stream_url) {
+      return NextResponse.json({ error: "SoundCloud stream_url missing" }, { status: 502 });
     }
 
     if (wantsJson) {
-      return NextResponse.json({ url: targetUrl });
+      return NextResponse.json({
+        url: `/api/sc-play/${id}?ts=${Date.now()}`,
+        protocol: "progressive",
+      });
     }
 
-    // On redirige le lecteur vers l'URL SoundCloud : Vercel ne stream pas le fichier.
-    return NextResponse.redirect(targetUrl, { status: 302 });
+    return streamTrack(req, trackInfo.stream_url);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Erreur inconnue";
     return NextResponse.json({ error: message }, { status: 500 });

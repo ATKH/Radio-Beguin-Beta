@@ -60,7 +60,7 @@ export default function PlaylistClient({ playlist, episodes }: PlaylistClientPro
   const latestEpisode = episodes[0]; // 🔥 dernier épisode
 
   const handlePlay = (episode: PodcastEpisode) => {
-    const audioUrl = `/api/podcast-stream/${episode.id}?ts=${Date.now()}`;
+    const audioUrl = `/api/sc-play/${episode.id}?ts=${Date.now()}`;
     playPodcast({ ...episode, audioUrl, streamProtocol: "progressive" });
   };
 

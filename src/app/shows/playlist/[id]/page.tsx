@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import PlaylistClient from "../PlaylistClient";
 import { fetchPodcastEpisodes, fetchPodcastPlaylists } from "@/lib/podcasts";
+import type { PodcastEpisode } from "@/lib/podcasts";
 
 export default async function PlaylistPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -17,17 +18,8 @@ export default async function PlaylistPage({ params }: { params: Promise<{ id: s
 
   const episodeMap = new Map(episodes.map((ep) => [ep.id, ep]));
   const playlistEpisodes = playlist.episodeIds
-    .map((epId) => {
-      const ep = episodeMap.get(epId);
-      if (!ep) return null;
-
-      return {
-        ...ep,
-        audioUrl: `/api/podcast-stream/${ep.id}?ts=${Date.now()}`, // ✅ proxy comme pour PlayerContext
-        streamProtocol: "progressive" as const,
-      };
-    })
-    .filter((ep): ep is NonNullable<typeof ep> => Boolean(ep));
+    .map((epId) => episodeMap.get(epId))
+    .filter((ep): ep is PodcastEpisode => Boolean(ep));
 
   return <PlaylistClient playlist={playlist} episodes={playlistEpisodes} />;
 }

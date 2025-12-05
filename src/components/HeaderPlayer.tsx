@@ -18,7 +18,7 @@ export function Header() {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="bg-white sticky top-0 z-50 border-b border-primary/20">
+    <header className="bg-[var(--background)] sticky top-0 z-50 border-b border-primary/20">
       <div className="container mx-auto px-4 h-[70px] flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <img src="/logo.svg" alt="Radio Béguin" className="h-12 w-auto" />
@@ -59,7 +59,7 @@ export function Header() {
       </div>
 
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-primary/20">
+        <div className="md:hidden bg-[var(--background)]/90 border-t border-primary/20">
           <nav className="container mx-auto px-4 py-4 flex flex-col space-y-4">
             {['Live', 'Programme', 'Shows', 'À propos'].map((item) => (
               <Link
@@ -144,7 +144,7 @@ export function SoundCloudPlayer({ episode, onClose, hidden = false }: SoundClou
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 bg-white border-t border-primary/20 shadow-lg z-50 transition-opacity duration-300 ${
+      className={`fixed bottom-0 left-0 right-0 bg-[var(--background)] border-t border-primary/20 shadow-lg z-50 transition-opacity duration-300 ${
         hidden ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       style={{ height: hidden ? 0 : 'auto', overflow: 'hidden' }}

@@ -32,7 +32,7 @@ type StoredPlayerState = StoredPayload | null;
 
 const serializeEpisode = (episode: PodcastEpisode | null): StoredEpisode => {
   if (!episode) return null;
-  const { audioUrl: _ignored, ...rest } = episode;
+  const { audioUrl: _ignoredAudio, playRequestId: _ignoredRequest, ...rest } = episode;
   return rest;
 };
 
@@ -42,7 +42,7 @@ const reviveEpisode = (raw: StoredEpisode): PodcastEpisode | null => {
   return {
     ...rest,
     streamProtocol: streamProtocol ?? 'progressive',
-    audioUrl: `/api/podcast-stream/${raw.id}?ts=${Date.now()}`,
+    audioUrl: `/api/sc-play/${raw.id}?ts=${Date.now()}`,
   };
 };
 
@@ -74,6 +74,24 @@ const persistState = (state: StoredPlayerState) => {
   }
 };
 
+const isReloadNavigation = () => {
+  if (typeof window === 'undefined') return false;
+  const navEntries = typeof performance.getEntriesByType === 'function'
+    ? performance.getEntriesByType('navigation')
+    : [];
+  if (navEntries && navEntries.length > 0) {
+    const entry = navEntries[0] as PerformanceNavigationTiming;
+    if (entry && 'type' in entry) {
+      return entry.type === 'reload';
+    }
+  }
+  const legacyNav = (performance as Performance & { navigation?: PerformanceNavigation }).navigation;
+  if (legacyNav && typeof legacyNav.type === 'number' && typeof legacyNav.TYPE_RELOAD === 'number') {
+    return legacyNav.type === legacyNav.TYPE_RELOAD;
+  }
+  return false;
+};
+
 export function PlayerProvider({ children }: { children: ReactNode }) {
   const [currentEpisode, setCurrentEpisode] = useState<PodcastEpisode | null>(null);
   const [activePlayer, setActivePlayer] = useState<'live' | 'podcast'>('live');
@@ -81,9 +99,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (restoredRef.current) return;
-    const navEntry = typeof window !== 'undefined' ? (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined) : undefined;
-    const isReload = navEntry?.type === 'reload';
+    const isReload = isReloadNavigation();
     const stored = !isReload ? loadStoredState() : null;
+
     if (stored) {
       if (stored.activePlayer === 'podcast') {
         const revived = reviveEpisode(stored.episode);
@@ -121,11 +139,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     }
 
     // ⚡️ On passe toujours par notre API interne qui gère les tokens SoundCloud
-    const playbackUrl = `/api/podcast-stream/${episode.id}?ts=${Date.now()}`;
+    const playbackUrl = `/api/sc-play/${episode.id}?ts=${Date.now()}`;
+    const playRequestId = Date.now();
 
     const wrappedEpisode: PodcastEpisode = {
       ...episode,
       audioUrl: playbackUrl,
+      playRequestId,
     };
 
     setCurrentEpisode(wrappedEpisode);

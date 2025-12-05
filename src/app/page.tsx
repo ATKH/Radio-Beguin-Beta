@@ -7,58 +7,73 @@ import SelectionSection from "@/components/SelectionSection";
 import { fetchPodcastPlaylists } from "@/lib/podcasts";
 import type { PodcastEpisode } from "@/lib/podcasts";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 900;
+
+const SCHEDULE_LABELS = {
+  night: { fr: "Playlist de la nuit", en: "Night time playlist" },
+  ambient: { fr: "Playlist méditative", en: "Meditative playlist" },
+  morning: { fr: "Playlist plutôt tranquille", en: "Rather calm playlist" },
+  day: { fr: "Playlist un peu moins tranquille", en: "Slightly less calm playlist" },
+  evening: { fr: "Playlist un peu plus club", en: "Club-oriented playlist" },
+} satisfies Record<string, { fr: string; en: string }>;
+
+const makeSlot = (time: string, key: keyof typeof SCHEDULE_LABELS) => ({
+  time,
+  label: SCHEDULE_LABELS[key].fr,
+  translations: { en: SCHEDULE_LABELS[key].en },
+});
 
 const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
   Lundi: [
-    { time: "00h", label: "Playlist Nuit" },
-    { time: "05h", label: "Playlist Ambient" },
-    { time: "07h", label: "Playlist Matin" },
-    { time: "13h", label: "Playlist Journée" },
+    makeSlot("00h", "night"),
+    makeSlot("05h", "ambient"),
+    makeSlot("07h", "morning"),
+    makeSlot("13h", "day"),
   ],
   Mardi: [
-    { time: "00h", label: "Playlist Nuit" },
-    { time: "05h", label: "Playlist Ambient" },
-    { time: "07h", label: "Playlist Matin" },
-    { time: "13h", label: "Playlist Journée" },
+    makeSlot("00h", "night"),
+    makeSlot("05h", "ambient"),
+    makeSlot("07h", "morning"),
+    makeSlot("13h", "day"),
   ],
   Mercredi: [
-    { time: "00h", label: "Playlist Nuit" },
-    { time: "05h", label: "Playlist Ambient" },
-    { time: "07h", label: "Playlist Matin" },
-    { time: "13h", label: "Playlist Journée" },
+    makeSlot("00h", "night"),
+    makeSlot("05h", "ambient"),
+    makeSlot("07h", "morning"),
+    makeSlot("13h", "day"),
   ],
   Jeudi: [
-    { time: "00h", label: "Playlist Nuit" },
-    { time: "05h", label: "Playlist Ambient" },
-    { time: "07h", label: "Playlist Matin" },
-    { time: "13h", label: "Playlist Journée" },
-    { time: "19h", label: "Carnavália Sounds • DJ âMy B. invite Discolada", highlight: true },
-    { time: "21h", label: "Playlist Soirée" },  ],
+    makeSlot("00h", "night"),
+    makeSlot("05h", "ambient"),
+    makeSlot("07h", "morning"),
+    makeSlot("13h", "day"),
+    makeSlot("21h", "evening"),
+  ],
   Vendredi: [
-    { time: "00h", label: "Playlist Soirée" },
-    { time: "01h", label: "Playlist Nuit" },
-    { time: "05h", label: "Playlist Ambient" },
-    { time: "07h", label: "Playlist Matin" },
-    { time: "13h", label: "Playlist Journée" },
-    { time: "21h", label: "Playlist Soirée" },
+    makeSlot("00h", "evening"),
+    makeSlot("01h", "night"),
+    makeSlot("05h", "ambient"),
+    makeSlot("07h", "morning"),
+    makeSlot("13h", "day"),
+    makeSlot("21h", "evening"),
   ],
   Samedi: [
-    { time: "00h", label: "Playlist Soirée" },
-    { time: "01h", label: "Playlist Nuit" },
-    { time: "05h", label: "Playlist Ambient" },
-    { time: "07h", label: "Playlist Matin" },
-    { time: "13h", label: "Playlist Journée" },
+    makeSlot("00h", "evening"),
+    makeSlot("01h", "night"),
+    makeSlot("05h", "ambient"),
+    makeSlot("07h", "morning"),
+    makeSlot("13h", "day"),
     { time: "14h", label: "Ça Jacte • Clarisse Teyssandier", highlight: true },
-    { time: "21h", label: "Playlist Soirée" },
+    makeSlot("15h", "day"),
+    makeSlot("21h", "evening"),
   ],
   Dimanche: [
-    { time: "00h", label: "Playlist Soirée" },
-    { time: "01h", label: "Playlist Nuit" },
-    { time: "05h", label: "Playlist Ambient" },
-    { time: "08h", label: "Playlist Matin" },
-    { time: "13h", label: "Playlist Journée" },
-    { time: "15h", label: "Événement : Mangez Bougez au Grrrd Zero"},
+    makeSlot("00h", "evening"),
+    makeSlot("01h", "night"),
+    makeSlot("05h", "ambient"),
+    makeSlot("08h", "morning"),
+    makeSlot("13h", "day"),
+    makeSlot("18h", "morning"),
   ],
 };
 

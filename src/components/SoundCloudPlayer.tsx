@@ -10,6 +10,7 @@ interface SoundCloudPlayerProps {
 }
 
 const PLAYER_HEIGHT = 70;
+const USE_SC_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
 
 export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -21,21 +22,15 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
 
   // Charger et lancer automatiquement le podcast via notre API proxy
   useEffect(() => {
+    if (USE_SC_EMBED) return;
     const audio = audioRef.current;
     if (!audio || !currentEpisode?.id || activePlayer !== 'podcast') return;
 
     const loadStream = async () => {
       try {
-        // Appel vers ton API proxy
-        const res = await fetch(`/api/podcast-stream/${currentEpisode.id}?format=json`);
-        const data = await res.json();
-
-        if (!data.url) {
-          console.warn("Pas d’URL de stream trouvée pour", currentEpisode.id);
-          return;
-        }
-
-        audio.src = data.url;
+        const ts = Date.now();
+        const streamUrl = `/api/sc-play/${currentEpisode.id}?ts=${ts}`;
+        audio.src = streamUrl;
         audio.load();
         setProgress(0);
         setDuration(0);
@@ -53,6 +48,7 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
 
   // Durée totale
   useEffect(() => {
+    if (USE_SC_EMBED) return;
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -63,6 +59,7 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
 
   // Progression
   useEffect(() => {
+    if (USE_SC_EMBED) return;
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -74,6 +71,7 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
   const togglePlay = () => {
     const audio = audioRef.current;
     if (!audio) return;
+    if (USE_SC_EMBED) return;
 
     if (isPlaying) {
       audio.pause();
@@ -91,7 +89,7 @@ export default function SoundCloudPlayer({ hidden = false }: SoundCloudPlayerPro
     setProgress(newTime);
   };
 
-  if (!currentEpisode?.id || activePlayer !== 'podcast') return null;
+  if (!currentEpisode?.id || activePlayer !== 'podcast' || USE_SC_EMBED) return null;
 
   return (
     <div

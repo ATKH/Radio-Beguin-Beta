@@ -1,16 +1,20 @@
+import 'tsconfig-paths/register';
 import { config } from 'dotenv';
 config({ path: '.env.local', override: true });
 import express from 'express';
 import fetch from 'node-fetch';
 import path from 'path';
 import fs from 'fs';
+import { mkdir, writeFile } from 'fs/promises';
 import { spawn } from 'child_process';
+import { fetchAggregatedSoundCloudData } from '../src/lib/soundcloud/fetcher';
 
 const CLIENT_ID = process.env.SOUNDCLOUD_CLIENT_ID;
 const CLIENT_SECRET = process.env.SOUNDCLOUD_CLIENT_SECRET;
 const DEFAULT_REDIRECT_URI = 'http://localhost:3001/soundcloud/callback';
 const REDIRECT_URI = process.env.SOUNDCLOUD_REDIRECT_URI ?? DEFAULT_REDIRECT_URI;
 const PORT = Number(new URL(REDIRECT_URI).port || 3001);
+const REQUEST_SCOPE = process.env.SOUNDCLOUD_SCOPE ?? 'non-expiring';
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
   console.error('❌ SOUNDCLOUD_CLIENT_ID et SOUNDCLOUD_CLIENT_SECRET doivent être définis dans .env.local');
@@ -102,23 +106,16 @@ function writeTokensJson(refreshToken: string) {
 }
 
 async function regenerateCache() {
-  return new Promise<void>((resolve, reject) => {
-    const cmd = spawn('node', ['scripts/debug-soundcloud.cjs'], {
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        DOTENV_CONFIG_PATH: '.env.local',
-      },
-    });
-
-    cmd.on('exit', code => {
-      if (code === 0) {
-        resolve();
-      } else {
-        reject(new Error(`scripts/debug-soundcloud.cjs s'est terminé avec le code ${code}`));
-      }
-    });
-  });
+  try {
+    const data = await fetchAggregatedSoundCloudData();
+    const outputDir = path.join(process.cwd(), 'src/data');
+    await mkdir(outputDir, { recursive: true });
+    const outputPath = path.join(outputDir, 'podcasts.json');
+    await writeFile(outputPath, JSON.stringify(data, null, 2), 'utf8');
+    console.log(`✅ Données podcasts mises à jour : ${outputPath}`);
+  } catch (error) {
+    console.error('❌ Impossible de régénérer le cache SoundCloud:', error);
+  }
 }
 
 async function main() {
@@ -127,7 +124,7 @@ async function main() {
   const authUrl = new URL('https://soundcloud.com/connect');
   authUrl.searchParams.set('client_id', CLIENT_ID!);
   authUrl.searchParams.set('response_type', 'code');
-  authUrl.searchParams.set('scope', 'playback');
+  authUrl.searchParams.set('scope', REQUEST_SCOPE);
   authUrl.searchParams.set('redirect_uri', REDIRECT_URI);
 
   console.log('ℹ️  Serveur de callback SoundCloud en cours de démarrage...');

@@ -8,6 +8,7 @@ import { Play } from "lucide-react";
 import BackLink from "@/components/BackLink";
 import type { PodcastEpisode, PodcastPlaylist } from "@/lib/podcasts";
 import { usePlayer } from "@/lib/PlayerContext";
+import { useLocale } from "@/lib/LocaleContext";
 
 type ShowClientProps = {
   episode: PodcastEpisode;
@@ -54,6 +55,7 @@ const shouldHideTag = (tag: string) => {
 
 export default function ShowClient({ episode, recommended = [], parentPlaylist = null }: ShowClientProps) {
   const { playPodcast } = usePlayer();
+  const { locale } = useLocale();
 
   // ⚡ Debug utile pour confirmer que l’épisode a bien une URL jouable
   console.log("🎧 Episode chargé dans ShowClient:", episode);
@@ -133,14 +135,14 @@ export default function ShowClient({ episode, recommended = [], parentPlaylist =
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-primary hover:underline"
           >
-            <span>Écouter sur SoundCloud</span>
+            <span>{locale === "en" ? "Listen on SoundCloud" : "Écouter sur SoundCloud"}</span>
           </a>
         </div>
       </div>
       {recommended.length > 0 && (
         <section className="border-t border-primary/20 pt-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-primary">Émissions à explorer</h2>
+            <h2 className="text-lg font-semibold text-primary">{locale === "en" ? "Explore" : "Explorer"}</h2>
             <Button
               variant="ghost"
               size="sm"
@@ -148,7 +150,7 @@ export default function ShowClient({ episode, recommended = [], parentPlaylist =
               className="text-xs font-semibold uppercase tracking-[0.25em] text-primary hover:text-primary/80"
             >
               <Link href={parentPlaylist ? `/shows/playlist/${encodeURIComponent(parentPlaylist.id)}` : '/shows'}>
-                Tout voir
+                {locale === "en" ? "View all" : "Tout voir"}
               </Link>
             </Button>
           </div>

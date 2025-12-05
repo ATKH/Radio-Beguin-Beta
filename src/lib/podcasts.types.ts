@@ -10,6 +10,7 @@ export interface PodcastEpisode {
   streamProtocol?: "progressive" | "hls";
   sharing?: "public" | "private";
   trackAuthorization?: string | null;
+  playRequestId?: number;
 }
 
 export interface PodcastPlaylist {

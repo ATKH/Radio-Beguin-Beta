@@ -5,13 +5,17 @@
 
 /* Couleurs principales */
 :root {
+  color-scheme: light;
   --primary: #111111;
   --primary-hover: #1f1f1f;
   --primary-foreground: #f5f5f5;
   --foreground: #0a0a0a;
   --foreground-strong: #060607;
   --muted-foreground: #4f4f59;
-  --background: #ffffff;
+  --background: #fffdfc;
+  --surface: #fffcf8;
+  --surface-muted: rgba(255, 252, 247, 0.92);
+  --surface-strong: rgba(255, 252, 247, 0.97);
   --border: rgba(109, 40, 217, 0.25);
   --muted: rgba(109, 40, 217, 0.08);
   --white: #ffffff;
@@ -22,13 +26,17 @@
 }
 
 .theme-light {
+  color-scheme: light;
   --primary: #111111;
   --primary-hover: #1f1f1f;
   --primary-foreground: #f5f5f5;
   --foreground: #0a0a0a;
   --foreground-strong: #060607;
   --muted-foreground: #4f4f59;
-  --background: #ffffff;
+  --background: #fffdfc;
+  --surface: #fffcf8;
+  --surface-muted: rgba(255, 252, 247, 0.92);
+  --surface-strong: rgba(255, 252, 247, 0.97);
   --border: rgba(109, 40, 217, 0.25);
   --muted: rgba(109, 40, 217, 0.08);
   --white: #ffffff;
@@ -39,6 +47,7 @@
 }
 
 .theme-dark {
+  color-scheme: dark;
   --primary: #f5f5f5;
   --primary-hover: #e1e1e1;
   --primary-foreground: #080808;
@@ -46,13 +55,20 @@
   --foreground-strong: #f4f4f5;
   --muted-foreground: #a1a1aa;
   --background: #050505;
+  --surface: #080808;
+  --surface-muted: rgba(8, 8, 8, 0.86);
+  --surface-strong: rgba(8, 8, 8, 0.92);
   --border: rgba(255, 255, 255, 0.15);
   --muted: rgba(255, 255, 255, 0.08);
   --white: #080808;
   --range-bg: rgba(255, 255, 255, 0.25);
-  --ticker-highlight: rgba(111, 255, 233, 0.28);
-  --schedule-highlight: #f5f5f5;
-  --schedule-highlight-glow: rgba(245, 245, 245, 0.35);
+  --ticker-from: rgba(88, 67, 163, 0.85);
+  --ticker-mid: rgba(52, 102, 178, 0.82);
+  --ticker-to: rgba(66, 128, 163, 0.8);
+  --ticker-end: rgba(92, 78, 168, 0.83);
+  --ticker-highlight: rgba(148, 233, 255, 0.22);
+  --schedule-highlight: #e7e7ff;
+  --schedule-highlight-glow: rgba(135, 171, 255, 0.28);
 }
 
 /* Styles globaux */
@@ -102,6 +118,62 @@
     z-index: -2;
     background: radial-gradient(ellipse at center, var(--ticker-highlight, rgba(255, 255, 255, 0.55)), transparent 70%);
     mix-blend-mode: screen;
+  }
+
+  .ticker-segment--message {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .ticker-letter {
+    display: inline-block;
+    font-weight: 700;
+    margin: 0 0.45rem;
+    letter-spacing: 0.02rem;
+    transform-origin: center;
+  }
+
+  .ticker-spacing {
+    display: inline-block;
+    width: 3rem;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .ticker-spacing {
+      width: 4rem;
+    }
+  }
+
+  .ticker-gap-large {
+    display: inline-block;
+    width: 10rem;
+  }
+
+  @media (min-width: 640px) {
+    .ticker-gap-large {
+      width: 14rem;
+    }
+  }
+
+  .ticker-letter--rise {
+    transform: translateY(-8px) rotate(-6deg);
+  }
+
+  .ticker-letter--drop {
+    transform: translateY(8px) rotate(6deg);
+  }
+
+  .ticker-letter--swing-left {
+    transform: rotate(-8deg);
+  }
+
+  .ticker-letter--swing-right {
+    transform: rotate(8deg);
+  }
+
+  .ticker-letter--flat {
+    transform: translateY(0) rotate(0);
   }
 
   .animated-backdrop__blob {
@@ -377,7 +449,7 @@ input[type="range"].soundcloud-range::-ms-thumb {
   border: none;
 }
 
-/* Curseur cœur pour tous les éléments cliquables */
+/* Curseur standard pour les éléments interactifs */
 a, button, [role="button"], .clickable {
   cursor: pointer;
 }
@@ -532,12 +604,21 @@ a, button, [role="button"], .clickable {
   image-rendering: auto;
 }
 
-.ticker-separator {
-  display: inline-flex;
-  align-items: center;
-  padding: 0 1rem 0 0.5rem;
-  transform: translateY(-1px);
-}
+  .ticker-separator {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 1rem 0 0.5rem;
+    transform: translateY(-1px);
+  }
+
+  .scrollbar-hidden {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 
 .animate-monkey-step {
   animation: monkey-step 0.85s ease-in-out infinite;

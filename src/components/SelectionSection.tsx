@@ -7,6 +7,7 @@ import { ArrowRight } from "lucide-react";
 import PlayButton from "@/components/PlayButton";
 import { Button } from "@/components/ui/button";
 import type { PodcastEpisode } from "@/lib/podcasts";
+import { useLocale } from "@/lib/LocaleContext";
 
 // Mélange aléatoire (Fisher–Yates)
 function shuffle<T>(array: T[]): T[] {
@@ -63,6 +64,7 @@ const shouldHideTag = (tag: string) => {
 export default function SelectionSection({ initialEpisodes }: { initialEpisodes: PodcastEpisode[] }) {
   const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
   const [isWizzing, setIsWizzing] = useState(false);
+  const { t, locale } = useLocale();
 
   // première sélection
   useEffect(() => {
@@ -86,11 +88,11 @@ export default function SelectionSection({ initialEpisodes }: { initialEpisodes:
       {/* Header Sélection + Singe */}
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-3xl font-bold flex items-center gap-2">
-          Sélection
+          {t("home.selection.title")}
           <button
             onClick={refreshSelection}
             className={`singe-beguin flex-shrink-0 ${isWizzing ? "active animate-bounce-once" : ""}`}
-            title="Nouvelle sélection"
+            title={locale === "fr" ? "Nouvelle sélection" : "New selection"}
           >
             <Image
               src="/Singe3.png"
@@ -111,7 +113,7 @@ export default function SelectionSection({ initialEpisodes }: { initialEpisodes:
           className="tag-pill tag-pill-sm group flex items-center gap-2 px-4 py-2 uppercase text-[10px] tracking-[0.22em] font-semibold transition-all duration-200 hover:bg-[var(--primary)] hover:text-white"
         >
           <Link href="/shows" className="flex items-center gap-2">
-            <span className="relative">Tout découvrir</span>
+            <span className="relative">{t("home.selection.all")}</span>
             <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
         </Button>

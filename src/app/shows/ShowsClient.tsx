@@ -10,6 +10,7 @@ import { usePlayer } from "@/lib/PlayerContext";
 import type { PodcastEpisode, PodcastPlaylist } from "@/lib/podcasts.types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "@/lib/ThemeContext";
+import { useLocale, type Locale } from "@/lib/LocaleContext";
 
 type TabId = "all" | "playlists" | "tags";
 
@@ -19,10 +20,10 @@ type ApiPayload = {
   tags?: string[];
 };
 
-const TABS: Array<{ id: TabId; label: string }> = [
-  { id: "all", label: "Tous les épisodes" },
-  { id: "playlists", label: "Émissions" },
-  { id: "tags", label: "Styles" },
+const TAB_CONFIG: Array<{ id: TabId; labelKey: string }> = [
+  { id: "all", labelKey: "shows.tabs.all" },
+  { id: "playlists", labelKey: "shows.tabs.playlists" },
+  { id: "tags", labelKey: "shows.tabs.tags" },
 ];
 
 const PAGE_SIZE = 20;
@@ -38,14 +39,62 @@ const normalizeText = (value: string) =>
     .trim();
 
 const MOOD_BASE = [
-  { id: "talk", label: "Talk", tag: "Talk", image: "/Talk.png" },
-  { id: "meditation-core", label: "Meditation Core", tag: "Meditation Core", image: "/Meditation Core.png" },
-  { id: "metro-boulot", label: "Métro Boulot", tag: "Métro Boulot", image: "/Metro Boulot.png" },
-  { id: "curiosites", label: "Curiosités", tag: "Curiosités", image: "/Curiosites.png" },
-  { id: "bain-de-soleil", label: "Bain de Soleil", tag: "Bain de Soleil", image: "/Bain de Soleil.png" },
-  { id: "crepuscule", label: "Crépuscule", tag: "Crépuscule", image: "/Singe2.png" },
-  { id: "appels-de-phares", label: "Appels de Phares", tag: "Appels de Phares", image: "/Appels de Phares.png" },
-  { id: "abysses", label: "Abysses", tag: "Abysses", image: "/Abysses.svg" },
+  {
+    id: "talk",
+    label: "Talk",
+    labelByLocale: { fr: "Discussions", en: "Talk" },
+    tag: "Talk",
+    image: "/Talk.png",
+  },
+  {
+    id: "meditation-core",
+    label: "Meditation Core",
+    labelByLocale: { fr: "Meditation Core", en: "Meditation Core" },
+    tag: "Meditation Core",
+    image: "/Meditation Core.png",
+  },
+  {
+    id: "metro-boulot",
+    label: "Métro Boulot",
+    labelByLocale: { fr: "Métro Boulot", en: "Daily Grind" },
+    tag: "Métro Boulot",
+    image: "/Metro Boulot.png",
+  },
+  {
+    id: "curiosites",
+    label: "Curiosités",
+    labelByLocale: { fr: "Curiosités", en: "Curiosities" },
+    tag: "Curiosités",
+    image: "/Curiosites.png",
+  },
+  {
+    id: "bain-de-soleil",
+    label: "Bain de Soleil",
+    labelByLocale: { fr: "Bain de Soleil", en: "Sunbath" },
+    tag: "Bain de Soleil",
+    image: "/Bain de Soleil.png",
+  },
+  {
+    id: "crepuscule",
+    label: "Crépuscule",
+    labelByLocale: { fr: "Crépuscule", en: "Twilight" },
+    tag: "Crépuscule",
+    image: "/Singe2.png",
+  },
+  {
+    id: "appels-de-phares",
+    label: "Appels de Phares",
+    labelByLocale: { fr: "Appels de Phares", en: "High Beams" },
+    tag: "Appels de Phares",
+    image: "/Appels de Phares.png",
+  },
+  {
+    id: "abysses",
+    label: "Abysses",
+    labelByLocale: { fr: "Abysses", en: "Abyss" },
+    tag: "Abysses",
+    image: "/Abysses.svg",
+  },
 ];
 
 const MOOD_IMAGE_CACHE: Record<string, string> = {};
@@ -97,7 +146,7 @@ function mixHex(base: string, target: string, ratio: number) {
   return `#${blend(r, tr).toString(16).padStart(2, "0")}${blend(g, tg).toString(16).padStart(2, "0")}${blend(b, tb).toString(16).padStart(2, "0")}`;
 }
 
-function buildMoodFilters(primary: string, accent: string) {
+function buildMoodFilters(primary: string, accent: string, locale: Locale) {
   return MOOD_BASE.map((base, index) => {
     const intensity = INTENSITY_LEVELS[index] ?? 0.4;
     const baseTone = mixHex(primary, '#ffffff', intensity);
@@ -109,6 +158,7 @@ function buildMoodFilters(primary: string, accent: string) {
 
     return {
       ...base,
+      label: base.labelByLocale?.[locale] ?? base.label,
       gradient: `radial-gradient(circle at 32% 28%, ${highlight} 0%, ${midTone} 42%, ${baseTone} 68%, ${depth} 100%)`,
       accent: borderTone,
       baseTone,
@@ -309,8 +359,13 @@ const PlaylistCard = React.memo(
 );
 
 export default function ShowsClient() {
+  const { t, locale } = useLocale();
   const { palette, theme } = useTheme();
-  const moodFilters = useMemo(() => buildMoodFilters(palette.primary, palette.accent), [palette]);
+  const tabs = useMemo(() => TAB_CONFIG.map(tab => ({ ...tab, label: t(tab.labelKey) })), [t]);
+  const moodFilters = useMemo(
+    () => buildMoodFilters(palette.primary, palette.accent, locale),
+    [palette, locale]
+  );
   const moodKeys = useMemo(() => {
     const keys = new Set(moodFilters.map(filter => normalizeText(filter.tag)));
     MOOD_VARIANTS.forEach(variant => keys.add(normalizeText(variant)));
@@ -494,7 +549,7 @@ export default function ShowsClient() {
   // ✅ Lecture avec proxy
   const handlePlay = useCallback(
     (episode: PodcastEpisode) => {
-      const audioUrl = `/api/podcast-stream/${episode.id}?ts=${Date.now()}`;
+      const audioUrl = `/api/sc-play/${episode.id}?ts=${Date.now()}`;
       playPodcast({
         ...episode,
         audioUrl,
@@ -700,8 +755,8 @@ export default function ShowsClient() {
   }, [styleTagEntries]);
   const stickySelectionTone =
     theme === "dark"
-      ? "bg-black text-white supports-[backdrop-filter]:bg-black/85"
-      : "bg-white text-[var(--foreground)] supports-[backdrop-filter]:bg-white/80";
+      ? "bg-black/90 text-white"
+      : "bg-[var(--background)]/90 text-[var(--foreground)]";
 
   const searchTokens = useMemo(() => {
     const normalized = normalizeText(search);
@@ -907,7 +962,11 @@ export default function ShowsClient() {
           </div>
           <input
             type="search"
-            placeholder="Rechercher un podcast, une émission ou un tag…"
+            placeholder={
+              locale === "en"
+                ? "Search for a show, an artist…"
+                : "Rechercher une émission, un·e artiste…"
+            }
             value={search}
             onChange={e => setSearch(e.target.value)}
             inputMode="search"
@@ -920,7 +979,9 @@ export default function ShowsClient() {
       {activeTags.length > 0 && (
         <div
           className={`sticky z-30 border-t border-transparent backdrop-blur transition-colors ${stickySelectionTone}`}
-          style={{ top: "calc(var(--player-offset, 140px) - 4px)" }}
+          style={{
+            top: "calc(var(--player-offset, 140px) - 4px)",
+          }}
         >
           <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2 px-4 py-1.5 md:px-8">
             {activeTags.map((tag, index) => (
@@ -930,7 +991,13 @@ export default function ShowsClient() {
                 onClick={() => toggleTag(tag)}
                 className="tag-pill tag-pill-sm active flex items-center gap-1"
               >
-                <span>{tag}</span>
+                <span>
+                  {(() => {
+                    const normalized = normalizeText(tag);
+                    const mood = moodFilters.find(filter => normalizeText(filter.tag) === normalized);
+                    return mood ? mood.label : tag;
+                  })()}
+                </span>
                 <X className="h-3 w-3" />
               </button>
             ))}
@@ -939,7 +1006,7 @@ export default function ShowsClient() {
               className="text-xs text-muted-foreground underline-offset-4 hover:underline"
               onClick={handleClearTags}
             >
-              Tout effacer
+              {locale === "en" ? "Clear all" : "Tout effacer"}
             </button>
           </div>
         </div>
@@ -948,7 +1015,7 @@ export default function ShowsClient() {
       {/* Onglets */}
       <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          {TABS.map(tab => (
+          {tabs.map(tab => (
             <button
               key={tab.id}
               type="button"
@@ -984,7 +1051,7 @@ export default function ShowsClient() {
               </button>
             ) : null}
           </div>
-          <div className="flex w-full justify-between gap-3 overflow-x-auto overflow-y-visible px-2 py-1 sm:justify-end sm:gap-4 sm:px-0">
+          <div className="flex w-full justify-between gap-3 overflow-x-auto overflow-y-visible px-2 py-1 sm:justify-end sm:gap-4 sm:px-0 scrollbar-hidden">
             {moodFilters.map(filter => {
               const isActive = activeTagSet.has(normalizeText(filter.tag));
               const imageSrc = filter.image ?? "/logocoeur.webp";
@@ -1002,12 +1069,15 @@ export default function ShowsClient() {
                     isActive ? "scale-[1.05]" : ""
                   }${activeMoodBounceId === filter.id ? " animate-bounce-once" : ""}`}
                 >
-                  <img
+                  <Image
                     src={displaySrc}
                     alt=""
+                    width={42}
+                    height={42}
                     className={`h-full w-full max-h-[42px] max-w-[42px] object-contain mood-icon${isActive ? " mood-icon--active" : ""}`}
                     style={{ opacity: isReady ? 1 : 0, transition: "opacity 0.2s ease-in-out" }}
                     loading="lazy"
+                    unoptimized
                   />
                   <span className="sr-only">{filter.label}</span>
                 </button>

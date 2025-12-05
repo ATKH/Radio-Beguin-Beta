@@ -306,6 +306,16 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     const resizeObserver = new ResizeObserver(resizeCanvas);
     resizeObserver.observe(canvas);
 
+    const attemptJump = () => {
+      const monkey = monkeyRef.current;
+      const { ground } = groundRef.current;
+      if (monkey.canJump || monkey.y >= ground - 0.5) {
+        monkey.vy = -JUMP_VELOCITY;
+        monkey.canJump = false;
+        monkey.isDucking = false;
+      }
+    };
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (KEY_CAPTURE_KEYS.has(event.key)) {
         event.preventDefault();
@@ -322,12 +332,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
           break;
         case "ArrowUp":
         case "Space": {
-          const monkey = monkeyRef.current;
-          if (monkey.canJump) {
-            monkey.vy = -JUMP_VELOCITY;
-            monkey.canJump = false;
-            monkey.isDucking = false;
-          }
+          attemptJump();
           break;
         }
         case "ArrowDown":
@@ -359,6 +364,14 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       }
     };
 
+    const handlePointerDown = (event: PointerEvent) => {
+      if (isGameOverRef.current) return;
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      event.preventDefault();
+      attemptJump();
+    };
+
+    canvas.addEventListener("pointerdown", handlePointerDown, { passive: false });
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
 
@@ -595,6 +608,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       if (animationFrameRef.current !== null) {
         cancelAnimationFrame(animationFrameRef.current);
       }
+      canvas.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       clearScheduledExit();
@@ -618,7 +632,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
         Score&nbsp;: {score}
       </div>
       <div className="pointer-events-none absolute bottom-0.5 left-2.5 right-2.5 text-[8px] uppercase tracking-[0.2em] opacity-80">
-        ↑ pour sauter • ↓ pour se baisser • ← → pour ajuster • Évite les obstacles • Échap pour quitter
+        Touchez ou ↑ pour sauter • ↓ pour se baisser • ← → pour ajuster • Évite les obstacles • Échap pour quitter
       </div>
       <button
         type="button"

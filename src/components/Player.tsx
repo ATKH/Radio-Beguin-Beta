@@ -7,13 +7,53 @@ import { usePlayer } from '@/lib/PlayerContext';
 import { useTheme } from '@/lib/ThemeContext';
 import Hls from 'hls.js';
 import AudioVisualizer from '@/components/ui/AudioVisualizer';
+import { useLocale } from '@/lib/LocaleContext';
+import type { PodcastEpisode } from '@/lib/podcasts';
 
 const RADIO_STREAM_URL = 'https://play.radioking.io/radio-beguin-1/559828';
 const TRACK_INFO_URL = '/api/live-track';
 const PLAYBACK_STORAGE_KEY = 'radio-beguin:playback-state';
+const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
 
 const buildLiveStreamUrl = () =>
   `${RADIO_STREAM_URL}${RADIO_STREAM_URL.includes('?') ? '&' : '?'}ts=${Date.now()}`;
+
+type ResolvedStream = {
+  url: string;
+  protocol: NonNullable<PodcastEpisode["streamProtocol"]>;
+};
+
+const detectProtocol = (
+  url: string,
+  fallback?: PodcastEpisode["streamProtocol"]
+): NonNullable<PodcastEpisode["streamProtocol"]> => {
+  if (url.includes('.m3u8')) return 'hls';
+  return fallback === 'hls' ? 'hls' : 'progressive';
+};
+
+async function resolveStreamSource(episode: PodcastEpisode): Promise<ResolvedStream | null> {
+  if (!episode?.id) return null;
+  const url = `/api/sc-play/${episode.id}?ts=${Date.now()}`;
+  return { url, protocol: 'progressive' };
+}
+
+const isReloadNavigation = () => {
+  if (typeof window === 'undefined') return false;
+  const navEntries = typeof performance.getEntriesByType === 'function'
+    ? performance.getEntriesByType('navigation')
+    : [];
+  if (navEntries && navEntries.length > 0) {
+    const entry = navEntries[0] as PerformanceNavigationTiming;
+    if (entry && 'type' in entry) {
+      return entry.type === 'reload';
+    }
+  }
+  const legacyNav = (performance as Performance & { navigation?: PerformanceNavigation }).navigation;
+  if (legacyNav && typeof legacyNav.type === 'number' && typeof legacyNav.TYPE_RELOAD === 'number') {
+    return legacyNav.type === legacyNav.TYPE_RELOAD;
+  }
+  return false;
+};
 
 export default function Player() {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -21,6 +61,7 @@ export default function Player() {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const { activePlayer, currentEpisode, setCurrentEpisode, playLive } = usePlayer();
   const { theme } = useTheme();
+  const { t } = useLocale();
   const isDark = theme === 'dark';
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -34,6 +75,7 @@ export default function Player() {
   });
   const initialEpisodeRef = useRef(true);
   const previousEpisodeIdRef = useRef<string | null>(null);
+  const lastPlayRequestRef = useRef<number | null>(null);
   const playbackRestoredRef = useRef(false);
   const wasLivePlayingRef = useRef(false);
 
@@ -50,8 +92,7 @@ export default function Player() {
   // Restaurer l'intention de lecture après navigation (live ou podcast)
   useEffect(() => {
     if (typeof window === 'undefined' || playbackRestoredRef.current) return;
-    const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
-    const isReload = navEntry?.type === 'reload';
+    const isReload = isReloadNavigation();
     try {
       const raw = window.sessionStorage.getItem(PLAYBACK_STORAGE_KEY);
       if (raw && !isReload) {
@@ -138,9 +179,11 @@ export default function Player() {
 
   // Gestion audio (MP3 / HLS / Live)
   useEffect(() => {
+    if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
     if (!audioRef.current) return;
     const audio = audioRef.current;
     let hlsInstance: Hls | null = null;
+    let cancelled = false;
 
     const cleanup = () => {
       if (hlsInstance) {
@@ -159,14 +202,32 @@ export default function Player() {
 
     cleanup();
 
-    if (activePlayer === 'podcast' && currentEpisode?.audioUrl) {
-      const url = currentEpisode.audioUrl;
+    const setupPodcastPlayback = async () => {
+      if (!currentEpisode) return;
       setCurrentPosition(0);
       setDuration(0);
 
+      const resolved = await resolveStreamSource(currentEpisode);
+      if (!resolved || cancelled) {
+        console.warn('⚠️ Impossible de récupérer une URL de lecture pour', currentEpisode?.id);
+        resetResumeIntent();
+        setIsPlaying(false);
+        return;
+      }
+
+      const { url, protocol } = resolved;
+      const playRequestId =
+        typeof currentEpisode.playRequestId === 'number' ? currentEpisode.playRequestId : null;
+      const isManualRequest =
+        playRequestId !== null && playRequestId !== lastPlayRequestRef.current;
+      if (isManualRequest) {
+        lastPlayRequestRef.current = playRequestId;
+      }
+
       const shouldAutoPlay =
-        resumeIntentRef.current.shouldResume &&
-        resumeIntentRef.current.target === 'podcast';
+        isManualRequest ||
+        (resumeIntentRef.current.shouldResume &&
+          resumeIntentRef.current.target === 'podcast');
 
       const handleAutoPlay = (errorLabel: string) => {
         if (!shouldAutoPlay) {
@@ -186,17 +247,17 @@ export default function Player() {
           });
       };
 
-      if (currentEpisode.streamProtocol === 'hls') {
-        // ✅ Lecture HLS via hls.js
+      if (protocol === 'hls') {
         if (Hls.isSupported()) {
           hlsInstance = new Hls();
           hlsInstance.loadSource(url);
           hlsInstance.attachMedia(audio);
           hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-            handleAutoPlay('❌ Erreur lecture HLS:');
+            if (!cancelled) {
+              handleAutoPlay('❌ Erreur lecture HLS:');
+            }
           });
         } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-          // ✅ Safari gère HLS nativement
           audio.src = url;
           audio.load();
           handleAutoPlay('❌ Erreur lecture HLS (Safari):');
@@ -205,13 +266,16 @@ export default function Player() {
           resetResumeIntent();
         }
       } else {
-        // ✅ Lecture progressive (MP3)
         audio.src = url;
         audio.load();
         handleAutoPlay('❌ Erreur lecture MP3:');
       }
+    };
 
+    if (activePlayer === 'podcast' && currentEpisode?.audioUrl) {
+      setupPodcastPlayback();
       return () => {
+        cancelled = true;
         cleanup();
       };
     }
@@ -258,6 +322,7 @@ export default function Player() {
 
   // Events audio
   useEffect(() => {
+    if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -288,6 +353,7 @@ export default function Player() {
   }, [activePlayer, currentEpisode]);
 
   const togglePlay = () => {
+    if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -344,8 +410,8 @@ export default function Player() {
   }, [isPlaying]);
 
   const containerTone = isDark
-    ? 'bg-black text-white supports-[backdrop-filter]:bg-black/90'
-    : 'bg-white text-[var(--foreground)] supports-[backdrop-filter]:bg-white/80';
+    ? 'bg-[var(--background)] text-[var(--foreground)] supports-[backdrop-filter]:bg-[var(--background)]/90'
+    : 'bg-[var(--background)] text-[var(--foreground)] supports-[backdrop-filter]:bg-[var(--background)]/90';
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -376,17 +442,46 @@ export default function Player() {
     };
   }, []);
 
-  return (
-    <div
-      ref={containerRef}
-      className={`sticky z-40 border-t backdrop-blur transition-colors border-transparent ${containerTone}`}
-      style={{ top: HEADER_HEIGHT + LINE_HEIGHT, minHeight: `${PLAYER_MIN_HEIGHT}px` }}
-    >
-      <audio ref={audioRef} preload="metadata" />
-      {analyserRef.current && isPlaying ? <AudioVisualizer analyser={analyserRef.current} /> : null}
+  let innerContent: React.ReactNode;
+  if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast' && currentEpisode) {
+    const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
+      currentEpisode.link
+    )}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&color=%232f1c17`;
+    innerContent = (
+      <div className="container mx-auto px-4 py-2 flex flex-col gap-3">
+        <div className="flex items-center gap-3">
+          <Button
+            size="sm"
+            onClick={onClosePodcast}
+            variant="outline"
+            className={`flex items-center space-x-1 border-[var(--primary)]/30 ${
+              isDark ? 'text-white hover:bg-white/10' : 'text-[var(--foreground)] hover:bg-[var(--primary)]/10'
+            }`}
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-xs">{t('player.backToLive')}</span>
+          </Button>
+        </div>
 
-      <div className="container mx-auto px-4 py-2 flex flex-col gap-3 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-4 sm:justify-between">
-        {activePlayer === 'live' ? (
+        <iframe
+          key={currentEpisode.id}
+          width="100%"
+          height="110"
+          allow="autoplay"
+          allowFullScreen
+          src={embedUrl}
+          className="rounded-md border border-white/10"
+        />
+      </div>
+    );
+  } else {
+    innerContent = (
+      <>
+        <audio ref={audioRef} preload="metadata" />
+        {analyserRef.current && isPlaying ? <AudioVisualizer analyser={analyserRef.current} /> : null}
+
+        <div className="container mx-auto px-4 py-2 flex flex-col gap-3 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-4 sm:justify-between">
+          {activePlayer === 'live' ? (
           <div className="flex flex-wrap items-center gap-3 w-full">
             <Button
               variant="ghost"
@@ -446,7 +541,7 @@ export default function Player() {
                 }`}
               >
                 <ArrowLeft className="h-4 w-4" />
-                <span className="text-xs">Retour Live</span>
+                <span className="text-xs">{t("player.backToLive")}</span>
               </Button>
 
               <Button
@@ -454,11 +549,11 @@ export default function Player() {
                 size="sm"
                 asChild
                 className={`text-xs px-2 py-1 ${isDark ? 'text-white hover:text-[var(--primary)]' : 'text-[var(--foreground)] hover:text-[var(--primary)]'}`}
-                aria-label="Ouvrir sur SoundCloud"
+                aria-label={t("player.soundcloud")}
               >
                 <a href={currentEpisode.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
                   <ExternalLink className="h-3 w-3" />
-                  <span className="hidden sm:inline">SoundCloud</span>
+                  <span className="hidden sm:inline">{t("player.soundcloud")}</span>
                 </a>
               </Button>
 
@@ -507,6 +602,17 @@ export default function Player() {
           </div>
         ) : null}
       </div>
+      </>
+    );
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className={`sticky z-40 border-t backdrop-blur transition-colors border-transparent ${containerTone}`}
+      style={{ top: HEADER_HEIGHT + LINE_HEIGHT, minHeight: `${PLAYER_MIN_HEIGHT}px` }}
+    >
+      {innerContent}
     </div>
   );
 }
