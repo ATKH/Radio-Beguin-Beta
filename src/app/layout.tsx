@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 const NEWS_TICKER_MESSAGES = [
-  "R   A   D   I   O      B   É   G   U   I   N",
+   "LYON ATTENTION : FASCISTES DANS NOS RUES, RESTEZ VIGILANT-E-S <3"
 ];
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

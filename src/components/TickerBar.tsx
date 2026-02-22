@@ -57,7 +57,7 @@ const processMonkeyImage = () => {
   processingPromise = new Promise<string | null>((resolve) => {
     const img = new window.Image();
     img.crossOrigin = "anonymous";
-    img.src = "/Singe4.png";
+    img.src = "/Singe4_clean.png";
 
     img.onload = () => {
       try {
@@ -190,7 +190,7 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
                       >
                         <span className="ticker-monkey">
                           <Image
-                            src={monkeyUrl ?? "/Singe4.png"}
+                            src={monkeyUrl ?? "/Singe4_clean.png"}
                             alt=""
                             width={36}
                             height={36}

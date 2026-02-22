@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,6 +18,16 @@ type ApiPayload = {
   episodes?: PodcastEpisode[];
   playlists?: PodcastPlaylist[];
   tags?: string[];
+};
+
+type EpisodeWithIndex = PodcastEpisode & {
+  _searchIndex: string;
+  _tagsNormalized: string[];
+};
+
+type PlaylistWithIndex = PodcastPlaylist & {
+  _searchIndex: string;
+  _tagsNormalized: string[];
 };
 
 const TAB_CONFIG: Array<{ id: TabId; labelKey: string }> = [
@@ -38,41 +48,53 @@ const normalizeText = (value: string) =>
     .replace(/\s+/g, ' ')
     .trim();
 
+const buildEpisodeIndex = (episode: PodcastEpisode): EpisodeWithIndex => {
+  const tagsNormalized = (episode.tags ?? []).map(tag => normalizeText(tag));
+  const searchIndex = `${normalizeText(episode.title)} ${tagsNormalized.join(' ')}`.trim();
+  return { ...episode, _tagsNormalized: tagsNormalized, _searchIndex: searchIndex };
+};
+
+const buildPlaylistIndex = (playlist: PodcastPlaylist): PlaylistWithIndex => {
+  const tagsNormalized = (playlist.tags ?? []).map(tag => normalizeText(tag));
+  const searchIndex = `${normalizeText(playlist.title)} ${tagsNormalized.join(' ')}`.trim();
+  return { ...playlist, _tagsNormalized: tagsNormalized, _searchIndex: searchIndex };
+};
+
 const MOOD_BASE = [
   {
     id: "talk",
     label: "Talk",
     labelByLocale: { fr: "Discussions", en: "Talk" },
     tag: "Talk",
-    image: "/Talk.png",
+    image: "/Talk.webp",
   },
   {
     id: "meditation-core",
     label: "Meditation Core",
     labelByLocale: { fr: "Meditation Core", en: "Meditation Core" },
     tag: "Meditation Core",
-    image: "/Meditation Core.png",
+    image: "/Meditation Core.webp",
   },
   {
     id: "metro-boulot",
     label: "Métro Boulot",
     labelByLocale: { fr: "Métro Boulot", en: "Daily Grind" },
     tag: "Métro Boulot",
-    image: "/Metro Boulot.png",
+    image: "/Metro Boulot.webp",
   },
   {
     id: "curiosites",
     label: "Curiosités",
     labelByLocale: { fr: "Curiosités", en: "Curiosities" },
     tag: "Curiosités",
-    image: "/Curiosites.png",
+    image: "/Curiosites.webp",
   },
   {
     id: "bain-de-soleil",
     label: "Bain de Soleil",
     labelByLocale: { fr: "Bain de Soleil", en: "Sunbath" },
     tag: "Bain de Soleil",
-    image: "/Bain de Soleil.png",
+    image: "/Bain de Soleil.webp",
   },
   {
     id: "crepuscule",
@@ -86,7 +108,7 @@ const MOOD_BASE = [
     label: "Appels de Phares",
     labelByLocale: { fr: "Appels de Phares", en: "High Beams" },
     tag: "Appels de Phares",
-    image: "/Appels de Phares.png",
+    image: "/Appels de Phares.webp",
   },
   {
     id: "abysses",
@@ -385,8 +407,8 @@ export default function ShowsClient() {
   const shuffleTimeoutRef = useRef<number | null>(null);
   const hasRestoredTags = useRef(false);
 
-  const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
-  const [playlists, setPlaylists] = useState<PodcastPlaylist[]>([]);
+  const [episodes, setEpisodes] = useState<EpisodeWithIndex[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistWithIndex[]>([]);
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
@@ -572,11 +594,16 @@ export default function ShowsClient() {
       .then((payload: ApiPayload | PodcastEpisode[]) => {
         if (!isMounted) return;
         if (Array.isArray(payload)) {
-          setEpisodes(payload);
+          const indexedEpisodes = payload.map(buildEpisodeIndex);
+          if (!isMounted) return;
+          setEpisodes(indexedEpisodes);
           setPlaylists([]);
         } else {
-          setEpisodes(payload.episodes ?? []);
-          setPlaylists(payload.playlists ?? []);
+          const indexedEpisodes = (payload.episodes ?? []).map(buildEpisodeIndex);
+          const indexedPlaylists = (payload.playlists ?? []).map(buildPlaylistIndex);
+          if (!isMounted) return;
+          setEpisodes(indexedEpisodes);
+          setPlaylists(indexedPlaylists);
         }
       })
       .catch(err => {
@@ -646,6 +673,7 @@ export default function ShowsClient() {
   );
 
   const styleTagEntries = useMemo(() => {
+    if (activeTab !== "tags") return [];
     const counters = new Map<string, { label: string; count: number }>();
 
     const register = (tag?: string | null) => {
@@ -669,7 +697,7 @@ export default function ShowsClient() {
       }))
       .filter(entry => entry.count > 0)
       .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
-  }, [episodes, moodKeys]);
+  }, [activeTab, episodes, moodKeys]);
 
   const availableStyleTags = useMemo(
     () => styleTagEntries.map(entry => entry.label),
@@ -758,10 +786,12 @@ export default function ShowsClient() {
       ? "bg-black/90 text-white"
       : "bg-[var(--background)]/90 text-[var(--foreground)]";
 
+  const deferredSearch = useDeferredValue(search);
+
   const searchTokens = useMemo(() => {
-    const normalized = normalizeText(search);
+    const normalized = normalizeText(deferredSearch);
     return normalized ? normalized.split(' ') : [];
-  }, [search]);
+  }, [deferredSearch]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -775,13 +805,11 @@ export default function ShowsClient() {
   // Filtrage épisodes
   const filteredEpisodes = useMemo(() => {
     return episodes.filter(ep => {
-      const tagsNormalized = (ep.tags ?? []).map(tag => normalizeText(tag));
-      const combined = `${normalizeText(ep.title)} ${tagsNormalized.join(' ')}`.trim();
       const matchesSearch = searchTokens.length === 0
         ? true
-        : textContainsTokens(combined, searchTokens);
+        : textContainsTokens(ep._searchIndex, searchTokens);
       const matchesTags = activeTagsNormalized.length > 0
-        ? activeTagsNormalized.every(tag => tagsNormalized.includes(tag))
+        ? activeTagsNormalized.every(tag => ep._tagsNormalized.includes(tag))
         : true;
       return matchesSearch && matchesTags;
     });
@@ -789,13 +817,11 @@ export default function ShowsClient() {
 
   const filteredPlaylists = useMemo(() => {
     return playlists.filter(pl => {
-      const tagsNormalized = (pl.tags ?? []).map(tag => normalizeText(tag));
-      const combined = `${normalizeText(pl.title)} ${tagsNormalized.join(' ')}`.trim();
       const matchesSearch = searchTokens.length === 0
         ? true
-        : textContainsTokens(combined, searchTokens);
+        : textContainsTokens(pl._searchIndex, searchTokens);
       const matchesTags = activeTagsNormalized.length > 0
-        ? activeTagsNormalized.every(tag => tagsNormalized.includes(tag))
+        ? activeTagsNormalized.every(tag => pl._tagsNormalized.includes(tag))
         : true;
       return matchesSearch && matchesTags;
     });
