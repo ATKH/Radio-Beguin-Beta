@@ -11,6 +11,7 @@ import type { PodcastEpisode, PodcastPlaylist } from "@/lib/podcasts.types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "@/lib/ThemeContext";
 import { useLocale, type Locale } from "@/lib/LocaleContext";
+import { normalizeSoundCloudArtworkUrl } from "@/lib/soundcloud/artwork";
 
 type TabId = "all" | "playlists" | "tags";
 
@@ -66,35 +67,35 @@ const MOOD_BASE = [
     label: "Talk",
     labelByLocale: { fr: "Discussions", en: "Talk" },
     tag: "Talk",
-    image: "/Talk.webp",
+    image: "/Talk.png",
   },
   {
     id: "meditation-core",
     label: "Meditation Core",
     labelByLocale: { fr: "Meditation Core", en: "Meditation Core" },
     tag: "Meditation Core",
-    image: "/Meditation Core.webp",
+    image: "/meditation-core.png",
   },
   {
     id: "metro-boulot",
     label: "Métro Boulot",
     labelByLocale: { fr: "Métro Boulot", en: "Daily Grind" },
     tag: "Métro Boulot",
-    image: "/Metro Boulot.webp",
+    image: "/metro-boulot.png",
   },
   {
     id: "curiosites",
     label: "Curiosités",
     labelByLocale: { fr: "Curiosités", en: "Curiosities" },
     tag: "Curiosités",
-    image: "/Curiosites.webp",
+    image: "/Curiosites.png",
   },
   {
     id: "bain-de-soleil",
     label: "Bain de Soleil",
     labelByLocale: { fr: "Bain de Soleil", en: "Sunbath" },
     tag: "Bain de Soleil",
-    image: "/Bain de Soleil.webp",
+    image: "/bain-de-soleil.png",
   },
   {
     id: "crepuscule",
@@ -108,14 +109,14 @@ const MOOD_BASE = [
     label: "Appels de Phares",
     labelByLocale: { fr: "Appels de Phares", en: "High Beams" },
     tag: "Appels de Phares",
-    image: "/Appels de Phares.webp",
+    image: "/appels-de-phares.png",
   },
   {
     id: "abysses",
     label: "Abysses",
     labelByLocale: { fr: "Abysses", en: "Abyss" },
     tag: "Abysses",
-    image: "/Abysses.svg",
+    image: "/Abysses.png",
   },
 ];
 
@@ -221,6 +222,7 @@ const EpisodeCard = React.memo(function EpisodeCard({
   hiddenTagSet,
   onBeforeTagClick,
   onClearMood,
+  isPriority,
 }: {
   episode: PodcastEpisode;
   onPlay: (episode: PodcastEpisode) => void;
@@ -229,6 +231,7 @@ const EpisodeCard = React.memo(function EpisodeCard({
   hiddenTagSet: Set<string>;
   onBeforeTagClick?: (tag: string) => void;
   onClearMood: () => void;
+  isPriority?: boolean;
 }) {
   const isTagActive = useCallback((tag: string) => activeTagSet.has(normalizeText(tag)), [activeTagSet]);
   const displayTags = useMemo(
@@ -240,12 +243,14 @@ const EpisodeCard = React.memo(function EpisodeCard({
     <div className="bg-muted rounded-lg overflow-hidden transition-all duration-200 group w-full max-w-[320px] mx-auto">
       <div className="relative w-full aspect-square">
         <Image
-          src={episode.artworkUrl}
+          src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300")}
           alt={episode.title}
           fill
           sizes={CARD_ARTWORK_SIZES}
           className="object-cover"
-          loading="lazy"
+          loading={isPriority ? "eager" : "lazy"}
+          priority={Boolean(isPriority)}
+          fetchPriority={isPriority ? "high" : "auto"}
         />
         {/* ✅ Bouton play */}
         <div className="podcast-card-overlay absolute inset-0 flex items-center justify-center transition-opacity duration-200">
@@ -302,6 +307,7 @@ const PlaylistCard = React.memo(
     onPlay,
     onTagClick,
     onBeforeTagClick,
+    isPriority,
   }: {
     playlist: PodcastPlaylist;
     latestEpisode?: PodcastEpisode;
@@ -311,20 +317,23 @@ const PlaylistCard = React.memo(
     onPlay: (episode: PodcastEpisode) => void;
     onTagClick: (tag: string) => void;
     onBeforeTagClick?: (tag: string) => void;
+    isPriority?: boolean;
   }) {
     const displayTags = useMemo(() => tags.slice(0, 6), [tags]);
 
     return (
       <div className="group bg-muted rounded-lg overflow-hidden transition-all duration-200 w-full max-w-[320px] mx-auto">
         <div className="relative w-full aspect-square">
-          <Image
-            src={playlist.artworkUrl}
-            alt={playlist.title}
-            fill
-            sizes={CARD_ARTWORK_SIZES}
-            className="object-cover"
-            loading="lazy"
-          />
+        <Image
+          src={normalizeSoundCloudArtworkUrl(playlist.artworkUrl, "t300x300")}
+          alt={playlist.title}
+          fill
+          sizes={CARD_ARTWORK_SIZES}
+          className="object-cover"
+          loading={isPriority ? "eager" : "lazy"}
+          priority={Boolean(isPriority)}
+          fetchPriority={isPriority ? "high" : "auto"}
+        />
           {latestEpisode && (
             <div className="podcast-card-overlay absolute inset-0 flex items-center justify-center transition-opacity duration-200">
               <Button
@@ -424,6 +433,7 @@ export default function ShowsClient() {
   const moodBounceTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
     if (typeof window === "undefined") return;
     let cancelled = false;
 
@@ -1216,7 +1226,7 @@ export default function ShowsClient() {
               endMessage={null}
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {items.map(episode => (
+                {items.map((episode, index) => (
                   <EpisodeCard
                     key={episode.id}
                     episode={episode}
@@ -1226,6 +1236,7 @@ export default function ShowsClient() {
                     hiddenTagSet={hiddenMoodTags}
                     onBeforeTagClick={handleClearMood}
                     onClearMood={handleClearMood}
+                    isPriority={index === 0}
                   />
                 ))}
               </div>
@@ -1243,7 +1254,7 @@ export default function ShowsClient() {
             <p className="text-center text-muted-foreground">Aucune émission trouvée.</p>
           ) : (
             <div className="grid grid-cols-1 justify-items-center sm:justify-items-stretch sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {playlistsToRender.map(pl => {
+              {playlistsToRender.map((pl, index) => {
                 const latestEpisode = pl.latestEpisode;
                 const tags = (pl.tags ?? []).filter(tag => !hiddenMoodTags.has(normalizeText(tag)));
                 const tagsKey = tags.map(tag => normalizeText(tag)).join("|");
@@ -1258,6 +1269,7 @@ export default function ShowsClient() {
                     onPlay={handlePlay}
                     onTagClick={toggleTag}
                     onBeforeTagClick={handleClearMood}
+                    isPriority={index === 0}
                   />
                 );
               })}
