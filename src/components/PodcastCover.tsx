@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Play } from 'lucide-react';
+import { normalizeSoundCloudArtworkUrl } from '@/lib/soundcloud/artwork';
 
 type PodcastEpisode = {
   id: string;
@@ -22,7 +23,7 @@ export default function PodcastCover({ episode, onPlay }: Props) {
     <div className="relative w-full aspect-square overflow-hidden rounded-lg group">
       {/* Image */}
       <Image
-        src={episode.artworkUrl}
+        src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300")}
         alt={episode.title}
         fill
         className="object-cover rounded-lg"

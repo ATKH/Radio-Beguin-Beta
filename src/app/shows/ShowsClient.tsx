@@ -431,9 +431,10 @@ export default function ShowsClient() {
   const [processedMoodImages, setProcessedMoodImages] = useState<Record<string, string>>(() => ({ ...MOOD_IMAGE_CACHE }));
   const [activeMoodBounceId, setActiveMoodBounceId] = useState<string | null>(null);
   const moodBounceTimeoutRef = useRef<number | null>(null);
+  const enableMoodProcessing = process.env.NODE_ENV !== "production";
 
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
+    if (!enableMoodProcessing) return;
     if (typeof window === "undefined") return;
     let cancelled = false;
 
@@ -1092,7 +1093,7 @@ export default function ShowsClient() {
               const isActive = activeTagSet.has(normalizeText(filter.tag));
               const imageSrc = filter.image ?? "/logocoeur.webp";
               const processedSrc = processedMoodImages[imageSrc];
-              const needsProcessing = imageSrc.toLowerCase().endsWith(".png");
+              const needsProcessing = enableMoodProcessing && imageSrc.toLowerCase().endsWith(".png");
               const displaySrc = processedSrc ?? imageSrc;
               const isReady = Boolean(processedSrc) || !needsProcessing;
               return (

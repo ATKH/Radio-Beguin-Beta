@@ -8,6 +8,7 @@ import PlayButton from "@/components/PlayButton";
 import { Button } from "@/components/ui/button";
 import type { PodcastEpisode } from "@/lib/podcasts";
 import { useLocale } from "@/lib/LocaleContext";
+import { normalizeSoundCloudArtworkUrl } from "@/lib/soundcloud/artwork";
 
 // Mélange aléatoire (Fisher–Yates)
 function shuffle<T>(array: T[]): T[] {
@@ -135,7 +136,7 @@ export default function SelectionSection({ initialEpisodes }: { initialEpisodes:
               >
                 <div className="relative w-full aspect-square">
                   <Image
-                    src={episode.artworkUrl}
+                    src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300")}
                     alt={episode.title}
                     fill
                     sizes={ARTWORK_SIZES}

@@ -17,11 +17,15 @@ const SCHEDULE_LABELS = {
   evening: { fr: "Playlist un peu plus club", en: "Club-oriented playlist" },
 } satisfies Record<string, { fr: string; en: string }>;
 
-const makeSlot = (time: string, key: keyof typeof SCHEDULE_LABELS) => ({
-  time,
-  label: SCHEDULE_LABELS[key].fr,
-  translations: { en: SCHEDULE_LABELS[key].en },
-});
+const makeSlot = (time: string, key: keyof typeof SCHEDULE_LABELS) => {
+  const fallback = { fr: key, en: key };
+  const labels = SCHEDULE_LABELS[key] ?? fallback;
+  return {
+    time,
+    label: labels.fr,
+    translations: { en: labels.en },
+  };
+};
 
 const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
   Lundi: [
@@ -34,24 +38,26 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("00h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
-   { time: "13h", label: "Current Rotation • GAZZZ!", highlight: true },
-    makeSlot("14h", "day"),
+    makeSlot("13h", "day"),
   ],
   Mercredi: [
     makeSlot("00h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
     makeSlot("13h", "day"),
-   { time: "21h", label: "BULK Code Switch • Charr", highlight: true },
-    
+    {
+      time: "14h",
+      label: "BE HATCH • Outlines, Pawel 'Paide' Dunajko & Trajectoires",
+      highlight: true,
+    },
   ],
   Jeudi: [
-    makeSlot("00h", "night"),
+    makeSlot("00h", "evening"),
+    makeSlot("01h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
-   { time: "10h", label: "Frühstrücs • The0", highlight: true }, 
     makeSlot("13h", "day"),
-    makeSlot("21h", "evening"),
+    makeSlot("22h", "evening"),
   ],
   Vendredi: [
     makeSlot("00h", "evening"),
@@ -59,15 +65,8 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
     makeSlot("13h", "day"),
-  {
-      time: "20h",
-      label: "Événement : Résidence radio Béguin x Clâmeurs",
-      link: "https://agenda.villemorte.fr/event/residence-radio-beguin",
-      highlight: true,
-      translations: {
-        en: "Event : Résidence radio Béguin x Clâmeurs",
-      },
-    },
+    { time: "21h", label: "Sarraounia • DIKI", highlight: true },
+    makeSlot("22h", "evening"),
   ],
   Samedi: [
     makeSlot("00h", "evening"),
@@ -75,14 +74,13 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
     makeSlot("13h", "day"),
-    makeSlot("21h", "evening"),
+    makeSlot("22h", "evening"),
   ],
   Dimanche: [
     makeSlot("00h", "evening"),
     makeSlot("01h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("08h", "morning"),
-    makeSlot("13h", "day"),
     makeSlot("18h", "morning"),
   ],
 };

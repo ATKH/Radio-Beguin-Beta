@@ -9,6 +9,7 @@ import BackLink from "@/components/BackLink";
 import type { PodcastEpisode, PodcastPlaylist } from "@/lib/podcasts";
 import { usePlayer } from "@/lib/PlayerContext";
 import { useLocale } from "@/lib/LocaleContext";
+import { normalizeSoundCloudArtworkUrl } from "@/lib/soundcloud/artwork";
 
 type ShowClientProps = {
   episode: PodcastEpisode;
@@ -80,7 +81,7 @@ export default function ShowClient({ episode, recommended = [], parentPlaylist =
         <div className="group relative w-full max-w-xs mx-auto md:mx-0 md:w-[240px] md:flex-shrink-0 aspect-square overflow-hidden rounded-lg self-start">
           <Image
             src={
-              episode.artworkUrl?.replace("-large", "-t500x500") ||
+              normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300") ||
               "/default-artwork.jpg"
             }
             alt={episode.title}
@@ -166,7 +167,7 @@ export default function ShowClient({ episode, recommended = [], parentPlaylist =
                 >
                   <div className="relative w-full aspect-square overflow-hidden">
                   <Image
-                    src={rec.artworkUrl}
+                    src={normalizeSoundCloudArtworkUrl(rec.artworkUrl, "t300x300")}
                     alt={rec.title}
                     fill
                     sizes="(min-width: 1024px) 220px, (min-width: 640px) 40vw, 85vw"

@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server";
 
-const TRACK_INFO_URL = "https://api.radioking.io/widget/radio/radio-beguin-1/track/current";
-const CACHE_TTL_MS = 15_000;
+const CACHE_TTL_MS = 15_000; // 15 secondes
 
-type LiveTrackCache = {
-  expiresAt: number;
-  payload: unknown;
-};
-
-let cachedTrack: LiveTrackCache | null = null;
+let cachedTrack: { expiresAt: number; payload: { title: string; artist: string } } | null = null;
 
 export async function GET() {
   const now = Date.now();
+  
   if (cachedTrack && cachedTrack.expiresAt > now) {
     return NextResponse.json(cachedTrack.payload, {
       headers: {
@@ -21,6 +16,7 @@ export async function GET() {
   }
 
   try {
+    const TRACK_INFO_URL = "https://stream.radiobeguin.com/api/nowplaying/1";
     const upstream = await fetch(TRACK_INFO_URL, {
       headers: {
         "cache-control": "no-cache",
@@ -40,11 +36,17 @@ export async function GET() {
     }
 
     const data = await upstream.json();
+    const track = {
+      title: data?.now_playing?.song?.title ?? "",
+      artist: data?.now_playing?.song?.artist ?? "",
+    };
+
     cachedTrack = {
-      payload: data,
+      payload: track,
       expiresAt: now + CACHE_TTL_MS,
     };
-    return NextResponse.json(data, {
+
+    return NextResponse.json(track, {
       headers: {
         "cache-control": "public, s-maxage=15, stale-while-revalidate=30",
       },
@@ -58,6 +60,6 @@ export async function GET() {
         },
       });
     }
-    return NextResponse.json({ error: "unavailable" }, { status: 500 });
+    return NextResponse.json({ title: "", artist: "" }, { status: 500 });
   }
 }

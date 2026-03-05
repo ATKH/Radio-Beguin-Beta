@@ -1,5 +1,4 @@
-/* Import des polices Google */
-@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;700&family=Zilla+Slab:wght@400;700&display=swap');
+/* Fonts are loaded via next/font in layout.tsx */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -11,7 +10,7 @@
   --primary-foreground: #f5f5f5;
   --foreground: #0a0a0a;
   --foreground-strong: #060607;
-  --muted-foreground: #4f4f59;
+  --muted-foreground: #3f3f4a;
   --background: #fffdfc;
   --surface: #fffcf8;
   --surface-muted: rgba(255, 252, 247, 0.92);
@@ -32,7 +31,7 @@
   --primary-foreground: #f5f5f5;
   --foreground: #0a0a0a;
   --foreground-strong: #060607;
-  --muted-foreground: #4f4f59;
+  --muted-foreground: #3f3f4a;
   --background: #fffdfc;
   --surface: #fffcf8;
   --surface-muted: rgba(255, 252, 247, 0.92);
@@ -53,7 +52,7 @@
   --primary-foreground: #080808;
   --foreground: #f9f9f9;
   --foreground-strong: #f4f4f5;
-  --muted-foreground: #a1a1aa;
+  --muted-foreground: #c7c7d1;
   --background: #050505;
   --surface: #080808;
   --surface-muted: rgba(8, 8, 8, 0.86);
@@ -352,7 +351,7 @@
 
   .tag-pill.active {
     background-color: var(--primary);
-    color: #ffffff;
+    color: var(--primary-foreground);
     border-color: var(--primary);
   }
 
