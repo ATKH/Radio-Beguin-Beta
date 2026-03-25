@@ -39,17 +39,14 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
     makeSlot("13h", "day"),
+  { time: "16h", label: "Everything is Computer • Triplehess", highlight: true }, 
   ],
   Mercredi: [
     makeSlot("00h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
     makeSlot("13h", "day"),
-    {
-      time: "14h",
-      label: "BE HATCH • Outlines, Pawel 'Paide' Dunajko & Trajectoires",
-      highlight: true,
-    },
+  { time: "19h", label: "Ondes Hypnotiques • Bison 4", highlight: true }, 
   ],
   Jeudi: [
     makeSlot("00h", "evening"),
@@ -65,8 +62,6 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
     makeSlot("13h", "day"),
-    { time: "21h", label: "Sarraounia • DIKI", highlight: true },
-    makeSlot("22h", "evening"),
   ],
   Samedi: [
     makeSlot("00h", "evening"),
