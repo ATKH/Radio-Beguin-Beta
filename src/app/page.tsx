@@ -33,21 +33,22 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
     makeSlot("13h", "day"),
+  { time: "18h", label: "Le béguin pour • Erica Do Futuro", highlight: true },
   ],
   Mardi: [
     makeSlot("00h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
+  { time: "10h", label: "Ripisylve", highlight: true },
     makeSlot("13h", "day"),
-  { time: "16h", label: "Everything is Computer • Triplehess", highlight: true }, 
   ],
   Mercredi: [
     makeSlot("00h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
-    makeSlot("13h", "day"),
-  { time: "19h", label: "Ondes Hypnotiques • Bison 4", highlight: true }, 
+    makeSlot("13h", "day"), 
   ],
+    
   Jeudi: [
     makeSlot("00h", "evening"),
     makeSlot("01h", "night"),
@@ -61,6 +62,7 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("01h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("07h", "morning"),
+  { time: "11h", label: "Gather GM • Label Echo Special", highlight: true },
     makeSlot("13h", "day"),
   ],
   Samedi: [
@@ -76,7 +78,15 @@ const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
     makeSlot("01h", "night"),
     makeSlot("05h", "ambient"),
     makeSlot("08h", "morning"),
-    makeSlot("18h", "morning"),
+       {
+      time: "14h",
+      label: "Event : Mangez Bougez au Grrrnd Zero avec La 7eme Sono",
+      link: "https://www.grrrndzero.org/index.php/2791-dim-14-06-mangez-bougez-par-radio-beguin-et-la-7eme-sono",
+      highlight: true,
+      translations: {
+        en: "Event : Mangez Bougez au Grrrnd Zero w La 7eme Sono ",
+      },
+    },
   ],
 };
 
