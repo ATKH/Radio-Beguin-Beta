@@ -12,7 +12,7 @@ import type { PodcastEpisode } from '@/lib/podcasts';
 
 const RADIO_STREAM_URL = 'https://stream.radiobeguin.com/listen/radio_b%C3%A9guin/radio.mp3';
 const RADIO_STREAM_AAC_URL: string | null = null;
-const RADIO_STREAM_HLS_URL = 'https://stream.radiobeguin.com/hls/radio_b%C3%A9guin/live.m3u8';
+const RADIO_STREAM_HLS_URL = null; // ← HLS retiré
 const TRACK_INFO_URL = '/api/live-track';
 const PLAYBACK_STORAGE_KEY = 'radio-beguin:playback-state';
 const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
@@ -86,15 +86,10 @@ export default function Player() {
   const lastLiveUrlRef = useRef<string | null>(null);
   const lastLivePauseAtRef = useRef<number | null>(null);
 
+  // ← Safari utilise désormais le MP3 directement comme tous les autres navigateurs
   const getLiveUrl = useCallback(() => {
-    if (isSafari) {
-      if (RADIO_STREAM_AAC_URL) {
-        return RADIO_STREAM_AAC_URL;
-      }
-      return RADIO_STREAM_HLS_URL;
-    }
     return buildLiveStreamUrl();
-  }, [isSafari]);
+  }, []);
 
   const PLAYER_MIN_HEIGHT = 58;
   const HEADER_HEIGHT = 56;
@@ -227,8 +222,8 @@ export default function Player() {
 
     if (activePlayer === 'live') {
       const liveUrl = getLiveUrl();
-      const shouldSwitch =
-        !audio.src || (isSafari && liveUrl === RADIO_STREAM_HLS_URL && audio.src !== liveUrl);
+      // ← shouldSwitch simplifié : plus de condition HLS Safari
+      const shouldSwitch = !audio.src;
       if (shouldSwitch) {
         lastLiveUrlRef.current = liveUrl;
         audio.src = liveUrl;
@@ -316,7 +311,8 @@ export default function Player() {
 
     if (activePlayer === 'live') {
       const liveUrl = getLiveUrl();
-      if (!audio.src || (isSafari && liveUrl === RADIO_STREAM_HLS_URL && audio.src !== liveUrl)) {
+      // ← plus de condition HLS Safari ici non plus
+      if (!audio.src) {
         lastLiveUrlRef.current = liveUrl;
         audio.src = liveUrl;
       }
@@ -401,7 +397,8 @@ export default function Player() {
         setIsBuffering(true);
         const pausedAt = lastLivePauseAtRef.current;
         const shouldRefresh = pausedAt ? Date.now() - pausedAt > 10000 : false;
-        if (!audio.src || shouldRefresh || (isSafari && audio.src !== RADIO_STREAM_HLS_URL)) {
+        // ← condition HLS Safari retirée
+        if (!audio.src || shouldRefresh) {
           const liveUrl = getLiveUrl();
           lastLiveUrlRef.current = liveUrl;
           audio.src = liveUrl;
