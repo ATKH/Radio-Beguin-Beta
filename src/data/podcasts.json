@@ -1,6 +1,164 @@
 {
   "episodes": [
     {
+      "id": "2372052410",
+      "title": "Béguin'Ternational • Kiana (31.07.26)",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-VWlGFwGzx5Gl1hjE-LjFItA-t500x500.jpg",
+      "pubDate": "2026/07/30 16:23:16 +0000",
+      "link": "https://soundcloud.com/radiobeguin/b-guinternational-o-kiana-31?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "@kianabahrami is a Tehran-born visual artist and painter whose creative practice is deeply shaped by the city’s cultural landscape. While trained in the visual arts, she expanded her artistic language through music, channeling her passion into a career as a DJ and in electronic music. For Kiana, sound is another medium for storytelling, an extension of the same artistic curiosity that informs her visual work.\n\nEmerging from Tehran’s underground music scene, Kiana crafts sets and productions that move fluidly across House, Tech House, Progressive House, Techno Dub, and Trance, and other bass-driven electronic genres. Influenced by the energy and resilience of the city’s independent nightlife, her work reflects a constantly evolving dialogue between rhythm, movement, and place. Through collaborations with collectives and platforms across Iran and beyond, she creates immersive sonic experiences that capture the pulse of Tehran’s vibrant underground culture.",
+      "tags": [
+        "Crépuscule",
+        "tech house",
+        "house",
+        "deep house"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2372052410/streams/b385e08a-3b8b-491f-98e8-7edf8eee9fbc/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2372044238",
+      "title": "Béguin'Ternational • Helia Kiani (31.07.26)",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-P4cYnKztK6uSFcIw-NXUjQA-t500x500.jpg",
+      "pubDate": "2026/07/30 16:15:35 +0000",
+      "link": "https://soundcloud.com/radiobeguin/b-guinternational-o-helia?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Helia Kiani (b. 2001, Iran) is a composer, pianist, and DJ currently based in Paris. Her musical journey began at an early age through classical music, shaping a practice rooted in composition, performance, and a deep curiosity for sound as a language of expression. \n\nWith a background in linguistics, her path gradually expanded toward electronic music. Approaching DJing as a form of curation, she creates immersive, genre-fluid sets rooted in Hypnotic Techno, focused on movement, presence, and collective connection.\n\n@user-892415380",
+      "tags": [
+        "Abysses",
+        "Techno",
+        "Trance"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2372044238/streams/ae7b7120-3cce-42a3-8370-c142a0f42d9c/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2367081320",
+      "title": "Carl Dogo & xoxo.mp3 • Fête de la musique 2026 aux Clâmeurs",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-7SQmDkUglUzfo7Ee-4ntfHw-t500x500.jpg",
+      "pubDate": "2026/07/24 08:01:47 +0000",
+      "link": "https://soundcloud.com/radiobeguin/carl-dogo-xoxo-mp3-o-f-te-de?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Carl Dogo & xoxo.mp3 pour la fête de la musique 2026 aux Clameurs !",
+      "tags": [
+        "Appels de Phares",
+        "Dubstep",
+        "Techno",
+        "breaks"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2367081320/streams/a065f49e-8a9d-4a33-8c2e-97d4f06f1752/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2365423076",
+      "title": "Dori • Fête de la musique 2026 aux Clameurs",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-7SQmDkUglUzfo7Ee-4ntfHw-t500x500.jpg",
+      "pubDate": "2026/07/21 20:57:29 +0000",
+      "link": "https://soundcloud.com/radiobeguin/dori-o-f-te-de-la-musique-2026?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Dori pour la fête de la musique 2026 aux Clameurs !",
+      "tags": [
+        "Bain de Soleil",
+        "dub",
+        "downtempo",
+        "electronica"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2365423076/streams/8bda1c00-5fd0-4621-b63b-b22d8995b451/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2365418456",
+      "title": "Leftoverdubs - Likhan & LeTo • Fête de la musique 2026 aux Clameurs",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-ZdWrZhSnKz29foj4-9g9dNQ-t500x500.jpg",
+      "pubDate": "2026/07/21 20:45:45 +0000",
+      "link": "https://soundcloud.com/radiobeguin/leftoverdubs-likhan-leto-o-f?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Likhan & LeTo, du label Leftoverdubs, pour la fête de la musique 2026 aux Clameurs !",
+      "tags": [
+        "Appels de phares",
+        "Dubstep"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2365418456/streams/8eff8e13-3b29-4e8f-b297-02c5a7f06160/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2361879548",
+      "title": "Everything's computer #5",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-TFi6sHdQsQhhMOui-DJRaww-t500x500.jpg",
+      "pubDate": "2026/07/16 10:35:50 +0000",
+      "link": "https://soundcloud.com/radiobeguin/everythings-computer-5?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "James Bernard - Acid Ocean \nfeeble little horse - Paris \nEar - water and power\nAnadol, Marie Klock - Sans toi\nJonny Nash · Tomo Katsurada - Anone None\nTujiko Noriko, Lawrence English, John Chantler - 12 O’clock On The Highway\nSilo City - 1871 (Arena)\nCate Kennan - Devil’s Hour\nSina - Olympus\nBill Orcutt · Mabe Fratti - Todo Puede Ser Error\nDetente - millencolin\n2k88, Rainy Miller, Lauren Dufus - Poetic Fallacy\nEartheater - Paradise Rains\nMohamed Bourouissa - AB\nPablo’s Eye - View Point ",
+      "tags": [
+        "metro boulot",
+        "indie",
+        "ambient"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2361879548/streams/4c5b53ed-f62b-45e9-ac28-39d6d39e62bd/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2361554345",
+      "title": "Ressources Naturelles - Elon Skum & Hharah",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-UpwUddp0N4WyC6Yq-qLUdHg-t500x500.jpg",
+      "pubDate": "2026/07/16 06:59:12 +0000",
+      "link": "https://soundcloud.com/radiobeguin/ressources-naturelles-elon?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Un an déjà que la dj et productrice Hharah m’a rejoint pour animer l’émission Resources Naturelles sur Radio Béguin . Le temps passe vite et pour cette dernière de la saison, on vous offre 1h de mix en back 2 back entre grime et uk Bass. Stay hydrated. Peace.",
+      "tags": [
+        "Appels de Phares",
+        "Grime",
+        "uk funky",
+        "bass"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2361554345/streams/8d1f3b79-e851-4a23-8255-1e49a4282da4/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2356062833",
+      "title": "Ecran Total #9",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-MXLzalA3H6Z7jKao-BRRMSA-t500x500.jpg",
+      "pubDate": "2026/07/09 07:15:56 +0000",
+      "link": "https://soundcloud.com/radiobeguin/ecran-total-9?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Ce mois-ci je vous propose une heure beaucoup plus club que d’habitude avec une heure de house, de trance et de breakbeat. \n\nSofia Theme - X.Y.R\nAquarius Heaven  - Universe \nKo Yang - Koinobori \nOcto Octa - Keep Pressing On \nDust-e-1 - The Lights \nAgresivnes - I Need A Breakbeat \nKittens - Underworld\nCores - Iowa\nMat Silver vs Tony Burt - Ultimate Wave (B.Breach Break remix)\nPiezo - Their Amnesiac Couriers\nVon Riu - Psykoz \nThe Criminal Minds - Flynny’s Theme",
+      "tags": [
+        "Crépuscule",
+        "house",
+        "trance",
+        "breaks"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2356062833/streams/34138594-e8c6-4075-bd3f-75e0ab29e076/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2354554535",
+      "title": "RIPISYLVE #14 w/ Small Water Bodies",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-QZ5a8ypX6Hy6tILd-WYXdzg-t500x500.jpg",
+      "pubDate": "2026/07/07 07:31:24 +0000",
+      "link": "https://soundcloud.com/radiobeguin/ripisylve-14-w-small-water?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Nyokabi Kariũki - home piano\nPak Yan Lau - Il Problema Di Girarsi\nTime Wharp - Altec Curtis\nJonny Nash & Suzanne Kraft - See Yourself Out Of The Way\nKali Malone - Moving Forward\nFabiano do Nascimento - Aurora\nLaurence Pike - Possible Utopias\nNajee-Zaid - Pushing Through\nSurya Botofasina - Our Cottage To Across The Stream\nZsela (with Daniel Aged & Taul Katz) - Dream 2\nNala Sinephro - Live at Real World Studios with Edward Wakili-Hick & Dwayne Kilvington\nDuval Timothy & Carlos Niño - bellsssswell",
+      "tags": [
+        "meditation-core",
+        "ambient",
+        "spiritual jazz",
+        "drone"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2354554535/streams/e55c5b28-9ea8-40a7-a88d-9ecadb05bf0c/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
       "id": "2349505292",
       "title": "Ça Jacte - Clarisse invite Jody Boucard",
       "artworkUrl": "https://i1.sndcdn.com/artworks-CqRpUhZdRwoME3LA-YRKyIQ-t500x500.jpg",
@@ -8,10 +166,61 @@
       "link": "https://soundcloud.com/radiobeguin/c-a-jacte-clarisse-jody?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
       "description": "Clarisse invite Jody Boucard, qui est médiatrice au sein du collectif Nous Sommes et propose également des accompagnements féministes à destination de personnes ayant commis des violences sexistes et sexuelles.\n",
       "tags": [
-        "Talk",
-        "talk"
+        "Talk"
       ],
       "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2349505292/streams/aced97a8-3b07-4022-b1c4-5601231355e5/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2347500152",
+      "title": "Wayatt • Fête de la musique aux Clameurs",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-CENCnYWobl9JGeII-TtCy3w-t500x500.jpg",
+      "pubDate": "2026/06/26 06:19:10 +0000",
+      "link": "https://soundcloud.com/radiobeguin/wayatt-o-f-te-de-la-musique?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Wayatt pour la Fête de la Musique aux Clâmeurs !",
+      "tags": [
+        "Abysses",
+        "Deconstructed Club",
+        "hyperpop"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2347500152/streams/ed4fe97a-135c-4fc0-9032-eb88a5e63783/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2346813551",
+      "title": "Michel Delapeche • Fête de la musique aux Clameurs",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-3gvbuYymYcJDw5zw-Edf7NQ-t500x500.jpg",
+      "pubDate": "2026/06/25 17:48:59 +0000",
+      "link": "https://soundcloud.com/radiobeguin/micher-delapeche-o-f-te-de-la?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Michel Delapeche en direct des Clâmeurs pour la fête de la musique 2026",
+      "tags": [
+        "Appels de Phares",
+        "Électro",
+        "trance"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2346813551/streams/1ebfcf83-06ca-43d1-af21-51e2e53c1f9f/http",
+      "streamProtocol": "progressive",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2346458729",
+      "title": "Caracol • Fête de la musique 2026 aux Clâmeurs",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-zn4eiAfQ6rSo8yVB-lM1bCg-t500x500.jpg",
+      "pubDate": "2026/06/25 14:30:42 +0000",
+      "link": "https://soundcloud.com/radiobeguin/zoe-caracal-o-f-te-de-la?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Caracol pour la fête de la musique aux Clâmeurs !",
+      "tags": [
+        "Appels de Phares",
+        "bass",
+        "breaks",
+        "uk funky"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2346458729/streams/4cb4d75c-7a57-4fb6-96d8-3ea4efa0978b/http",
       "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
@@ -3225,7 +3434,8 @@
         "Tech House",
         "Deep House"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2078172184/streams/98d3ca82-7411-4625-8d39-258d1c270a5d/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3277,7 +3487,8 @@
         "Drone",
         "Field Recording"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2073214896/streams/80d80dcd-39cd-4881-8cf0-83d61fbe6dcb/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3325,7 +3536,8 @@
       "tags": [
         "Talk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2071798420/streams/942eb453-eae4-4c79-a0ee-6bed16dc6bf3/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3378,7 +3590,8 @@
         "Breaks",
         "Club"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2067812856/streams/f384974a-7386-43c0-a9c0-1905548c08c5/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3550,7 +3763,8 @@
         "Leftfield Techno",
         "Techno"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2055914548/streams/6a3c1679-a83d-4a70-9725-e04cb03e6e5b/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3603,7 +3817,8 @@
         "Psychedelic Folk",
         "Post Punk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2055904992/streams/a0d9bd63-fd22-4bff-9c7a-5f8274426b81/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3671,7 +3886,8 @@
       "tags": [
         "Talk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2048552388/streams/82a2d12e-c57c-4ff1-afa1-8382832ad4e1/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3687,7 +3903,8 @@
         "Techno",
         "Trance"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2047920488/streams/f7ade62b-f3f8-4cd1-9dee-634740bb4639/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3789,7 +4006,8 @@
         "Hip Hop",
         "Dembow"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2046051308/streams/fefdca3d-6452-4e13-b647-f76e33ad9b08/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3887,7 +4105,8 @@
         "Breaks",
         "Dembow"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2041888316/streams/848889c1-4dbe-483e-aea6-72293d468e37/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3975,7 +4194,8 @@
         "Electronica",
         "Breaks"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2038018264/streams/57e1ff83-32f4-4245-9217-2fa9454a0d0f/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -3990,7 +4210,8 @@
         "Abysses",
         "Techno"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2037706724/streams/17cf98ac-236a-4927-a165-b54bb9e2df46/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4005,7 +4226,8 @@
         "Appels de Phares",
         "Techno"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2037705624/streams/c39c8d4e-007a-4649-931f-01452f4fe4e8/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4022,7 +4244,8 @@
         "Club",
         "Breaks"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2037243601/streams/4d7feabe-513d-4149-90a8-c07908ff7829/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4092,7 +4315,8 @@
         "Jazz",
         "Deep House"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2036451720/streams/76122bef-d9d5-40c2-9207-bfb2a6704274/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4304,7 +4528,8 @@
         "Drum & Bass",
         "Electronica"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2020839461/streams/3cfb4f9e-9ca9-48a8-8c11-1174ebbabae8/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4427,7 +4652,8 @@
         "jungle",
         "Dancehall"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2012465379/streams/4a73a348-6421-4cfe-913f-ab283483a0ca/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4441,7 +4667,8 @@
       "tags": [
         "Talk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2011512843/streams/292e2583-2952-4222-8025-ef9167c39836/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4475,7 +4702,8 @@
         "Hip Hop",
         "Rap"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2008309603/streams/7331e525-f4e7-48e8-8ae3-a049924e65f1/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4631,7 +4859,8 @@
         "R n B",
         "Club"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2004090287/streams/0f5453de-8fef-49ea-8fc2-6f9e2d02564f/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4666,7 +4895,8 @@
         "Hip Hop",
         "Psychedelic Rock"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2000875783/streams/5f70b7fd-c723-4982-8577-36e164795448/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4683,7 +4913,8 @@
         "Psychedelic Folk",
         "Psychedelic Rock"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2000240419/streams/566aff09-c293-4837-85ee-c47a67338789/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4717,7 +4948,8 @@
         "Techno",
         "Trance"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1994680391/streams/60dbe0f8-8ed2-45f3-b42e-55829bbdece5/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4819,7 +5051,8 @@
         "Drone",
         "Electronica"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1987677939/streams/55cd6412-8456-42c1-85c4-01fa8621d7c7/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4854,7 +5087,8 @@
         "Psychedelic Rock",
         "Electro"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1987164647/streams/523cdc26-d4d8-46aa-bcc8-4e0c301c1008/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -4994,7 +5228,8 @@
         "Leftfield Techno",
         "Downtempo"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1976905879/streams/9aab33c1-4b7e-441b-b503-7c42dace9b14/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -5241,7 +5476,8 @@
         "Kuduro",
         "Dembow"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1955958207/streams/3c6edfde-b1ba-46fe-8d9c-8ed14e3b3217/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -5323,7 +5559,8 @@
         "Pop",
         "Psychedelic Folk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1949522731/streams/1e7bf2b1-c7d8-43bb-9cbc-03f9b84f2e2a/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -5392,7 +5629,8 @@
         "Deconstructed Club",
         "Breakcore"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1945397467/streams/23fba6fb-e250-4cc0-b124-f4b5a55e4272/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -5701,7 +5939,8 @@
         "Talk",
         "talk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1935570245/streams/3adb7ef8-d298-4dda-9cb7-151554f95f3e/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -5769,7 +6008,8 @@
         "Bass",
         "Trance"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1931730893/streams/44f8af35-d040-42c1-8159-dd632d6dad28/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -5927,7 +6167,8 @@
         "House",
         "Italo"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1896494064/streams/385fb576-b3a8-4ee1-8dee-be9bd43f4b31/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6149,7 +6390,8 @@
         "Techno",
         "Hardcore"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1857045627/streams/41fa0205-6dd4-4ba5-ba91-c69ec33f3e16/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6166,7 +6408,8 @@
         "Bass",
         "Leftfield Techno"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1856973333/streams/31335c55-a2e8-4498-8cf0-756263d0345e/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6201,7 +6444,8 @@
         "Tech House",
         "Techno"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1856491818/streams/162daa68-a02a-4917-aaf8-74ac09829c1f/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6218,7 +6462,8 @@
         "Bass",
         "Kuduro"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1856313837/streams/4aca14d0-ac4f-4bde-8d69-079bb31caa15/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6235,7 +6480,8 @@
         "Disco",
         "Electro"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1855069953/streams/671bf44d-5687-467c-89c2-9e4f0913b2d6/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6305,7 +6551,8 @@
         "Psychedelic Folk",
         "Ambient"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1852262388/streams/ab55595d-8ca0-4a4f-b19c-c46cc526e1ab/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6371,7 +6618,8 @@
       "tags": [
         "Rock"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1849849008/streams/2fb294b7-f51c-4c33-834b-cdd64f7998c4/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6405,7 +6653,8 @@
         "Trip Hop",
         "Spiritual Jazz"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1849703682/streams/fb246a47-5039-42c9-8b1f-8b9469c4f43f/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6475,7 +6724,8 @@
         "Dub",
         "Post Punk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1841303958/streams/dea3f565-f629-45cf-af4b-04c224889d11/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6564,7 +6814,8 @@
         "Noise",
         "Ambient"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1840986174/streams/37aeecea-55e6-49d5-a369-4d92574dd459/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6599,7 +6850,8 @@
         "Tech House",
         "Arabic Traditional"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1839556092/streams/9712527f-51a8-4aa9-a441-7e2c45aca6c5/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6633,7 +6885,8 @@
         "Drum&Bass",
         "Tech House"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1837232562/streams/917e9522-bbcf-4265-9ff7-af18690fa034/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6704,7 +6957,8 @@
         "Bass",
         "Jungle"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1834511265/streams/9ec0db94-3c8c-4d15-8c19-9978f0e20672/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6790,7 +7044,8 @@
         "Garage",
         "Techno"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1831138080/streams/ec4aaaa7-e46b-4890-8124-6642be125aa3/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6889,7 +7144,8 @@
         "Ambient",
         "Experimental"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1825426488/streams/34e46703-fed3-4513-8a53-2b29003230a6/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -6906,7 +7162,8 @@
         "Experimental",
         "Field Recording"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1823522052/streams/ebb5d7b4-4c09-438f-bcd7-2bd10aa99b5e/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -7030,7 +7287,8 @@
         "Industrial",
         "Hardcore"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1808364408/streams/8560d677-d2ff-4177-ae69-e7ebcf5469a2/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -7047,7 +7305,8 @@
         "Reggaeton",
         "Dembow"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1807522854/streams/96cbae96-4711-40f7-aa11-5192690e2f88/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -7115,7 +7374,8 @@
       "tags": [
         "Talk"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1805214141/streams/b5829672-4722-4e72-aa54-2502420d1e71/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -7257,7 +7517,8 @@
         "Dembow",
         "Club"
       ],
-      "audioUrl": "",
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1797887392/streams/5397c807-cb38-4437-9066-37f9b3487af4/http",
+      "streamProtocol": "progressive",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -22637,6 +22898,42 @@
   ],
   "playlists": [
     {
+      "id": "2272738763",
+      "title": "Fête de la musique 2026",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-7SQmDkUglUzfo7Ee-4ntfHw-t500x500.jpg",
+      "description": "",
+      "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/fete-de-la-musique-2026?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "trackCount": 6,
+      "tags": [],
+      "lastUpdated": "2026/07/24 08:15:50 +0000",
+      "episodeIds": [
+        "2346458729",
+        "2346813551",
+        "2347500152",
+        "2365423076",
+        "2365418456",
+        "2367081320"
+      ],
+      "latestEpisode": {
+        "id": "2367081320",
+        "title": "Carl Dogo & xoxo.mp3 • Fête de la musique 2026 aux Clâmeurs",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-7SQmDkUglUzfo7Ee-4ntfHw-t500x500.jpg",
+        "pubDate": "2026/07/24 08:01:47 +0000",
+        "link": "https://soundcloud.com/radiobeguin/carl-dogo-xoxo-mp3-o-f-te-de?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Carl Dogo & xoxo.mp3 pour la fête de la musique 2026 aux Clameurs !",
+        "tags": [
+          "Appels de Phares",
+          "Dubstep",
+          "Techno",
+          "breaks"
+        ],
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2367081320/streams/a065f49e-8a9d-4a33-8c2e-97d4f06f1752/http",
+        "streamProtocol": "progressive",
+        "sharing": "public",
+        "trackAuthorization": null
+      }
+    },
+    {
       "id": "2258412677",
       "title": "Where's the Afters",
       "artworkUrl": "https://i1.sndcdn.com/artworks-1zLGlyzp6vUvGI6k-eEx8yg-t500x500.jpg",
@@ -22762,40 +23059,6 @@
           "G-Funk"
         ],
         "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2258414087/streams/c784700d-b33e-46af-bc6f-d024f4a8e5d2/http",
-        "streamProtocol": "progressive",
-        "sharing": "public",
-        "trackAuthorization": null
-      }
-    },
-    {
-      "id": "2178553766",
-      "title": "Boskop Tex Mix",
-      "artworkUrl": "https://i1.sndcdn.com/artworks-s8aPVKFpHbVLcCJm-xkrEVw-t500x500.jpg",
-      "description": "Soirée co-organisée par HATCH et Radio Béguin galerie Boskop",
-      "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/boskop-tex-mix?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 4,
-      "tags": [],
-      "lastUpdated": "2026/01/21 23:52:12 +0000",
-      "episodeIds": [
-        "2251699523",
-        "2251689641",
-        "2251678316",
-        "2251738262"
-      ],
-      "latestEpisode": {
-        "id": "2251738262",
-        "title": "BOSKOP TEX MIX (16.01.26) / xoxo.mp3 & DJ NoWay",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-qNyK6s7OkvoolZhQ-Af0ntQ-t500x500.jpg",
-        "pubDate": "2026/01/21 23:45:37 +0000",
-        "link": "https://soundcloud.com/radiobeguin/boskop-tex-mix-160126-xoxomp3-b2b-dj-noway?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Le set de @xoxomp3 et @dj-noway en direct de la BOSKOP TEX MIX",
-        "tags": [
-          "Appels de Phares",
-          "ghetto",
-          "electro",
-          "Bass"
-        ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2251738262/streams/c5f3bed3-d010-4dde-aaaf-4d6b6689275d/http",
         "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
@@ -22934,13 +23197,14 @@
     {
       "id": "2112199628",
       "title": "Ecran Total",
-      "artworkUrl": "https://i1.sndcdn.com/artworks-OJWZIKbYmCVEqz1t-lC95Ew-t500x500.jpg",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-MXLzalA3H6Z7jKao-BRRMSA-t500x500.jpg",
       "description": "Écran Total :\n\nUne émission sans étiquette, qui se balade entre les styles selon le moment et l’humeur. Ambiant, jazz, funk, IDM, trance… tout peut arriver. L'idée : se connecter et se laisser porter.\n\n\nTikTok : https://www.tiktok.com/@ecran.total?_t=ZN-8x76SwzZ8xq&_r=1\nInstagram : https://www.instagram.com/ecran_total_hqigsh=dDZ4dG1zZHRnMHZ3&utm_source=qr\n\nSpotify : https://open.spotify.com/playlist/75R1hUUOFlzNnHkPMeAb8a?si=Ki_n_TZUSi2i6afrH2ohtg&pi=ZsLoLyJHRvypw",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/ecran-total?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 8,
+      "trackCount": 9,
       "tags": [],
-      "lastUpdated": "2026/06/13 09:05:12 +0000",
+      "lastUpdated": "2026/07/09 07:19:34 +0000",
       "episodeIds": [
+        "2356062833",
         "2338569263",
         "2316862196",
         "2299337678",
@@ -22951,19 +23215,19 @@
         "2210267063"
       ],
       "latestEpisode": {
-        "id": "2338569263",
-        "title": "Ecran Total #8",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-OJWZIKbYmCVEqz1t-lC95Ew-t500x500.jpg",
-        "pubDate": "2026/06/13 09:03:15 +0000",
-        "link": "https://soundcloud.com/radiobeguin/ecran-total-13?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Ce mois-ci je vous embarque avec moi pour une heure de downtempo, de shoegaze, de deep house et bien d’autres choses encore. \n\nTracklist : \n\n    Dreadzone - Out of Heaven\n    Florian Pellissier Quintet - Où c’est ? Qui sait ?\n    BCUC - Higher Vibes\n    Stone - Feely\n    April Magazine - Lost\n    A.C. Marias - Just Talk\n    Access Denied - Lucifer (Downstairs Mix)\n    Verso II Sole - The Dining Rooms\n    Kalani - Lumin\n    Dadada - Glass Ceiling (Eden Burns Bonafide Club Mix)\n    Sakro - Jazz In The Forest\n    Galcher Lustwerk - Another Story\n    Groove Sector - Release The Energy\n    Jump Source - Endlessly",
+        "id": "2356062833",
+        "title": "Ecran Total #9",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-MXLzalA3H6Z7jKao-BRRMSA-t500x500.jpg",
+        "pubDate": "2026/07/09 07:15:56 +0000",
+        "link": "https://soundcloud.com/radiobeguin/ecran-total-9?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Ce mois-ci je vous propose une heure beaucoup plus club que d’habitude avec une heure de house, de trance et de breakbeat. \n\nSofia Theme - X.Y.R\nAquarius Heaven  - Universe \nKo Yang - Koinobori \nOcto Octa - Keep Pressing On \nDust-e-1 - The Lights \nAgresivnes - I Need A Breakbeat \nKittens - Underworld\nCores - Iowa\nMat Silver vs Tony Burt - Ultimate Wave (B.Breach Break remix)\nPiezo - Their Amnesiac Couriers\nVon Riu - Psykoz \nThe Criminal Minds - Flynny’s Theme",
         "tags": [
-          "Métro Boulot",
-          "Downtempo",
-          "shoegaze",
-          "deep house"
+          "Crépuscule",
+          "house",
+          "trance",
+          "breaks"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2338569263/streams/9550bbbf-7a56-4a29-9e07-f49e0fd66853/http",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2356062833/streams/34138594-e8c6-4075-bd3f-75e0ab29e076/http",
         "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
@@ -23106,32 +23370,32 @@
     {
       "id": "2009615094",
       "title": "Everything's computer",
-      "artworkUrl": "https://i1.sndcdn.com/artworks-z2GYo3O2NM8KoPSr-Ro3qJA-t500x500.jpg",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-TFi6sHdQsQhhMOui-DJRaww-t500x500.jpg",
       "description": "",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/everythings-computer?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 4,
+      "trackCount": 5,
       "tags": [],
-      "lastUpdated": "2026/03/19 14:45:50 +0000",
+      "lastUpdated": "2026/07/16 10:36:27 +0000",
       "episodeIds": [
+        "2361879548",
         "2286862640",
         "2191074939",
         "2148743778",
         "2082935307"
       ],
       "latestEpisode": {
-        "id": "2286862640",
-        "title": "Everything's computer #4",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-z2GYo3O2NM8KoPSr-Ro3qJA-t500x500.jpg",
-        "pubDate": "2026/03/19 14:44:38 +0000",
-        "link": "https://soundcloud.com/radiobeguin/everythings-computer-4-1?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Searows - In Violet\nChino Amo - Aristides\nVoice Actor - Living\nThe Girl In Time New Viking - When Yr Old\nMaria BC - May this rain\nPuma Blue - Heaven above, hell below\nNoémi Bûchi - dislocated bodies [feat. Anushka Chkheidze]\nLolina - gg\nBrat Star - David Fincher\nNashpaints - Stretching\nFelicity J Lord - Brill verb 2\nDj lostboi - silver pool of sadness\nThe Thinking of the World Began Pounding in Our Ears the Moment We Hit Shore - Say What You Want\nStorm, Injury Reserve - Can I Have You For Myself \nLueenas - Ships",
+        "id": "2361879548",
+        "title": "Everything's computer #5",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-TFi6sHdQsQhhMOui-DJRaww-t500x500.jpg",
+        "pubDate": "2026/07/16 10:35:50 +0000",
+        "link": "https://soundcloud.com/radiobeguin/everythings-computer-5?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "James Bernard - Acid Ocean \nfeeble little horse - Paris \nEar - water and power\nAnadol, Marie Klock - Sans toi\nJonny Nash · Tomo Katsurada - Anone None\nTujiko Noriko, Lawrence English, John Chantler - 12 O’clock On The Highway\nSilo City - 1871 (Arena)\nCate Kennan - Devil’s Hour\nSina - Olympus\nBill Orcutt · Mabe Fratti - Todo Puede Ser Error\nDetente - millencolin\n2k88, Rainy Miller, Lauren Dufus - Poetic Fallacy\nEartheater - Paradise Rains\nMohamed Bourouissa - AB\nPablo’s Eye - View Point ",
         "tags": [
-          "Métro Boulot",
+          "metro boulot",
           "indie",
-          "trip-hop",
-          "folk"
+          "ambient"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2286862640/streams/ab37f184-b599-427b-80dd-85520fda406c/http",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2361879548/streams/4c5b53ed-f62b-45e9-ac28-39d6d39e62bd/http",
         "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
@@ -23143,10 +23407,11 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-rvGaXmwjBiP68vq8-bTxrpw-t500x500.jpg",
       "description": "RIPISYLVE : émission ambient mensuelle par Margot (Xuri Mae) et Axel (Small Water Bodies), musicien-ne-s qui se retrouvent autour de sonorités fluides et calmes (électroniques, acoustiques ou captées dans des milieux naturels).\nL’émission propose une exploration des musiques ambient et des univers sonores voisins (expé, new age, fourth world, jazz, noise, musique de chambre, ...)\nRipisylve, c’est un terme qui désigne la zone naturelle située le long des cours d’eau, à la frontière entre le milieu aquatique et le milieu terrestre. Caractéristique du paysage lyonnais, ce mot exprime pour nous la connexion au lieu qui, depuis quelques années déjà, est notre maison.",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/ripisylve?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 14,
+      "trackCount": 15,
       "tags": [],
-      "lastUpdated": "2026/06/13 08:13:40 +0000",
+      "lastUpdated": "2026/07/07 08:11:09 +0000",
       "episodeIds": [
+        "2354554535",
         "2333099510",
         "2317960979",
         "2287446413",
@@ -23163,18 +23428,19 @@
         "2225004986"
       ],
       "latestEpisode": {
-        "id": "2333099510",
-        "title": "Ripisylve #13 w Xuri Mae",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-eGRWNL5zvro0nvhj-gAZUzg-t500x500.jpg",
-        "pubDate": "2026/06/04 09:06:44 +0000",
-        "link": "https://soundcloud.com/radiobeguin/ripisylve-13-w-xuri-mae?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Matthew Sage - Wading The Plain\nLI YILEI - Thé Noir, Rêvasser, Retrouvailles \nElsa Hewitt - Bundle of Joy\nSaya Gray - EMPATHY 4 BETHANY\nWhait - Suffer More feat. Jules Reidy\nZac Gvi & Clive Bell - Aisnar Blues\nLarry Goldings - Night Trains\nBen Wendel - Speak Joy (feat. Elena Pinderhughes)\nGanavya & Sam Amidon - Willow Street (feat. Sam Gendel) \nWolfgang Muthspiel, Scott Colley & Brian Blade - Invocation \nCarol Maia, Jeremy Gustin - Bubbles\nMacie Stewart - Disintegration\nAlabaster DePlume - What’s Missing ",
+        "id": "2354554535",
+        "title": "RIPISYLVE #14 w/ Small Water Bodies",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-QZ5a8ypX6Hy6tILd-WYXdzg-t500x500.jpg",
+        "pubDate": "2026/07/07 07:31:24 +0000",
+        "link": "https://soundcloud.com/radiobeguin/ripisylve-14-w-small-water?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Nyokabi Kariũki - home piano\nPak Yan Lau - Il Problema Di Girarsi\nTime Wharp - Altec Curtis\nJonny Nash & Suzanne Kraft - See Yourself Out Of The Way\nKali Malone - Moving Forward\nFabiano do Nascimento - Aurora\nLaurence Pike - Possible Utopias\nNajee-Zaid - Pushing Through\nSurya Botofasina - Our Cottage To Across The Stream\nZsela (with Daniel Aged & Taul Katz) - Dream 2\nNala Sinephro - Live at Real World Studios with Edward Wakili-Hick & Dwayne Kilvington\nDuval Timothy & Carlos Niño - bellsssswell",
         "tags": [
           "meditation-core",
           "ambient",
-          "spititual Jazz"
+          "spiritual jazz",
+          "drone"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2333099510/streams/486dea56-9df4-44d8-b4b3-5eaf491d2eb7/http",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2354554535/streams/e55c5b28-9ea8-40a7-a88d-9ecadb05bf0c/http",
         "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
@@ -23239,7 +23505,8 @@
         "tags": [
           "Talk"
         ],
-        "audioUrl": "",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2071798420/streams/942eb453-eae4-4c79-a0ee-6bed16dc6bf3/http",
+        "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
       }
@@ -23958,8 +24225,7 @@
         "link": "https://soundcloud.com/radiobeguin/c-a-jacte-clarisse-jody?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
         "description": "Clarisse invite Jody Boucard, qui est médiatrice au sein du collectif Nous Sommes et propose également des accompagnements féministes à destination de personnes ayant commis des violences sexistes et sexuelles.\n",
         "tags": [
-          "Talk",
-          "talk"
+          "Talk"
         ],
         "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2349505292/streams/aced97a8-3b07-4022-b1c4-5601231355e5/http",
         "streamProtocol": "progressive",
@@ -24199,7 +24465,8 @@
           "Psychedelic Folk",
           "Ambient"
         ],
-        "audioUrl": "",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:1852262388/streams/ab55595d-8ca0-4a4f-b19c-c46cc526e1ab/http",
+        "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
       }
@@ -24319,10 +24586,11 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-jjsm6KfChRh4orAK-Tar1NQ-t500x500.jpg",
       "description": "L'artiste lyonnais @elonskum présente son émission Ressources Naturelles, dédiée à la bass music.",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/ressources-naturelles?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 19,
+      "trackCount": 20,
       "tags": [],
-      "lastUpdated": "2026/06/20 11:01:45 +0000",
+      "lastUpdated": "2026/07/16 07:08:47 +0000",
       "episodeIds": [
+        "2361554345",
         "2343002447",
         "2328188000",
         "2303058092",
@@ -24344,19 +24612,19 @@
         "2281267007"
       ],
       "latestEpisode": {
-        "id": "2343002447",
-        "title": "Ressources Naturelles • LeTo",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-5axQjDoCF9QBG6Gb-x4b6FA-t500x500.jpg",
-        "pubDate": "2026/06/20 10:58:28 +0000",
-        "link": "https://soundcloud.com/radiobeguin/ressources-naturelles-o-leto?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Aujourd’hui, on a le plaisir d’accueillir un OG lyonnais : Leto, DJ et producteur, ainsi qu’un des créateurs du label LeftoverDubs.\n\nIl nous a préparé une heure de mix hybride, dissonant et bien costaud dans les graves.\n\nJe vous conseille d’aller jeter une oreille à la dernière sortie deep dubstep du label, aux côtés d’autres mastodontes français : Argo, Skwig et Nasty J.\nIl prépare également une cassette plus ambient et expérimentale qui devrait voir le jour dans les mois à venir — hâte de découvrir ça.\n\n\nEt si vous en voulez encore plus, la prochaine soirée du collectif est prévue le 3 juillet 2026 à La Pente à Lyon, comme d’habitude.\n\nBref, c’est parti pour une heure bien concentrée, à la fois carrée et chaotique.\n\n\nBonne écoute !\n\nTracklist :\nSednah - Tears\nSentient - Repeater\nMeta & Henry Greenleaf - Fault Line Vip\nNasty J - Dope\nB E N N - Dehumanize (DJ MORO Remix)\nLithe - Hammer\nrRoxymore - Drum Liberation\nResound - Axia (The True Worth Mix)\nCortical - Grated\nTOYC - Kicks\nBambounou & Bruce - Crash\nvromm - Molecular\nBeton Brut - Trenches\nChaos - Isibophezelo\nWar - Invisible (Djrum Remix)\nSweet Leech - Measured\nLos Pulpitos - Kurumbi Revisited (Loya Remix)\nNeukila - Néctar\nMumdance - Ping Devil Meme\nGranul - Checksum\nBurial - South London Boroughs\nMercy-System - If I Were You (Coralie's Face In The Furnace Mix)\nVerg & twythen - Demsiatsu\nL-Vis 1990 - The Chant\nKop-Z - Chaos (Qant Remix)\nBlossom Hill - Entropy (Kin Teal Remix)\nNovelist - Long Jon Riddim\nImpérieux - Fena\nIslyz - It Goes Deep\nManni Dee - Wet Slide\nBaransu - IS (Pessimist Remix)\nAnmon - Moon\nWeith - Obscur\ndesto - Do I Look Like I Give A Shit VIP\nClark - Globecore Flats\nErd - Gneiss\nFatima Al Qadiri - Star-Spangled\nQuartz - Sycophants\nTorana & Torn - Harbinger Of Storms\nSentient - A Shadow Flickers [Soreab remix]\nKlahrk - Sent Spinning\nAMIT - Dirt Doctor\nHappa - Digital Recall\nHomemade Weapons & Todd Buchler - Jellyfist\nVoidloss - I Leave Police Needing More Than Chalk Lines\nmadison willing ft. dbridge - irth (ynkro remix)\nBrendon Moeller - Agitate\nQant - Hypothermia\nTodd Buchler - Danger\nbonebrokk - Redacted\nGoldie & Submotive - The Guardianz\nFD - Double Drizzle\nSully - Model Collapse",
+        "id": "2361554345",
+        "title": "Ressources Naturelles - Elon Skum & Hharah",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-UpwUddp0N4WyC6Yq-qLUdHg-t500x500.jpg",
+        "pubDate": "2026/07/16 06:59:12 +0000",
+        "link": "https://soundcloud.com/radiobeguin/ressources-naturelles-elon?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Un an déjà que la dj et productrice Hharah m’a rejoint pour animer l’émission Resources Naturelles sur Radio Béguin . Le temps passe vite et pour cette dernière de la saison, on vous offre 1h de mix en back 2 back entre grime et uk Bass. Stay hydrated. Peace.",
         "tags": [
           "Appels de Phares",
-          "Dubstep",
-          "bass",
-          "experimental"
+          "Grime",
+          "uk funky",
+          "bass"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2343002447/streams/f8e6d666-ede3-40b0-9ca7-0623a975c75f/http",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2361554345/streams/8d1f3b79-e851-4a23-8255-1e49a4282da4/http",
         "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
@@ -25034,9 +25302,9 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-zq0dyOrayimWIAk4-mvdRsw-t500x500.jpg",
       "description": "🎷 Réécoutez nos retransmissions de concerts et DJ sets lives sur Lyon 🎸",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/beguin-live?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 34,
+      "trackCount": 44,
       "tags": [],
-      "lastUpdated": "2026/06/26 06:47:28 +0000",
+      "lastUpdated": "2026/07/24 08:10:17 +0000",
       "episodeIds": [
         "2346458729",
         "2347500152",
@@ -25079,22 +25347,29 @@
         "1173530941",
         "1092070663",
         "1092085375",
-        "960360520"
+        "960360520",
+        "2365423076",
+        "2365418456",
+        "2367081320",
+        "2251738262",
+        "2251699523",
+        "2251689641",
+        "2251678316"
       ],
       "latestEpisode": {
-        "id": "2345308466",
-        "title": "Darshan • Mangez Bougez le 14.06 à Grrrnd Zero",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-ed6TkXjCGMtXF8Bq-xqHphg-t500x500.jpg",
-        "pubDate": "2026/06/24 12:59:12 +0000",
-        "link": "https://soundcloud.com/radiobeguin/darshan-o-mangez-bougez-le-14?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Darshan pour Mangez Bougez le 14.06 `à Grrrnd Zero",
+        "id": "2367081320",
+        "title": "Carl Dogo & xoxo.mp3 • Fête de la musique 2026 aux Clâmeurs",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-7SQmDkUglUzfo7Ee-4ntfHw-t500x500.jpg",
+        "pubDate": "2026/07/24 08:01:47 +0000",
+        "link": "https://soundcloud.com/radiobeguin/carl-dogo-xoxo-mp3-o-f-te-de?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Carl Dogo & xoxo.mp3 pour la fête de la musique 2026 aux Clameurs !",
         "tags": [
-          "Abysses",
-          "deconstructed club",
-          "hyperpop",
-          "bass"
+          "Appels de Phares",
+          "Dubstep",
+          "Techno",
+          "breaks"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2345308466/streams/1e88b491-2c98-471e-93cd-fee6d7c9a005/http",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2367081320/streams/a065f49e-8a9d-4a33-8c2e-97d4f06f1752/http",
         "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
@@ -25289,8 +25564,10 @@
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/beguin-international?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
       "trackCount": 20,
       "tags": [],
-      "lastUpdated": "2025/10/13 14:48:53 +0000",
+      "lastUpdated": "2026/07/30 16:27:25 +0000",
       "episodeIds": [
+        "2372052410",
+        "2372044238",
         "2138237679",
         "2138238090",
         "2102261010",
@@ -25312,18 +25589,19 @@
         "1016790646"
       ],
       "latestEpisode": {
-        "id": "2138238090",
-        "title": "Béguin'ternational • Sharona Lico (30.07.25)",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-1h6sDqkJGKQIyJTB-AuIw2A-t500x500.jpg",
-        "pubDate": "2025/07/29 06:26:28 +0000",
-        "link": "https://soundcloud.com/radiobeguin/beguinternational-sharona-lico-300725?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Sharona Lico is a Tehran-born DJ and electronic music producer active in electronic, electro, and techno. Despite challenges in Iran, she has performed internationally in Turkey, Georgia, Germany, France, Belgium, and Italy. Her music is available on Spotify and SoundCloud, and she has collaborated with global radio stations. Sharona continues to share her unique sound worldwide. \n\n@user-531622735",
+        "id": "2372052410",
+        "title": "Béguin'Ternational • Kiana (31.07.26)",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-VWlGFwGzx5Gl1hjE-LjFItA-t500x500.jpg",
+        "pubDate": "2026/07/30 16:23:16 +0000",
+        "link": "https://soundcloud.com/radiobeguin/b-guinternational-o-kiana-31?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "@kianabahrami is a Tehran-born visual artist and painter whose creative practice is deeply shaped by the city’s cultural landscape. While trained in the visual arts, she expanded her artistic language through music, channeling her passion into a career as a DJ and in electronic music. For Kiana, sound is another medium for storytelling, an extension of the same artistic curiosity that informs her visual work.\n\nEmerging from Tehran’s underground music scene, Kiana crafts sets and productions that move fluidly across House, Tech House, Progressive House, Techno Dub, and Trance, and other bass-driven electronic genres. Influenced by the energy and resilience of the city’s independent nightlife, her work reflects a constantly evolving dialogue between rhythm, movement, and place. Through collaborations with collectives and platforms across Iran and beyond, she creates immersive sonic experiences that capture the pulse of Tehran’s vibrant underground culture.",
         "tags": [
-          "Appels de Phares",
-          "Techno",
-          "Tech House"
+          "Crépuscule",
+          "tech house",
+          "house",
+          "deep house"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2138238090/streams/794989ea-2a33-4dab-b17a-db4a19930a44/http",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2372052410/streams/b385e08a-3b8b-491f-98e8-7edf8eee9fbc/http",
         "streamProtocol": "progressive",
         "sharing": "public",
         "trackAuthorization": null
@@ -26263,8 +26541,8 @@
     "Abysses",
     "Techno",
     "Métro Boulot",
-    "Talk",
     "Crépuscule",
+    "Talk",
     "Meditation Core",
     "Electro",
     "Breaks",
@@ -26278,8 +26556,8 @@
     "Bain de Soleil",
     "Club",
     "Hip Hop",
-    "Electronica",
     "Deconstructed Club",
+    "Electronica",
     "Drone",
     "Deep House",
     "Dub Techno",
@@ -26288,9 +26566,9 @@
     "Dub",
     "Rap",
     "Tech House",
+    "Dubstep",
     "Post Punk",
     "Drum & Bass",
-    "Dubstep",
     "Breakbeat",
     "Acid",
     "Jazz",
@@ -26304,11 +26582,11 @@
     "Musica Popular Brasileira",
     "Spiritual Jazz",
     "Afro House",
+    "Appels de phares",
     "Dembow",
     "Hyperpop",
     "New Wave",
     "Reggaeton",
-    "Appels de phares",
     "Garage",
     "Hardcore",
     "Bain de soleil",
@@ -26318,12 +26596,13 @@
     "Live",
     "Noise",
     "Trap",
+    "ambient",
     "Industrial",
     "Jungle",
     "Footwork",
     "Latin Soul",
     "Psychedelic Rock",
-    "ambient",
+    "bass",
     "Broken Beat",
     "Kuduro",
     "UK Funky",
@@ -26333,7 +26612,6 @@
     "Indie",
     "Samba",
     "Amapiano",
-    "bass",
     "Bossa Nova",
     "Field Recording",
     "Latin Jazz",
@@ -26342,6 +26620,7 @@
     "Boogie",
     "Balearic House",
     "Funk",
+    "breaks",
     "Latin Folk",
     "Spoken Word",
     "Batida",
@@ -26349,60 +26628,64 @@
     "Punk",
     "Arabic Traditional",
     "Chanson",
+    "downtempo",
     "Ghetto",
+    "Grime",
     "Krautrock",
     "Latin House",
     "Minimalism",
     "Shoegaze",
     "Breakcore",
-    "breaks",
     "Cumbia",
     "Dark Disco",
-    "downtempo",
     "Drill",
-    "Grime",
     "Psytrance",
     "Soul",
-    "talk",
+    "trance",
     "electro",
     "Emo Rap",
     "Eurodance",
     "experimental",
     "Free Jazz",
+    "house",
+    "hyperpop",
     "Indian Traditional",
+    "meditation-core",
     "Metal",
     "pop",
     "Raptor House",
+    "talk",
+    "uk funky",
     "Zouk",
     "breakbeat",
     "club",
     "Cold Wave",
+    "Électro",
     "footwork",
     "hip-hop",
-    "hyperpop",
-    "meditation-core",
+    "indie",
     "Metro boulot",
     "Shatta",
-    "trance",
     "Afrobeat",
     "ambient-techno",
     "Balani",
     "batida",
     "Bolero",
     "deconstructed club",
+    "deep house",
     "Dirty South",
     "Drum&Bass",
-    "Électro",
+    "dub",
+    "electronica",
     "Experimental Hip Hop",
     "Funana",
     "ghetto",
-    "house",
-    "indie",
     "jazz",
     "juke",
     "jungle",
     "Méditation Core",
     "Memphis",
+    "metro boulot",
     "Métro boulot",
     "Metro Boulot",
     "Ndombolo",
@@ -26412,7 +26695,6 @@
     "Soca",
     "trip hop",
     "Trip-Hop",
-    "uk funky",
     "acid",
     "Afroclub",
     "ambient techno",
@@ -26430,10 +26712,8 @@
     "Coupé Décalé",
     "curiosités",
     "deconstructed Club",
-    "deep house",
-    "dub",
+    "drone",
     "dubstep",
-    "electronica",
     "experimental hip-hop",
     "Experimental Rap",
     "field recording",
@@ -26461,7 +26741,6 @@
     "Méditation core",
     "Métal",
     "Métro  Boulot",
-    "metro boulot",
     "métro boulot",
     "modern classical",
     "Music Popular Brasileira",
@@ -26474,12 +26753,14 @@
     "rock",
     "shoegaze",
     "Singeli",
+    "spiritual jazz",
     "spititual Jazz",
     "synth pop",
     "synth-pop",
+    "tech house",
     "techno",
     "trip-hop",
     "UK funky"
   ],
-  "lastUpdated": "2026-07-05T17:30:11.865Z"
+  "lastUpdated": "2026-08-01T10:07:03.146Z"
 }
