@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import BackLink from "@/components/BackLink";
 import type { PodcastEpisode, PodcastPlaylist } from "@/lib/podcasts";
 import { usePlayer } from "@/lib/PlayerContext";
+import { normalizeSoundCloudArtworkUrl } from "@/lib/soundcloud/artwork";
 
 interface PlaylistClientProps {
   playlist: PodcastPlaylist;
@@ -72,7 +73,7 @@ export default function PlaylistClient({ playlist, episodes }: PlaylistClientPro
         {/* ✅ Image avec bouton Play */}
         <div className="group relative w-full max-w-xs mx-auto md:mx-0 md:w-[280px] aspect-square overflow-hidden rounded-lg flex-shrink-0 self-start">
           <Image
-            src={playlist.artworkUrl}
+            src={normalizeSoundCloudArtworkUrl(playlist.artworkUrl, "t300x300")}
             alt={playlist.title}
             fill
             sizes={PLAYLIST_ARTWORK_SIZES}
@@ -148,7 +149,7 @@ export default function PlaylistClient({ playlist, episodes }: PlaylistClientPro
             >
               <div className="relative w-full aspect-square overflow-hidden">
                 <Image
-                  src={episode.artworkUrl}
+                  src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300")}
                   alt={episode.title}
                   fill
                   sizes={EPISODE_ARTWORK_SIZES}

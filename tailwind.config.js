@@ -7,8 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Figtree', 'ui-sans-serif', 'system-ui'],
-        serif: ['Zilla Slab', 'serif'],
+        sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui'],
+        serif: ['var(--font-serif)', 'serif'],
       },
       colors: {
         primary: 'var(--primary)',

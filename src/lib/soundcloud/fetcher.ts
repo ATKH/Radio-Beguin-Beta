@@ -1,5 +1,6 @@
 import { getAccessToken, invalidateAccessToken } from "./auth";
 import overrides from "@/data/podcast-overrides.json";
+import manual from "@/data/podcast-manual.json";
 import type { PodcastEpisode, PodcastPlaylist, PodcastAggregatedData } from "../podcasts.types";
 
 const USER_ID = "815775241";
@@ -16,6 +17,22 @@ type PodcastOverrides = {
 };
 
 const PODCAST_OVERRIDES: PodcastOverrides = overrides;
+
+type ManualEpisodeInput = {
+  id?: string;
+  url?: string;
+  title?: string;
+  description?: string;
+  artworkUrl?: string;
+  pubDate?: string;
+  tags?: string[];
+};
+
+type ManualEpisodesConfig = {
+  episodes?: ManualEpisodeInput[];
+};
+
+const MANUAL_EPISODES: ManualEpisodesConfig = manual ?? {};
 
 function applyEpisodeOverrides(episodes: PodcastEpisode[]): void {
   const map = PODCAST_OVERRIDES.episodes;
@@ -319,6 +336,46 @@ async function fetchTrackDetails(trackId: number, attempt = 0): Promise<SCTrack 
   return (await res.json()) as SCTrack;
 }
 
+async function resolveTrackIdFromUrl(url: string, attempt = 0): Promise<number | null> {
+  const token = await getAccessToken();
+  const apiUrl = new URL("https://api.soundcloud.com/resolve");
+  apiUrl.searchParams.set("url", url);
+  const clientId = process.env.SOUNDCLOUD_CLIENT_ID;
+  if (!token && clientId && !apiUrl.searchParams.has("client_id")) {
+    apiUrl.searchParams.set("client_id", clientId);
+  }
+
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `OAuth ${token}`;
+  }
+
+  const res = await fetch(apiUrl.toString(), {
+    headers,
+    cache: "no-store",
+  });
+
+  if ((res.status === 401 || res.status === 403) && attempt < 1) {
+    console.warn(
+      "⚠️ resolveTrackIdFromUrl non autorisé. Nouvelle tentative sans invalider le token."
+    );
+    return resolveTrackIdFromUrl(url, attempt + 1);
+  }
+
+  if (!res.ok) {
+    console.warn("⚠️ resolveTrackIdFromUrl échoue:", res.status, await res.text());
+    return null;
+  }
+
+  const data = (await res.json()) as { id?: number; kind?: string };
+  if (data?.kind !== "track" || typeof data?.id !== "number") {
+    console.warn("⚠️ resolveTrackIdFromUrl: URL non-track (kind=%s).", data?.kind);
+    return null;
+  }
+
+  return data.id;
+}
+
 async function fetchAllTracks(): Promise<SCTrack[]> {
   let url: string | null = `https://api.soundcloud.com/users/${USER_ID}/tracks?limit=200&linked_partitioning=1`;
   const tracks: SCTrack[] = [];
@@ -387,6 +444,41 @@ function transformTrackToEpisode(track: SCTrack, trackData: SCTrack): PodcastEpi
   };
 }
 
+async function populateEpisodeAudio(episode: PodcastEpisode, trackData: SCTrack): Promise<void> {
+  if (trackData.media?.transcodings?.length) {
+    const progressive = trackData.media.transcodings.find(t => t.format?.protocol === "progressive");
+    if (progressive?.url) {
+      const resolved = await resolveStreamUrl(progressive.url, trackData.track_authorization);
+      if (resolved) {
+        episode.audioUrl = resolved;
+        episode.streamProtocol = "progressive";
+      }
+    }
+
+    if (!episode.audioUrl) {
+      const hls = trackData.media.transcodings.find(t => t.format?.protocol === "hls");
+      if (hls?.url) {
+        const resolved = await resolveStreamUrl(hls.url, trackData.track_authorization);
+        if (resolved) {
+          episode.audioUrl = resolved;
+          episode.streamProtocol = "hls";
+        }
+      }
+    }
+  }
+
+  if (!episode.audioUrl) {
+    const { progressive, hls } = await fetchStreamFallback(trackData.id ?? Number(episode.id), trackData.track_authorization);
+    if (progressive) {
+      episode.audioUrl = progressive;
+      episode.streamProtocol = "progressive";
+    } else if (hls) {
+      episode.audioUrl = hls;
+      episode.streamProtocol = "hls";
+    }
+  }
+}
+
 async function buildEpisodes(): Promise<PodcastEpisode[]> {
   const tracks = await fetchAllTracks();
   const episodes: PodcastEpisode[] = [];
@@ -412,44 +504,75 @@ async function buildEpisodes(): Promise<PodcastEpisode[]> {
 
     const episode = transformTrackToEpisode(track, trackData);
 
-    // Résolution des URLs audio (progressive / HLS)
-    if (trackData.media?.transcodings?.length) {
-      const progressive = trackData.media.transcodings.find(t => t.format?.protocol === "progressive");
-      if (progressive?.url) {
-        const resolved = await resolveStreamUrl(progressive.url, trackData.track_authorization);
-        if (resolved) {
-          episode.audioUrl = resolved;
-          episode.streamProtocol = "progressive";
-        }
-      }
-
-      if (!episode.audioUrl) {
-        const hls = trackData.media.transcodings.find(t => t.format?.protocol === "hls");
-        if (hls?.url) {
-          const resolved = await resolveStreamUrl(hls.url, trackData.track_authorization);
-          if (resolved) {
-            episode.audioUrl = resolved;
-            episode.streamProtocol = "hls";
-          }
-        }
-      }
-    }
-
-    if (!episode.audioUrl) {
-      const { progressive, hls } = await fetchStreamFallback(trackData.id ?? track.id, trackData.track_authorization);
-      if (progressive) {
-        episode.audioUrl = progressive;
-        episode.streamProtocol = "progressive";
-      } else if (hls) {
-        episode.audioUrl = hls;
-        episode.streamProtocol = "hls";
-      }
-    }
+    await populateEpisodeAudio(episode, trackData);
 
     episodes.push(episode);
   }
 
   return episodes;
+}
+
+async function buildManualEpisodes(): Promise<PodcastEpisode[]> {
+  const inputs = Array.isArray(MANUAL_EPISODES?.episodes) ? MANUAL_EPISODES.episodes : [];
+  if (!inputs.length) return [];
+
+  const episodes: PodcastEpisode[] = [];
+
+  for (const input of inputs) {
+    if (!input) continue;
+
+    let trackId: number | null = null;
+    if (input.id) {
+      const parsed = Number(input.id);
+      if (!Number.isNaN(parsed) && parsed > 0) trackId = parsed;
+    }
+
+    if (!trackId && input.url) {
+      trackId = await resolveTrackIdFromUrl(input.url);
+    }
+
+    if (!trackId) {
+      console.warn("⚠️ Podcast manuel ignoré (id/url invalide):", input);
+      continue;
+    }
+
+    const trackData = await fetchTrackDetails(trackId);
+    if (!trackData) {
+      console.warn("⚠️ Podcast manuel introuvable (track_id=%s).", trackId);
+      continue;
+    }
+
+    const episode = transformTrackToEpisode(trackData, trackData);
+
+    if (input.title) episode.title = input.title;
+    if (input.description) episode.description = input.description;
+    if (input.artworkUrl) episode.artworkUrl = input.artworkUrl;
+    if (input.pubDate) episode.pubDate = input.pubDate;
+    if (Array.isArray(input.tags)) episode.tags = [...input.tags];
+    if (input.url) episode.link = input.url;
+
+    await populateEpisodeAudio(episode, trackData);
+
+    episodes.push(episode);
+  }
+
+  return episodes;
+}
+
+function mergeEpisodes(primary: PodcastEpisode[], extras: PodcastEpisode[]): PodcastEpisode[] {
+  const map = new Map(primary.map(ep => [ep.id, ep]));
+
+  for (const extra of extras) {
+    if (!extra?.id) continue;
+    if (!map.has(extra.id)) {
+      map.set(extra.id, extra);
+      continue;
+    }
+  }
+
+  return Array.from(map.values()).sort(
+    (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
+  );
 }
 
 async function buildPlaylists(episodes: PodcastEpisode[]): Promise<PodcastPlaylist[]> {
@@ -536,15 +659,17 @@ async function buildPlaylists(episodes: PodcastEpisode[]): Promise<PodcastPlayli
 
 export async function fetchAggregatedSoundCloudData(): Promise<PodcastAggregatedData> {
   const episodes = await buildEpisodes();
-  applyEpisodeOverrides(episodes);
-  const playlists = await buildPlaylists(episodes);
+  const manualEpisodes = await buildManualEpisodes();
+  const mergedEpisodes = mergeEpisodes(episodes, manualEpisodes);
+  applyEpisodeOverrides(mergedEpisodes);
+  const playlists = await buildPlaylists(mergedEpisodes);
 
   const tagCounts = new Map<string, number>();
   const registerTag = (tag: string) => {
     tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
   };
 
-  episodes.forEach(ep => {
+  mergedEpisodes.forEach(ep => {
     ep.tags?.forEach(registerTag);
   });
 
@@ -560,7 +685,7 @@ export async function fetchAggregatedSoundCloudData(): Promise<PodcastAggregated
     .map(([tag]) => tag);
 
   return {
-    episodes,
+    episodes: mergedEpisodes,
     playlists,
     tags: sortedTags,
   };

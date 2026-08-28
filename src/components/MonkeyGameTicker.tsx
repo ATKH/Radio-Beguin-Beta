@@ -272,7 +272,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       cleanSprite(monkeyImage);
     };
 
-    monkeyImage.src = "/Singe4.png";
+    monkeyImage.src = "/Singe4_clean.png";
 
     const heartTint = "rgba(255, 255, 255, 0.95)";
 

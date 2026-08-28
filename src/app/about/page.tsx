@@ -33,7 +33,7 @@ export default function AboutPage() {
 
       <div className="px-6 md:px-8">
         <a
-          href="https://www.helloasso.com/associations/radio-beguin"
+          href="https://www.helloasso.com/associations/radio-beguin/formulaires/1"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold hover:bg-[var(--primary)]/90 transition"

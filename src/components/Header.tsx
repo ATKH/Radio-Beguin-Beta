@@ -97,6 +97,8 @@ export default function Header() {
           <img
             src="/logo.svg"
             alt="Radio Béguin"
+            width={112}
+            height={56}
             className={`h-14 w-auto transition duration-500 ${isLogoWizzing ? 'animate-bounce-once' : ''}`}
             style={{
               filter:
@@ -108,11 +110,11 @@ export default function Header() {
         </Link>
 
         {/* --- MOBILE SEARCH --- */}
-        <div className="md:hidden flex-1 flex justify-center px-3 min-w-0">
+        <div className="md:hidden flex-1 flex justify-center px-3 min-w-0 min-h-[32px]">
           <form
             onSubmit={handleSearchSubmit}
             autoComplete="off"
-            className="flex w-full max-w-[11rem] items-center gap-1.5 rounded-full border border-black px-2.5 py-0.5 shadow-sm transition bg-[var(--accent)]/60 min-w-0"
+            className="flex w-full max-w-[11rem] items-center gap-1.5 rounded-full border border-black px-2.5 py-0.5 shadow-sm transition bg-[var(--accent)]/60 min-w-0 min-h-[28px]"
           >
             <button
               type="submit"
@@ -127,7 +129,7 @@ export default function Header() {
               value={query}
               onChange={event => setQuery(event.target.value)}
               aria-label={searchAriaLabel}
-              className="flex-1 bg-transparent text-[16px] sm:text-[11px] outline-none placeholder:text-[var(--foreground)]/40 border-none focus:outline-none min-w-0"
+              className="flex-1 bg-transparent text-[16px] sm:text-[11px] outline-none placeholder:text-[var(--foreground)]/55 border-none focus:outline-none min-w-0"
               placeholder={searchPlaceholder}
             />
           </form>
@@ -167,7 +169,7 @@ export default function Header() {
               value={query}
               onChange={event => setQuery(event.target.value)}
               aria-label={searchAriaLabel}
-              className="flex-1 bg-transparent text-[16px] sm:text-[11px] outline-none placeholder:text-[var(--foreground)]/40 border-none focus:outline-none"
+              className="flex-1 bg-transparent text-[16px] sm:text-[11px] outline-none placeholder:text-[var(--foreground)]/55 border-none focus:outline-none"
               placeholder={searchPlaceholder}
             />
           </form>

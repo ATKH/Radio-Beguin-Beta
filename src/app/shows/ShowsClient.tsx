@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Link from "next/link";
 import Image from "next/image";
@@ -11,6 +11,7 @@ import type { PodcastEpisode, PodcastPlaylist } from "@/lib/podcasts.types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useTheme } from "@/lib/ThemeContext";
 import { useLocale, type Locale } from "@/lib/LocaleContext";
+import { normalizeSoundCloudArtworkUrl } from "@/lib/soundcloud/artwork";
 
 type TabId = "all" | "playlists" | "tags";
 
@@ -18,6 +19,16 @@ type ApiPayload = {
   episodes?: PodcastEpisode[];
   playlists?: PodcastPlaylist[];
   tags?: string[];
+};
+
+type EpisodeWithIndex = PodcastEpisode & {
+  _searchIndex: string;
+  _tagsNormalized: string[];
+};
+
+type PlaylistWithIndex = PodcastPlaylist & {
+  _searchIndex: string;
+  _tagsNormalized: string[];
 };
 
 const TAB_CONFIG: Array<{ id: TabId; labelKey: string }> = [
@@ -38,6 +49,18 @@ const normalizeText = (value: string) =>
     .replace(/\s+/g, ' ')
     .trim();
 
+const buildEpisodeIndex = (episode: PodcastEpisode): EpisodeWithIndex => {
+  const tagsNormalized = (episode.tags ?? []).map(tag => normalizeText(tag));
+  const searchIndex = `${normalizeText(episode.title)} ${tagsNormalized.join(' ')}`.trim();
+  return { ...episode, _tagsNormalized: tagsNormalized, _searchIndex: searchIndex };
+};
+
+const buildPlaylistIndex = (playlist: PodcastPlaylist): PlaylistWithIndex => {
+  const tagsNormalized = (playlist.tags ?? []).map(tag => normalizeText(tag));
+  const searchIndex = `${normalizeText(playlist.title)} ${tagsNormalized.join(' ')}`.trim();
+  return { ...playlist, _tagsNormalized: tagsNormalized, _searchIndex: searchIndex };
+};
+
 const MOOD_BASE = [
   {
     id: "talk",
@@ -51,14 +74,14 @@ const MOOD_BASE = [
     label: "Meditation Core",
     labelByLocale: { fr: "Meditation Core", en: "Meditation Core" },
     tag: "Meditation Core",
-    image: "/Meditation Core.png",
+    image: "/meditation-core.png",
   },
   {
     id: "metro-boulot",
     label: "Métro Boulot",
     labelByLocale: { fr: "Métro Boulot", en: "Daily Grind" },
     tag: "Métro Boulot",
-    image: "/Metro Boulot.png",
+    image: "/metro-boulot.png",
   },
   {
     id: "curiosites",
@@ -72,7 +95,7 @@ const MOOD_BASE = [
     label: "Bain de Soleil",
     labelByLocale: { fr: "Bain de Soleil", en: "Sunbath" },
     tag: "Bain de Soleil",
-    image: "/Bain de Soleil.png",
+    image: "/bain-de-soleil.png",
   },
   {
     id: "crepuscule",
@@ -86,14 +109,14 @@ const MOOD_BASE = [
     label: "Appels de Phares",
     labelByLocale: { fr: "Appels de Phares", en: "High Beams" },
     tag: "Appels de Phares",
-    image: "/Appels de Phares.png",
+    image: "/appels-de-phares.png",
   },
   {
     id: "abysses",
     label: "Abysses",
     labelByLocale: { fr: "Abysses", en: "Abyss" },
     tag: "Abysses",
-    image: "/Abysses.svg",
+    image: "/Abysses.png",
   },
 ];
 
@@ -199,6 +222,7 @@ const EpisodeCard = React.memo(function EpisodeCard({
   hiddenTagSet,
   onBeforeTagClick,
   onClearMood,
+  isPriority,
 }: {
   episode: PodcastEpisode;
   onPlay: (episode: PodcastEpisode) => void;
@@ -207,6 +231,7 @@ const EpisodeCard = React.memo(function EpisodeCard({
   hiddenTagSet: Set<string>;
   onBeforeTagClick?: (tag: string) => void;
   onClearMood: () => void;
+  isPriority?: boolean;
 }) {
   const isTagActive = useCallback((tag: string) => activeTagSet.has(normalizeText(tag)), [activeTagSet]);
   const displayTags = useMemo(
@@ -218,12 +243,14 @@ const EpisodeCard = React.memo(function EpisodeCard({
     <div className="bg-muted rounded-lg overflow-hidden transition-all duration-200 group w-full max-w-[320px] mx-auto">
       <div className="relative w-full aspect-square">
         <Image
-          src={episode.artworkUrl}
+          src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300")}
           alt={episode.title}
           fill
           sizes={CARD_ARTWORK_SIZES}
           className="object-cover"
-          loading="lazy"
+          loading={isPriority ? "eager" : "lazy"}
+          priority={Boolean(isPriority)}
+          fetchPriority={isPriority ? "high" : "auto"}
         />
         {/* ✅ Bouton play */}
         <div className="podcast-card-overlay absolute inset-0 flex items-center justify-center transition-opacity duration-200">
@@ -280,6 +307,7 @@ const PlaylistCard = React.memo(
     onPlay,
     onTagClick,
     onBeforeTagClick,
+    isPriority,
   }: {
     playlist: PodcastPlaylist;
     latestEpisode?: PodcastEpisode;
@@ -289,20 +317,23 @@ const PlaylistCard = React.memo(
     onPlay: (episode: PodcastEpisode) => void;
     onTagClick: (tag: string) => void;
     onBeforeTagClick?: (tag: string) => void;
+    isPriority?: boolean;
   }) {
     const displayTags = useMemo(() => tags.slice(0, 6), [tags]);
 
     return (
       <div className="group bg-muted rounded-lg overflow-hidden transition-all duration-200 w-full max-w-[320px] mx-auto">
         <div className="relative w-full aspect-square">
-          <Image
-            src={playlist.artworkUrl}
-            alt={playlist.title}
-            fill
-            sizes={CARD_ARTWORK_SIZES}
-            className="object-cover"
-            loading="lazy"
-          />
+        <Image
+          src={normalizeSoundCloudArtworkUrl(playlist.artworkUrl, "t300x300")}
+          alt={playlist.title}
+          fill
+          sizes={CARD_ARTWORK_SIZES}
+          className="object-cover"
+          loading={isPriority ? "eager" : "lazy"}
+          priority={Boolean(isPriority)}
+          fetchPriority={isPriority ? "high" : "auto"}
+        />
           {latestEpisode && (
             <div className="podcast-card-overlay absolute inset-0 flex items-center justify-center transition-opacity duration-200">
               <Button
@@ -385,8 +416,8 @@ export default function ShowsClient() {
   const shuffleTimeoutRef = useRef<number | null>(null);
   const hasRestoredTags = useRef(false);
 
-  const [episodes, setEpisodes] = useState<PodcastEpisode[]>([]);
-  const [playlists, setPlaylists] = useState<PodcastPlaylist[]>([]);
+  const [episodes, setEpisodes] = useState<EpisodeWithIndex[]>([]);
+  const [playlists, setPlaylists] = useState<PlaylistWithIndex[]>([]);
   const [activeTab, setActiveTab] = useState<TabId>("all");
   const [search, setSearch] = useState("");
   const [activeTags, setActiveTags] = useState<string[]>([]);
@@ -400,8 +431,10 @@ export default function ShowsClient() {
   const [processedMoodImages, setProcessedMoodImages] = useState<Record<string, string>>(() => ({ ...MOOD_IMAGE_CACHE }));
   const [activeMoodBounceId, setActiveMoodBounceId] = useState<string | null>(null);
   const moodBounceTimeoutRef = useRef<number | null>(null);
+  const enableMoodProcessing = process.env.NODE_ENV !== "production";
 
   useEffect(() => {
+    if (!enableMoodProcessing) return;
     if (typeof window === "undefined") return;
     let cancelled = false;
 
@@ -572,11 +605,16 @@ export default function ShowsClient() {
       .then((payload: ApiPayload | PodcastEpisode[]) => {
         if (!isMounted) return;
         if (Array.isArray(payload)) {
-          setEpisodes(payload);
+          const indexedEpisodes = payload.map(buildEpisodeIndex);
+          if (!isMounted) return;
+          setEpisodes(indexedEpisodes);
           setPlaylists([]);
         } else {
-          setEpisodes(payload.episodes ?? []);
-          setPlaylists(payload.playlists ?? []);
+          const indexedEpisodes = (payload.episodes ?? []).map(buildEpisodeIndex);
+          const indexedPlaylists = (payload.playlists ?? []).map(buildPlaylistIndex);
+          if (!isMounted) return;
+          setEpisodes(indexedEpisodes);
+          setPlaylists(indexedPlaylists);
         }
       })
       .catch(err => {
@@ -646,6 +684,7 @@ export default function ShowsClient() {
   );
 
   const styleTagEntries = useMemo(() => {
+    if (activeTab !== "tags") return [];
     const counters = new Map<string, { label: string; count: number }>();
 
     const register = (tag?: string | null) => {
@@ -669,7 +708,7 @@ export default function ShowsClient() {
       }))
       .filter(entry => entry.count > 0)
       .sort((a, b) => a.label.localeCompare(b.label, undefined, { sensitivity: "base" }));
-  }, [episodes, moodKeys]);
+  }, [activeTab, episodes, moodKeys]);
 
   const availableStyleTags = useMemo(
     () => styleTagEntries.map(entry => entry.label),
@@ -758,10 +797,12 @@ export default function ShowsClient() {
       ? "bg-black/90 text-white"
       : "bg-[var(--background)]/90 text-[var(--foreground)]";
 
+  const deferredSearch = useDeferredValue(search);
+
   const searchTokens = useMemo(() => {
-    const normalized = normalizeText(search);
+    const normalized = normalizeText(deferredSearch);
     return normalized ? normalized.split(' ') : [];
-  }, [search]);
+  }, [deferredSearch]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -775,13 +816,11 @@ export default function ShowsClient() {
   // Filtrage épisodes
   const filteredEpisodes = useMemo(() => {
     return episodes.filter(ep => {
-      const tagsNormalized = (ep.tags ?? []).map(tag => normalizeText(tag));
-      const combined = `${normalizeText(ep.title)} ${tagsNormalized.join(' ')}`.trim();
       const matchesSearch = searchTokens.length === 0
         ? true
-        : textContainsTokens(combined, searchTokens);
+        : textContainsTokens(ep._searchIndex, searchTokens);
       const matchesTags = activeTagsNormalized.length > 0
-        ? activeTagsNormalized.every(tag => tagsNormalized.includes(tag))
+        ? activeTagsNormalized.every(tag => ep._tagsNormalized.includes(tag))
         : true;
       return matchesSearch && matchesTags;
     });
@@ -789,13 +828,11 @@ export default function ShowsClient() {
 
   const filteredPlaylists = useMemo(() => {
     return playlists.filter(pl => {
-      const tagsNormalized = (pl.tags ?? []).map(tag => normalizeText(tag));
-      const combined = `${normalizeText(pl.title)} ${tagsNormalized.join(' ')}`.trim();
       const matchesSearch = searchTokens.length === 0
         ? true
-        : textContainsTokens(combined, searchTokens);
+        : textContainsTokens(pl._searchIndex, searchTokens);
       const matchesTags = activeTagsNormalized.length > 0
-        ? activeTagsNormalized.every(tag => tagsNormalized.includes(tag))
+        ? activeTagsNormalized.every(tag => pl._tagsNormalized.includes(tag))
         : true;
       return matchesSearch && matchesTags;
     });
@@ -1056,7 +1093,7 @@ export default function ShowsClient() {
               const isActive = activeTagSet.has(normalizeText(filter.tag));
               const imageSrc = filter.image ?? "/logocoeur.webp";
               const processedSrc = processedMoodImages[imageSrc];
-              const needsProcessing = imageSrc.toLowerCase().endsWith(".png");
+              const needsProcessing = enableMoodProcessing && imageSrc.toLowerCase().endsWith(".png");
               const displaySrc = processedSrc ?? imageSrc;
               const isReady = Boolean(processedSrc) || !needsProcessing;
               return (
@@ -1190,7 +1227,7 @@ export default function ShowsClient() {
               endMessage={null}
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {items.map(episode => (
+                {items.map((episode, index) => (
                   <EpisodeCard
                     key={episode.id}
                     episode={episode}
@@ -1200,6 +1237,7 @@ export default function ShowsClient() {
                     hiddenTagSet={hiddenMoodTags}
                     onBeforeTagClick={handleClearMood}
                     onClearMood={handleClearMood}
+                    isPriority={index === 0}
                   />
                 ))}
               </div>
@@ -1217,7 +1255,7 @@ export default function ShowsClient() {
             <p className="text-center text-muted-foreground">Aucune émission trouvée.</p>
           ) : (
             <div className="grid grid-cols-1 justify-items-center sm:justify-items-stretch sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {playlistsToRender.map(pl => {
+              {playlistsToRender.map((pl, index) => {
                 const latestEpisode = pl.latestEpisode;
                 const tags = (pl.tags ?? []).filter(tag => !hiddenMoodTags.has(normalizeText(tag)));
                 const tagsKey = tags.map(tag => normalizeText(tag)).join("|");
@@ -1232,6 +1270,7 @@ export default function ShowsClient() {
                     onPlay={handlePlay}
                     onTagClick={toggleTag}
                     onBeforeTagClick={handleClearMood}
+                    isPriority={index === 0}
                   />
                 );
               })}

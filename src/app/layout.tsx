@@ -1,5 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
+import { Figtree, Zilla_Slab } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Player from "@/components/Player";
@@ -40,13 +41,31 @@ export const metadata: Metadata = {
 };
 
 const NEWS_TICKER_MESSAGES = [
-  "R   A   D   I   O      B   É   G   U   I   N",
+   "R A D I O   B É G U I N",
 ];
+
+const figtree = Figtree({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-sans",
+  display: "swap",
+});
+
+const zillaSlab = Zilla_Slab({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-serif",
+  display: "swap",
+});
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
+      <head>
+        <link rel="preconnect" href="https://i1.sndcdn.com" crossOrigin="" />
+        <link rel="preconnect" href="https://stream.radiobeguin.com" crossOrigin="" />
+      </head>
+      <body className={`${figtree.variable} ${zillaSlab.variable} antialiased bg-[var(--background)] text-[var(--foreground)]`}>
         <ThemeProvider>
           <LocaleProvider>
             <PlayerProvider>

@@ -1,6 +1,6 @@
 'use client';
 
-import { type ChangeEvent, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { Play, Pause, ArrowLeft, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePlayer } from '@/lib/PlayerContext';
@@ -10,7 +10,9 @@ import AudioVisualizer from '@/components/ui/AudioVisualizer';
 import { useLocale } from '@/lib/LocaleContext';
 import type { PodcastEpisode } from '@/lib/podcasts';
 
-const RADIO_STREAM_URL = 'https://play.radioking.io/radio-beguin-1/559828';
+const RADIO_STREAM_URL = 'https://stream.radiobeguin.com/listen/radio_b%C3%A9guin/radio.mp3';
+const RADIO_STREAM_AAC_URL: string | null = null;
+const RADIO_STREAM_HLS_URL = null; // ← HLS retiré
 const TRACK_INFO_URL = '/api/live-track';
 const PLAYBACK_STORAGE_KEY = 'radio-beguin:playback-state';
 const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
@@ -67,8 +69,11 @@ export default function Player() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<{ title: string; artist: string } | null>(null);
   const [clockTime, setClockTime] = useState(new Date());
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [isSafari, setIsSafari] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(0);
+  const [isBuffering, setIsBuffering] = useState(false);
   const resumeIntentRef = useRef<{ shouldResume: boolean; target: 'live' | 'podcast' | null }>({
     shouldResume: false,
     target: null,
@@ -78,6 +83,13 @@ export default function Player() {
   const lastPlayRequestRef = useRef<number | null>(null);
   const playbackRestoredRef = useRef(false);
   const wasLivePlayingRef = useRef(false);
+  const lastLiveUrlRef = useRef<string | null>(null);
+  const lastLivePauseAtRef = useRef<number | null>(null);
+
+  // ← Safari utilise désormais le MP3 directement comme tous les autres navigateurs
+  const getLiveUrl = useCallback(() => {
+    return buildLiveStreamUrl();
+  }, []);
 
   const PLAYER_MIN_HEIGHT = 58;
   const HEADER_HEIGHT = 56;
@@ -85,6 +97,12 @@ export default function Player() {
 
   // Horloge
   useEffect(() => {
+    setIsHydrated(true);
+    if (typeof navigator !== "undefined") {
+      const ua = navigator.userAgent;
+      const safari = /safari/i.test(ua) && !/chrome|crios|edg|opr|opera/i.test(ua);
+      setIsSafari(safari);
+    }
     const timer = setInterval(() => setClockTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -202,6 +220,17 @@ export default function Player() {
 
     cleanup();
 
+    if (activePlayer === 'live') {
+      const liveUrl = getLiveUrl();
+      // ← shouldSwitch simplifié : plus de condition HLS Safari
+      const shouldSwitch = !audio.src;
+      if (shouldSwitch) {
+        lastLiveUrlRef.current = liveUrl;
+        audio.src = liveUrl;
+        audio.load();
+      }
+    }
+
     const setupPodcastPlayback = async () => {
       if (!currentEpisode) return;
       setCurrentPosition(0);
@@ -281,7 +310,12 @@ export default function Player() {
     }
 
     if (activePlayer === 'live') {
-      audio.src = buildLiveStreamUrl();
+      const liveUrl = getLiveUrl();
+      // ← plus de condition HLS Safari ici non plus
+      if (!audio.src) {
+        lastLiveUrlRef.current = liveUrl;
+        audio.src = liveUrl;
+      }
       audio.load();
       setCurrentPosition(0);
       setDuration(0);
@@ -290,23 +324,9 @@ export default function Player() {
         (resumeIntentRef.current.shouldResume && resumeIntentRef.current.target === 'live') ||
         wasLivePlayingRef.current;
 
-      if (shouldAutoPlay) {
-        audio
-          .play()
-          .then(() => setIsPlaying(true))
-          .catch((err) => {
-            console.error('⚠️ Erreur lecture live:', err);
-            setIsPlaying(false);
-          })
-          .finally(() => {
-            resetResumeIntent();
-            wasLivePlayingRef.current = true;
-          });
-      } else {
-        setIsPlaying(false);
-        resetResumeIntent();
-        wasLivePlayingRef.current = false;
-      }
+      setIsPlaying(false);
+      resetResumeIntent();
+      wasLivePlayingRef.current = false;
 
       return () => {
         cleanup();
@@ -336,19 +356,29 @@ export default function Player() {
         : null;
       console.warn('⚠️ Erreur audio', details, 'URL:', audio.src);
       setIsPlaying(false);
+      setIsBuffering(false);
     };
     const onEnded = () => setIsPlaying(false);
+    const onWaiting = () => setIsBuffering(true);
+    const onPlaying = () => setIsBuffering(false);
+    const onCanPlay = () => setIsBuffering(false);
 
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
     audio.addEventListener('timeupdate', onTimeUpdate);
     audio.addEventListener('error', onError);
     audio.addEventListener('ended', onEnded);
+    audio.addEventListener('waiting', onWaiting);
+    audio.addEventListener('playing', onPlaying);
+    audio.addEventListener('canplay', onCanPlay);
 
     return () => {
       audio.removeEventListener('loadedmetadata', onLoadedMetadata);
       audio.removeEventListener('timeupdate', onTimeUpdate);
       audio.removeEventListener('error', onError);
       audio.removeEventListener('ended', onEnded);
+      audio.removeEventListener('waiting', onWaiting);
+      audio.removeEventListener('playing', onPlaying);
+      audio.removeEventListener('canplay', onCanPlay);
     };
   }, [activePlayer, currentEpisode]);
 
@@ -360,16 +390,28 @@ export default function Player() {
     if (activePlayer === 'live') {
       if (isPlaying) {
         audio.pause();
-        audio.removeAttribute('src');
-        audio.load();
+        lastLivePauseAtRef.current = Date.now();
         setIsPlaying(false);
+        setIsBuffering(false);
       } else {
-        audio.src = buildLiveStreamUrl();
+        setIsBuffering(true);
+        const pausedAt = lastLivePauseAtRef.current;
+        const shouldRefresh = pausedAt ? Date.now() - pausedAt > 10000 : false;
+        // ← condition HLS Safari retirée
+        if (!audio.src || shouldRefresh) {
+          const liveUrl = getLiveUrl();
+          lastLiveUrlRef.current = liveUrl;
+          audio.src = liveUrl;
+        }
+        audio.muted = false;
         audio.load();
         audio
           .play()
           .then(() => setIsPlaying(true))
-        .catch(err => console.warn('⚠️ Erreur lecture live:', err));
+          .catch(err => {
+            console.warn('⚠️ Erreur lecture live:', err);
+            setIsBuffering(false);
+          });
       }
       return;
     }
@@ -408,6 +450,7 @@ export default function Player() {
       body.dataset.player = 'idle';
     };
   }, [isPlaying]);
+
 
   const containerTone = isDark
     ? 'bg-[var(--background)] text-[var(--foreground)] supports-[backdrop-filter]:bg-[var(--background)]/90'
@@ -477,7 +520,7 @@ export default function Player() {
   } else {
     innerContent = (
       <>
-        <audio ref={audioRef} preload="metadata" />
+        <audio ref={audioRef} preload="auto" />
         {analyserRef.current && isPlaying ? <AudioVisualizer analyser={analyserRef.current} /> : null}
 
         <div className="container mx-auto px-4 py-2 flex flex-col gap-3 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-4 sm:justify-between">
@@ -497,6 +540,11 @@ export default function Player() {
             >
               {isPlaying ? (
                 <Pause className="h-4 w-4" />
+              ) : isBuffering ? (
+                <span
+                  className="inline-flex h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+                  aria-hidden="true"
+                />
               ) : (
                 <Play className="h-4 w-4 ml-0.5" />
               )}
@@ -507,7 +555,9 @@ export default function Player() {
               <span className="text-xs font-medium">LIVE</span>
               <span className="text-xs opacity-60">|</span>
               <span className="text-xs opacity-70" suppressHydrationWarning>
-                {clockTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                {isHydrated && !isSafari
+                  ? clockTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                  : null}
               </span>
             </div>
 
