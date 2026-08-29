@@ -2,93 +2,13 @@
 import React, { cache } from "react";
 import path from "path";
 import { readFile } from "fs/promises";
-import WeeklySchedule, { WeeklyScheduleConfig } from "@/components/WeeklySchedule";
+import WeeklySchedule from "@/components/WeeklySchedule";
 import SelectionSection from "@/components/SelectionSection";
 import { fetchPodcastPlaylists } from "@/lib/podcasts";
 import type { PodcastEpisode } from "@/lib/podcasts";
+import { getSchedule } from "@/lib/schedule";
 
 export const revalidate = 900;
-
-const SCHEDULE_LABELS = {
-  night: { fr: "Playlist de la nuit", en: "Night time playlist" },
-  ambient: { fr: "Playlist méditative", en: "Meditative playlist" },
-  morning: { fr: "Playlist plutôt tranquille", en: "Rather calm playlist" },
-  day: { fr: "Playlist un peu moins tranquille", en: "Slightly less calm playlist" },
-  evening: { fr: "Playlist un peu plus club", en: "Club-oriented playlist" },
-} satisfies Record<string, { fr: string; en: string }>;
-
-const makeSlot = (time: string, key: keyof typeof SCHEDULE_LABELS) => {
-  const fallback = { fr: key, en: key };
-  const labels = SCHEDULE_LABELS[key] ?? fallback;
-  return {
-    time,
-    label: labels.fr,
-    translations: { en: labels.en },
-  };
-};
-
-const WEEKLY_SCHEDULE: WeeklyScheduleConfig = {
-  Lundi: [
-    makeSlot("00h", "night"),
-    makeSlot("05h", "ambient"),
-    makeSlot("07h", "morning"),
-    makeSlot("13h", "day"),
-  { time: "18h", label: "Le béguin pour • Erica Do Futuro", highlight: true },
-  ],
-  Mardi: [
-    makeSlot("00h", "night"),
-    makeSlot("05h", "ambient"),
-    makeSlot("07h", "morning"),
-  { time: "10h", label: "Ripisylve", highlight: true },
-    makeSlot("13h", "day"),
-  ],
-  Mercredi: [
-    makeSlot("00h", "night"),
-    makeSlot("05h", "ambient"),
-    makeSlot("07h", "morning"),
-    makeSlot("13h", "day"), 
-  ],
-    
-  Jeudi: [
-    makeSlot("00h", "evening"),
-    makeSlot("01h", "night"),
-    makeSlot("05h", "ambient"),
-    makeSlot("07h", "morning"),
-    makeSlot("13h", "day"),
-    makeSlot("22h", "evening"),
-  ],
-  Vendredi: [
-    makeSlot("00h", "evening"),
-    makeSlot("01h", "night"),
-    makeSlot("05h", "ambient"),
-    makeSlot("07h", "morning"),
-  { time: "11h", label: "Gather GM • Label Echo Special", highlight: true },
-    makeSlot("13h", "day"),
-  ],
-  Samedi: [
-    makeSlot("00h", "evening"),
-    makeSlot("01h", "night"),
-    makeSlot("05h", "ambient"),
-    makeSlot("07h", "morning"),
-    makeSlot("13h", "day"),
-    makeSlot("22h", "evening"),
-  ],
-  Dimanche: [
-    makeSlot("00h", "evening"),
-    makeSlot("01h", "night"),
-    makeSlot("05h", "ambient"),
-    makeSlot("08h", "morning"),
-       {
-      time: "14h",
-      label: "Event : Mangez Bougez au Grrrnd Zero avec La 7eme Sono",
-      link: "https://www.grrrndzero.org/index.php/2791-dim-14-06-mangez-bougez-par-radio-beguin-et-la-7eme-sono",
-      highlight: true,
-      translations: {
-        en: "Event : Mangez Bougez au Grrrnd Zero w La 7eme Sono ",
-      },
-    },
-  ],
-};
 
 const PODCASTS_PATH = path.join(process.cwd(), "src/data/podcasts.json");
 
@@ -128,7 +48,11 @@ const getEpisodesPool = cache(async (): Promise<PodcastEpisode[]> => {
 });
 
 export default async function Page() {
-  const [pool, playlists] = await Promise.all([getEpisodesPool(), fetchPodcastPlaylists()]);
+  const [schedule, pool, playlists] = await Promise.all([
+    getSchedule(),
+    getEpisodesPool(),
+    fetchPodcastPlaylists(),
+  ]);
 
   const highlightTargets = playlists.reduce<Record<string, string>>((acc, playlist) => {
     if (!playlist?.title || !playlist.id) return acc;
@@ -142,7 +66,7 @@ export default async function Page() {
     <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 py-6">
       {/* Programme hebdo */}
       <section className="mb-8">
-        <WeeklySchedule schedule={WEEKLY_SCHEDULE} highlightTargets={highlightTargets} />
+        <WeeklySchedule schedule={schedule} highlightTargets={highlightTargets} />
       </section>
 
       {/* Sélection : 8 épisodes tirés des 200 plus récents */}
