@@ -48,3 +48,10 @@ export async function getEventBySlug(slug: string): Promise<RadioEvent | null> {
 export async function saveAllEvents(events: RadioEvent[]): Promise<void> {
   await redis.set(EVENTS_KEY, events);
 }
+export async function getPastEvents(): Promise<RadioEvent[]> {
+  const all = await getAllEvents();
+  const todayStr = new Date().toISOString().slice(0, 10);
+  return all
+    .filter((event) => event.date < todayStr)
+    .sort((a, b) => b.date.localeCompare(a.date));
+}
