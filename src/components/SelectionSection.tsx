@@ -136,7 +136,7 @@ export default function SelectionSection({ initialEpisodes }: { initialEpisodes:
               >
                 <div className="relative w-full aspect-square">
                   <Image
-                    src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300")}
+                    src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t500x500")}
                     alt={episode.title}
                     fill
                     sizes={ARTWORK_SIZES}

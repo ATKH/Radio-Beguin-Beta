@@ -243,7 +243,7 @@ const EpisodeCard = React.memo(function EpisodeCard({
     <div className="bg-muted rounded-lg overflow-hidden transition-all duration-200 group w-full max-w-[320px] mx-auto">
       <div className="relative w-full aspect-square">
         <Image
-          src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t300x300")}
+          src={normalizeSoundCloudArtworkUrl(episode.artworkUrl, "t500x500")}
           alt={episode.title}
           fill
           sizes={CARD_ARTWORK_SIZES}
@@ -325,7 +325,7 @@ const PlaylistCard = React.memo(
       <div className="group bg-muted rounded-lg overflow-hidden transition-all duration-200 w-full max-w-[320px] mx-auto">
         <div className="relative w-full aspect-square">
         <Image
-          src={normalizeSoundCloudArtworkUrl(playlist.artworkUrl, "t300x300")}
+          src={normalizeSoundCloudArtworkUrl(playlist.artworkUrl, "t500x500")}
           alt={playlist.title}
           fill
           sizes={CARD_ARTWORK_SIZES}
