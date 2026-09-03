@@ -22,9 +22,10 @@ export default function Header() {
     () => [
       { label: t('header.radio'), href: '/' },
       { label: t('header.shows'), href: '/shows' },
+      { label: locale === 'en' ? 'Events' : 'Événements', href: '/events' },
       { label: t('header.info'), href: '/about' },
     ],
-    [t]
+    [t, locale]
   );
 
   const searchPlaceholder = t('header.search.placeholder');

@@ -2,17 +2,17 @@
 import React, { cache } from "react";
 import path from "path";
 import { readFile } from "fs/promises";
-import WeeklySchedule from "@/components/WeeklySchedule";
+import UpcomingShowsSection from "@/components/UpcomingShowsSection";
 import SelectionSection from "@/components/SelectionSection";
+import UpcomingEventsSection from "@/components/UpcomingEventsSection";
 import { fetchPodcastPlaylists } from "@/lib/podcasts";
 import type { PodcastEpisode } from "@/lib/podcasts";
-import { getSchedule } from "@/lib/schedule";
+import { getUpcomingShowsSorted } from "@/lib/upcomingShows";
+import { getUpcomingEvents } from "@/lib/events";
 
 export const revalidate = 900;
 
 const PODCASTS_PATH = path.join(process.cwd(), "src/data/podcasts.json");
-
-// ✅ On prend les 200 épisodes les plus récents grâce à pubDate
 const SELECTION_POOL_SIZE = 96;
 
 const normalizeTitle = (value: string) =>
@@ -30,12 +30,10 @@ const getEpisodesPool = cache(async (): Promise<PodcastEpisode[]> => {
     const payload = JSON.parse(raw);
     let list: PodcastEpisode[] = Array.isArray(payload?.episodes) ? payload.episodes : [];
 
-    // Tri du plus récent au plus ancien
     list = list.sort(
       (a, b) => new Date((b as any).pubDate).getTime() - new Date((a as any).pubDate).getTime()
     );
 
-    // On garde une fenêtre raisonnable d'épisodes récents pour la sélection
     const trimmed = list.slice(0, SELECTION_POOL_SIZE).map(({ description, ...episode }) => ({
       ...episode,
     }));
@@ -48,28 +46,32 @@ const getEpisodesPool = cache(async (): Promise<PodcastEpisode[]> => {
 });
 
 export default async function Page() {
-  const [schedule, pool, playlists] = await Promise.all([
-    getSchedule(),
+  const [upcomingShows, pool, playlists, upcomingEvents] = await Promise.all([
+    getUpcomingShowsSorted(),
     getEpisodesPool(),
     fetchPodcastPlaylists(),
+    getUpcomingEvents(),
   ]);
 
-  const highlightTargets = playlists.reduce<Record<string, string>>((acc, playlist) => {
-    if (!playlist?.title || !playlist.id) return acc;
-    const key = normalizeTitle(playlist.title);
-    if (!key || acc[key]) return acc;
-    acc[key] = playlist.id;
-    return acc;
-  }, {});
+  const featuredEvents = upcomingEvents.slice(0, 3);
+  const hasUpcomingShows = upcomingShows && upcomingShows.length > 0;
 
   return (
     <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 py-6">
-      {/* Programme hebdo */}
-      <section className="mb-8">
-        <WeeklySchedule schedule={schedule} highlightTargets={highlightTargets} />
-      </section>
+      {/* Conteneur pour les sections "Upcoming Shows" et "Events" */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6 items-start">
+        {/* Section "Upcoming Shows" */}
+        {hasUpcomingShows && (
+          <UpcomingShowsSection shows={upcomingShows} />
+        )}
 
-      {/* Sélection : 8 épisodes tirés des 200 plus récents */}
+        {/* Section "Events" - toujours à 50% de largeur, même seule */}
+        <div className={hasUpcomingShows ? "" : "lg:col-start-1"}>
+          <UpcomingEventsSection events={featuredEvents} />
+        </div>
+      </div>
+
+      {/* Sélection */}
       <SelectionSection initialEpisodes={pool} />
     </div>
   );
