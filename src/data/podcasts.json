@@ -1,6 +1,23 @@
 {
   "episodes": [
     {
+      "id": "2392547661",
+      "title": "RIPISYLVE #15 ep spe Ambient Flute w SmallWaterBodies",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-FRApSMIVEvnT6sXO-b6ljtQ-t500x500.jpg",
+      "pubDate": "2026/09/01 14:10:56 +0000",
+      "link": "https://soundcloud.com/radiobeguin/ripisylve-15-ep-spe-ambient?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "L’épisode est une exploration de la flûte comme phénomène ambient : entre souffle et silence, mélodie et drone, sonorités douces et atonales. Instrument multiforme et multisonore (du shinobue aux flûtes de la Renaissance, de la flûte traversière aux flûtes à eau..), seule, en polyphonie avec ses semblables ou en dialogue avec d’autres instruments, la flûte se transforme en une matière sonore à part entière.\n\nTracklist : \nCarlos Niño & Friends - Constellation Of Dancing Flutes (feat. Yaakov Levy)\nJohn Also Bennett - Sacred House (Bass Flute)\nFelbm - fall ii\nThe Cosmic Tones Research Trio - Creation\nYuki Fujiwara - Gloss Phew\nMara Winter & PHAEDRUS - Smaragd / lee hooper - Eos\nVica Pacheco - Flautas Mineralis\nMatthewdavid’s Mindflight - Mycelial Mountain Flute\nShabaka - Memories Don’t Live Like People Do\nMeitei - Go-no-yu / 泉涌 - 伍湯\nMélodie Blaison - Ventoureso\nAaron Shaw - The Path to Clarity\nlee hooper - little sunflower",
+      "tags": [
+        "meditation core",
+        "ambient",
+        "instrumental"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2392547661/streams/b6b839e9-70b2-48ae-a6db-31f2c79f5915/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
       "id": "2372052410",
       "title": "Béguin'Ternational • Kiana (31.07.26)",
       "artworkUrl": "https://i1.sndcdn.com/artworks-VWlGFwGzx5Gl1hjE-LjFItA-t500x500.jpg",
@@ -4026,6 +4043,18 @@
       ],
       "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2045480488/streams/e9c35bd6-0e24-46d2-8151-5214c6260222/hls",
       "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2043395268",
+      "title": "Mes compliments compilés ep.2",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-1uvGq1sr7XxF4elv-yywhqw-t500x500.jpg",
+      "pubDate": "2025/02/27 15:40:34 +0000",
+      "link": "https://soundcloud.com/radiobeguin/mes-compliments-compiles-ep-2?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "christophe 2 - oracle\navventur - set as ringtone\nhelen island x fiesta en el vacio - en ti es de noche\nbarnabaie - gold leaf\nastrid sonne - do you wanna\nsusumu mukai x valentina magaletti - grace maze\nvalentina magaletti - noiaz\nstill house plants - m m m\nfiesta en el vacio - dream partner\ngood sad happy bad - after.spirit\nsissi rada - stigma\nmerope - koumu lil\ndelphine dora - the untellable\nmore eaze & claire rousay - kinda tropical\nulla - song\nloups de virginie - alpage\nmélodie blaison - pluie + pluie\nantonina nowacka - odrracir\ndrew mcdowall - in wound and water",
+      "tags": [],
+      "audioUrl": "",
       "sharing": "public",
       "trackAuthorization": null
     },
@@ -23118,13 +23147,14 @@
     {
       "id": "2166659573",
       "title": "Gather FM",
-      "artworkUrl": "https://i1.sndcdn.com/artworks-gl45Q7OsiUC8509M-by6z2g-t500x500.jpg",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-vV7yvg8o6f0Ogmmp-rN6MBA-t500x500.jpg",
       "description": "",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/gather-fm?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
       "trackCount": 3,
       "tags": [],
-      "lastUpdated": "2026/06/01 08:52:44 +0000",
+      "lastUpdated": "2026/09/03 13:28:22 +0000",
       "episodeIds": [
+        "2393680716",
         "2331098267",
         "2284591040",
         "2238855545"
@@ -23395,10 +23425,11 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-rvGaXmwjBiP68vq8-bTxrpw-t500x500.jpg",
       "description": "RIPISYLVE : émission ambient mensuelle par Margot (Xuri Mae) et Axel (Small Water Bodies), musicien-ne-s qui se retrouvent autour de sonorités fluides et calmes (électroniques, acoustiques ou captées dans des milieux naturels).\nL’émission propose une exploration des musiques ambient et des univers sonores voisins (expé, new age, fourth world, jazz, noise, musique de chambre, ...)\nRipisylve, c’est un terme qui désigne la zone naturelle située le long des cours d’eau, à la frontière entre le milieu aquatique et le milieu terrestre. Caractéristique du paysage lyonnais, ce mot exprime pour nous la connexion au lieu qui, depuis quelques années déjà, est notre maison.",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/ripisylve?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 15,
+      "trackCount": 16,
       "tags": [],
-      "lastUpdated": "2026/07/07 08:11:09 +0000",
+      "lastUpdated": "2026/09/01 14:11:35 +0000",
       "episodeIds": [
+        "2392547661",
         "2354554535",
         "2333099510",
         "2317960979",
@@ -23416,19 +23447,18 @@
         "2225004986"
       ],
       "latestEpisode": {
-        "id": "2354554535",
-        "title": "RIPISYLVE #14 w/ Small Water Bodies",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-QZ5a8ypX6Hy6tILd-WYXdzg-t500x500.jpg",
-        "pubDate": "2026/07/07 07:31:24 +0000",
-        "link": "https://soundcloud.com/radiobeguin/ripisylve-14-w-small-water?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Nyokabi Kariũki - home piano\nPak Yan Lau - Il Problema Di Girarsi\nTime Wharp - Altec Curtis\nJonny Nash & Suzanne Kraft - See Yourself Out Of The Way\nKali Malone - Moving Forward\nFabiano do Nascimento - Aurora\nLaurence Pike - Possible Utopias\nNajee-Zaid - Pushing Through\nSurya Botofasina - Our Cottage To Across The Stream\nZsela (with Daniel Aged & Taul Katz) - Dream 2\nNala Sinephro - Live at Real World Studios with Edward Wakili-Hick & Dwayne Kilvington\nDuval Timothy & Carlos Niño - bellsssswell",
+        "id": "2392547661",
+        "title": "RIPISYLVE #15 ep spe Ambient Flute w SmallWaterBodies",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-FRApSMIVEvnT6sXO-b6ljtQ-t500x500.jpg",
+        "pubDate": "2026/09/01 14:10:56 +0000",
+        "link": "https://soundcloud.com/radiobeguin/ripisylve-15-ep-spe-ambient?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "L’épisode est une exploration de la flûte comme phénomène ambient : entre souffle et silence, mélodie et drone, sonorités douces et atonales. Instrument multiforme et multisonore (du shinobue aux flûtes de la Renaissance, de la flûte traversière aux flûtes à eau..), seule, en polyphonie avec ses semblables ou en dialogue avec d’autres instruments, la flûte se transforme en une matière sonore à part entière.\n\nTracklist : \nCarlos Niño & Friends - Constellation Of Dancing Flutes (feat. Yaakov Levy)\nJohn Also Bennett - Sacred House (Bass Flute)\nFelbm - fall ii\nThe Cosmic Tones Research Trio - Creation\nYuki Fujiwara - Gloss Phew\nMara Winter & PHAEDRUS - Smaragd / lee hooper - Eos\nVica Pacheco - Flautas Mineralis\nMatthewdavid’s Mindflight - Mycelial Mountain Flute\nShabaka - Memories Don’t Live Like People Do\nMeitei - Go-no-yu / 泉涌 - 伍湯\nMélodie Blaison - Ventoureso\nAaron Shaw - The Path to Clarity\nlee hooper - little sunflower",
         "tags": [
-          "meditation-core",
+          "meditation core",
           "ambient",
-          "spiritual jazz",
-          "drone"
+          "instrumental"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2354554535/streams/e55c5b28-9ea8-40a7-a88d-9ecadb05bf0c/hls",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2392547661/streams/b6b839e9-70b2-48ae-a6db-31f2c79f5915/hls",
         "streamProtocol": "hls",
         "sharing": "public",
         "trackAuthorization": null
@@ -25298,9 +25328,13 @@
         "2347500152",
         "2346813551",
         "2345306417",
+        "2345305391",
         "2345307764",
         "2345308466",
         "2345303930",
+        "2346235250",
+        "2346240620",
+        "2346227645",
         "2216819306",
         "2216472119",
         "2216475110",
@@ -25315,6 +25349,7 @@
         "2117926059",
         "2111011701",
         "2111013555",
+        "1974595551",
         "1962311619",
         "1962308863",
         "1788452086",
@@ -25886,6 +25921,7 @@
         "1550656693",
         "1550652841",
         "1550651752",
+        "1550654974",
         "1551581863",
         "1545172315",
         "1544256442",
@@ -26575,10 +26611,10 @@
     "Modern Classical",
     "New Age",
     "Synth Pop",
+    "ambient",
     "Live",
     "Noise",
     "Trap",
-    "ambient",
     "Industrial",
     "Jungle",
     "Footwork",
@@ -26665,6 +26701,7 @@
     "jazz",
     "juke",
     "jungle",
+    "meditation core",
     "Méditation Core",
     "Memphis",
     "metro boulot",
@@ -26711,13 +26748,13 @@
     "Hip hop",
     "Hip HOp",
     "industrial",
+    "instrumental",
     "Kizomba",
     "Kwaito",
     "leftfield techno",
     "letfielf House",
     "Maloya",
     "Marimba",
-    "meditation core",
     "méditation core",
     "Meditation core",
     "Méditation core",
@@ -26744,5 +26781,5 @@
     "trip-hop",
     "UK funky"
   ],
-  "lastUpdated": "2026-08-29T09:46:37.136Z"
+  "lastUpdated": "2026-09-14T07:32:22.824Z"
 }
