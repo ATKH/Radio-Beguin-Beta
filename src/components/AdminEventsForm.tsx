@@ -27,6 +27,7 @@ const emptyEvent = () => ({
   fullDescriptionEn: "",
   image: "",
   links: [],
+  artists: [],
 });
 
 export default function AdminEventsForm({ initialEvents }) {
@@ -91,6 +92,38 @@ export default function AdminEventsForm({ initialEvents }) {
       const next = [...prev];
       const ev = { ...next[eventIndex] };
       ev.links = (ev.links || []).filter((_, i) => i !== linkIndex);
+      next[eventIndex] = ev;
+      return next;
+    });
+  };
+
+  const addArtist = (index) => {
+    setEvents((prev) => {
+      const next = [...prev];
+      const ev = { ...next[index] };
+      ev.artists = [...(ev.artists || []), { name: "", url: "" }];
+      next[index] = ev;
+      return next;
+    });
+  };
+
+  const updateArtist = (eventIndex, artistIndex, field, value) => {
+    setEvents((prev) => {
+      const next = [...prev];
+      const ev = { ...next[eventIndex] };
+      const artists = [...(ev.artists || [])];
+      artists[artistIndex] = { ...artists[artistIndex], [field]: value };
+      ev.artists = artists;
+      next[eventIndex] = ev;
+      return next;
+    });
+  };
+
+  const removeArtist = (eventIndex, artistIndex) => {
+    setEvents((prev) => {
+      const next = [...prev];
+      const ev = { ...next[eventIndex] };
+      ev.artists = (ev.artists || []).filter((_, i) => i !== artistIndex);
       next[eventIndex] = ev;
       return next;
     });
@@ -255,6 +288,46 @@ export default function AdminEventsForm({ initialEvents }) {
                   placeholder="Detailed description"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium mb-2">
+                Artistes programmés (optionnel)
+              </label>
+              <div className="space-y-2">
+                {(event.artists || []).map((artist, artistIndex) => (
+                  <div key={artistIndex} className="flex flex-wrap gap-2 items-center">
+                    <input
+                      type="text"
+                      value={artist.name}
+                      onChange={(e) => updateArtist(index, artistIndex, "name", e.target.value)}
+                      className="border rounded px-2 py-1 text-sm w-40"
+                      placeholder="Nom de l'artiste"
+                    />
+                    <input
+                      type="text"
+                      value={artist.url || ""}
+                      onChange={(e) => updateArtist(index, artistIndex, "url", e.target.value)}
+                      className="border rounded px-2 py-1 text-sm flex-1 min-w-[180px]"
+                      placeholder="Lien (optionnel) : SoundCloud, Instagram..."
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeArtist(index, artistIndex)}
+                      className="text-red-600 text-sm"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => addArtist(index)}
+                className="mt-2 text-sm text-blue-600"
+              >
+                + Ajouter un artiste
+              </button>
             </div>
 
             <div>

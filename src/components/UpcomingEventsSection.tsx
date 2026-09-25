@@ -73,37 +73,37 @@ export default function UpcomingEventsSection({ events = [] }) {
       </div>
 
       {/* Carrousel SANS encadré */}
-      <div className="relative min-h-[420px]">
+      <div className="relative">
         <div
-          className={`flex flex-col md:flex-row gap-6 transition-opacity duration-500 ${
+          className={`flex flex-col md:flex-row gap-3 md:gap-6 transition-opacity duration-500 ${
             isFading ? "opacity-0" : "opacity-100"
           }`}
         >
           {/* Image à gauche */}
           {currentEvent.image && (
-            <div className="w-full md:w-1/2">
-              <Link href={`/events/${currentEvent.slug}`}>
+            <div className="w-full md:w-1/2 flex justify-center px-4 md:px-0">
+              <Link href={`/events/${currentEvent.slug}`} className="block w-full max-w-[260px] md:max-w-xs">
                 <img
                   src={currentEvent.image}
                   alt={title}
-                  className="w-full h-full object-cover min-h-[420px] md:min-h-0 rounded-lg"
+                  className="w-full h-auto object-contain rounded-lg mx-auto"
                 />
               </Link>
             </div>
           )}
 
           {/* Infos à droite */}
-          <div className="w-full md:w-1/2 p-6 flex flex-col justify-center">
-            <p className="text-sm uppercase tracking-wide text-foreground/70 mb-3">
+          <div className="w-full md:w-1/2 p-3 md:p-6 flex flex-col justify-center">
+            <p className="text-sm uppercase tracking-wide text-foreground/70 mb-1 md:mb-3">
               {formatEventDate(currentEvent.date, locale)}
               {currentEvent.time ? ` \u00b7 ${currentEvent.time}` : ""}
             </p>
             <Link href={`/events/${currentEvent.slug}`}>
-              <h3 className="text-3xl font-bold mb-4 text-foreground hover:underline">
+              <h3 className="text-2xl md:text-3xl font-bold mb-2 md:mb-4 text-foreground hover:underline">
                 {title}
               </h3>
             </Link>
-            <p className="text-foreground/80 mb-6">{shortDescription}</p>
+            <p className="text-foreground/80 mb-3 md:mb-6">{shortDescription}</p>
 
             {/* Tags */}
             {currentEvent.tags && currentEvent.tags.length > 0 && (

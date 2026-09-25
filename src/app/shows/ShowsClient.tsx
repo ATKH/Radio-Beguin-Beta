@@ -965,7 +965,7 @@ export default function ShowsClient() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-background text-foreground p-4 md:p-8 max-w-7xl mx-auto">
+    <main className="min-h-screen bg-background text-foreground px-4 pt-2 pb-4 md:px-8 md:pt-3 md:pb-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-6 space-y-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

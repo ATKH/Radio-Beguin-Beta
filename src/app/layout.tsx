@@ -41,7 +41,7 @@ export const metadata: Metadata = {
 };
 
 const NEWS_TICKER_MESSAGES = [
-   "R A D I O   B É G U I N",
+  "R A D I O   B É G U I N",
 ];
 
 const figtree = Figtree({
@@ -81,7 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   <Player />
 
                   {/* Contenu principal */}
-                  <main className="flex-1 pt-12 sm:pt-0">{children}</main>
+                  <main className="flex-1">{children}</main>
 
                   {/* Footer */}
                   <Footer />

@@ -488,8 +488,8 @@ export default function Player() {
   let innerContent: React.ReactNode;
   if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast' && currentEpisode) {
     const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
-      currentEpisode.link
-    )}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&color=%232f1c17`;
+  currentEpisode.link
+)}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&color=%232f1c17`;
     innerContent = (
       <div className="container mx-auto px-4 py-2 flex flex-col gap-3">
         <div className="flex items-center gap-3">

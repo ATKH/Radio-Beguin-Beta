@@ -21,12 +21,12 @@ function EventCard({ event, locale, muted }) {
   return (
     <div className={`flex flex-col items-center text-center ${muted ? "opacity-70" : ""}`}>
       {event.image && (
-        <div className="w-full mb-4 flex items-center justify-center">
-          <Link href={`/events/${event.slug}`}>
+        <div className="w-full mb-4 flex items-center justify-center px-2">
+          <Link href={`/events/${event.slug}`} className="block w-full max-w-[260px] md:max-w-xs">
             <img
               src={event.image}
               alt={title}
-              className="w-full max-w-xs h-auto object-contain rounded-lg"
+              className="w-full h-auto object-contain rounded-lg mx-auto"
               onError={(e) => {
                 e.currentTarget.style.display = "none";
               }}
@@ -54,7 +54,7 @@ export default function EventsListView({ events, pastEvents }) {
   const { locale } = useLocale();
 
   return (
-    <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 py-8">
+    <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 pt-2 pb-8 md:pt-3">
       <h1 className="text-3xl font-bold mb-8">
         {locale === "en" ? "Events" : "Événements"}
       </h1>

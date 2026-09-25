@@ -12,7 +12,7 @@ import { getUpcomingEvents } from "@/lib/events";
 
 export const revalidate = 900;
 
-const PODCASTS_PATH = path.join(process.cwd(), "src/data/podcasts.json");
+const PODCASTS_PATH = path.join(process.cwd(), "public/data/podcasts.json");
 const SELECTION_POOL_SIZE = 96;
 
 const normalizeTitle = (value: string) =>
@@ -57,7 +57,7 @@ export default async function Page() {
   const hasUpcomingShows = upcomingShows && upcomingShows.length > 0;
 
   return (
-    <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 py-6">
+    <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 pt-2 pb-6 md:pt-3">
       {/* Conteneur pour les sections "Upcoming Shows" et "Events" */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6 items-start">
         {/* Section "Upcoming Shows" */}
