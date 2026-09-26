@@ -10,7 +10,7 @@ import type { PodcastEpisode } from "@/lib/podcasts";
 import { getUpcomingShowsSorted } from "@/lib/upcomingShows";
 import { getUpcomingEvents } from "@/lib/events";
 
-export const revalidate = 900;
+export const dynamic = "force-dynamic";
 
 const PODCASTS_PATH = path.join(process.cwd(), "public/data/podcasts.json");
 const SELECTION_POOL_SIZE = 96;
