@@ -10,15 +10,15 @@ import AudioVisualizer from '@/components/ui/AudioVisualizer';
 import { useLocale } from '@/lib/LocaleContext';
 import type { PodcastEpisode } from '@/lib/podcasts';
 
-const RADIO_STREAM_URL = 'https://stream.radiobeguin.com/listen/radio_b%C3%A9guin/radio.mp3';
+const DEFAULT_RADIO_STREAM_URL = 'https://stream.radiobeguin.com/listen/radio_b%C3%A9guin/radio.mp3';
 const RADIO_STREAM_AAC_URL: string | null = null;
-const RADIO_STREAM_HLS_URL = null; // ← HLS retiré
+const RADIO_STREAM_HLS_URL = null;
 const TRACK_INFO_URL = '/api/live-track';
 const PLAYBACK_STORAGE_KEY = 'radio-beguin:playback-state';
 const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
 
-const buildLiveStreamUrl = () =>
-  `${RADIO_STREAM_URL}${RADIO_STREAM_URL.includes('?') ? '&' : '?'}ts=${Date.now()}`;
+const buildLiveStreamUrl = (baseUrl: string) =>
+  `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}ts=${Date.now()}`;
 
 type ResolvedStream = {
   url: string;
@@ -74,6 +74,7 @@ export default function Player() {
   const [duration, setDuration] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
+  const [liveStreamUrl, setLiveStreamUrl] = useState(DEFAULT_RADIO_STREAM_URL);
   const resumeIntentRef = useRef<{ shouldResume: boolean; target: 'live' | 'podcast' | null }>({
     shouldResume: false,
     target: null,
@@ -84,18 +85,17 @@ export default function Player() {
   const playbackRestoredRef = useRef(false);
   const wasLivePlayingRef = useRef(false);
   const lastLiveUrlRef = useRef<string | null>(null);
+  const lastLiveBaseUrlRef = useRef<string | null>(null); // ← Ajouté ici
   const lastLivePauseAtRef = useRef<number | null>(null);
 
-  // ← Safari utilise désormais le MP3 directement comme tous les autres navigateurs
   const getLiveUrl = useCallback(() => {
-    return buildLiveStreamUrl();
-  }, []);
+    return buildLiveStreamUrl(liveStreamUrl);
+  }, [liveStreamUrl]);
 
   const PLAYER_MIN_HEIGHT = 58;
   const HEADER_HEIGHT = 56;
   const LINE_HEIGHT = 2;
 
-  // Horloge
   useEffect(() => {
     setIsHydrated(true);
     if (typeof navigator !== "undefined") {
@@ -107,7 +107,21 @@ export default function Player() {
     return () => clearInterval(timer);
   }, []);
 
-  // Restaurer l'intention de lecture après navigation (live ou podcast)
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/stream-config')
+      .then((res) => res.json())
+      .then((data) => {
+        if (!cancelled && data?.url) {
+          setLiveStreamUrl(data.url);
+        }
+      })
+      .catch((err) => console.warn('⚠️ Impossible de récupérer la config du flux:', err));
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   useEffect(() => {
     if (typeof window === 'undefined' || playbackRestoredRef.current) return;
     const isReload = isReloadNavigation();
@@ -125,7 +139,6 @@ export default function Player() {
     playbackRestoredRef.current = true;
   }, []);
 
-  // Sauvegarder l'état de lecture (permet de reprendre automatiquement)
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
@@ -137,6 +150,7 @@ export default function Player() {
       // ignore
     }
   }, [isPlaying, activePlayer]);
+
   useEffect(() => {
     if (activePlayer === 'live') {
       wasLivePlayingRef.current = isPlaying;
@@ -145,7 +159,6 @@ export default function Player() {
     }
   }, [activePlayer, isPlaying]);
 
-  // Détecter les changements d'épisode pour relancer automatiquement la lecture
   useEffect(() => {
     const currentId = currentEpisode?.id ?? null;
     if (currentId && currentId !== previousEpisodeIdRef.current) {
@@ -160,7 +173,6 @@ export default function Player() {
     previousEpisodeIdRef.current = currentId;
   }, [currentEpisode?.id]);
 
-  // Infos morceau live
   useEffect(() => {
     if (activePlayer !== 'live') {
       setCurrentTrack(null);
@@ -222,9 +234,9 @@ export default function Player() {
 
     if (activePlayer === 'live') {
       const liveUrl = getLiveUrl();
-      // ← shouldSwitch simplifié : plus de condition HLS Safari
-      const shouldSwitch = !audio.src;
+      const shouldSwitch = !audio.src || lastLiveBaseUrlRef.current !== liveStreamUrl; // ← Modifié
       if (shouldSwitch) {
+        lastLiveBaseUrlRef.current = liveStreamUrl; // ← Ajouté
         lastLiveUrlRef.current = liveUrl;
         audio.src = liveUrl;
         audio.load();
@@ -311,8 +323,8 @@ export default function Player() {
 
     if (activePlayer === 'live') {
       const liveUrl = getLiveUrl();
-      // ← plus de condition HLS Safari ici non plus
-      if (!audio.src) {
+      if (!audio.src || lastLiveBaseUrlRef.current !== liveStreamUrl) { // ← Modifié
+        lastLiveBaseUrlRef.current = liveStreamUrl; // ← Ajouté
         lastLiveUrlRef.current = liveUrl;
         audio.src = liveUrl;
       }
@@ -338,9 +350,8 @@ export default function Player() {
     return () => {
       cleanup();
     };
-  }, [activePlayer, currentEpisode]);
+  }, [activePlayer, currentEpisode, liveStreamUrl]); // ← Ajout de liveStreamUrl
 
-  // Events audio
   useEffect(() => {
     if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
     const audio = audioRef.current;
@@ -397,7 +408,6 @@ export default function Player() {
         setIsBuffering(true);
         const pausedAt = lastLivePauseAtRef.current;
         const shouldRefresh = pausedAt ? Date.now() - pausedAt > 10000 : false;
-        // ← condition HLS Safari retirée
         if (!audio.src || shouldRefresh) {
           const liveUrl = getLiveUrl();
           lastLiveUrlRef.current = liveUrl;
@@ -451,7 +461,6 @@ export default function Player() {
     };
   }, [isPlaying]);
 
-
   const containerTone = isDark
     ? 'bg-[var(--background)] text-[var(--foreground)] supports-[backdrop-filter]:bg-[var(--background)]/90'
     : 'bg-[var(--background)] text-[var(--foreground)] supports-[backdrop-filter]:bg-[var(--background)]/90';
@@ -488,8 +497,8 @@ export default function Player() {
   let innerContent: React.ReactNode;
   if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast' && currentEpisode) {
     const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
-  currentEpisode.link
-)}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&color=%232f1c17`;
+      currentEpisode.link
+    )}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&color=%232f1c17`;
     innerContent = (
       <div className="container mx-auto px-4 py-2 flex flex-col gap-3">
         <div className="flex items-center gap-3">
@@ -506,15 +515,24 @@ export default function Player() {
           </Button>
         </div>
 
-        <iframe
-          key={currentEpisode.id}
-          width="100%"
-          height="110"
-          allow="autoplay"
-          allowFullScreen
-          src={embedUrl}
-          className="rounded-md border border-white/10"
-        />
+        <div className="flex items-center gap-3">
+          <img
+            src={currentEpisode.artworkUrl}
+            alt=""
+            className="w-14 h-14 rounded-md object-cover flex-shrink-0"
+          />
+          <div className="flex-1 rounded-md overflow-hidden">
+            <iframe
+              key={currentEpisode.id}
+              width="100%"
+              height="120"
+              allow="autoplay"
+              allowFullScreen
+              src={embedUrl}
+              className="border-0 block"
+            />
+          </div>
+        </div>
       </div>
     );
   } else {
@@ -525,88 +543,7 @@ export default function Player() {
 
         <div className="container mx-auto px-4 py-2 flex flex-col gap-3 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-4 sm:justify-between">
           {activePlayer === 'live' ? (
-          <div className="flex flex-wrap items-center gap-3 w-full">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={togglePlay}
-              className={`rounded-full h-10 w-10 flex-shrink-0 transition-colors focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                isPlaying
-                  ? 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90'
-                  : isDark
-                    ? 'border border-white/15 bg-black text-white hover:bg-white/10'
-                    : 'border border-primary/30 bg-[var(--white)] text-[var(--foreground)] hover:bg-[var(--primary)]/10'
-              }`}
-            >
-              {isPlaying ? (
-                <Pause className="h-4 w-4" />
-              ) : isBuffering ? (
-                <span
-                  className="inline-flex h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-                  aria-hidden="true"
-                />
-              ) : (
-                <Play className="h-4 w-4 ml-0.5" />
-              )}
-            </Button>
-
-            <div className="flex items-center space-x-2 flex-shrink-0">
-              <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-              <span className="text-xs font-medium">LIVE</span>
-              <span className="text-xs opacity-60">|</span>
-              <span className="text-xs opacity-70" suppressHydrationWarning>
-                {isHydrated && !isSafari
-                  ? clockTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-                  : null}
-              </span>
-            </div>
-
-            <div className="flex-1 min-w-[200px] overflow-hidden">
-              <div className="animate-marquee whitespace-nowrap">
-                {currentTrack ? (
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold">
-                      {currentTrack.title}
-                    </span>
-                    {currentTrack.artist ? (
-                      <>
-                        <span className="text-sm opacity-60">•</span>
-                        <span className="text-sm opacity-70">{currentTrack.artist}</span>
-                      </>
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        ) : currentEpisode ? (
-          <div className="flex flex-col w-full gap-3 sm:flex-row sm:items-center sm:gap-4">
-            <div className="flex flex-wrap items-center gap-3">
-              <Button
-                size="sm"
-                onClick={onClosePodcast}
-                variant="outline"
-                className={`flex items-center space-x-1 border-[var(--primary)]/30 ${
-                  isDark ? 'text-white hover:bg-white/10' : 'text-[var(--foreground)] hover:bg-[var(--primary)]/10'
-                }`}
-              >
-                <ArrowLeft className="h-4 w-4" />
-                <span className="text-xs">{t("player.backToLive")}</span>
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className={`text-xs px-2 py-1 ${isDark ? 'text-white hover:text-[var(--primary)]' : 'text-[var(--foreground)] hover:text-[var(--primary)]'}`}
-                aria-label={t("player.soundcloud")}
-              >
-                <a href={currentEpisode.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-                  <ExternalLink className="h-3 w-3" />
-                  <span className="hidden sm:inline">{t("player.soundcloud")}</span>
-                </a>
-              </Button>
-
+            <div className="flex flex-wrap items-center gap-3 w-full">
               <Button
                 variant="ghost"
                 size="sm"
@@ -621,37 +558,118 @@ export default function Player() {
               >
                 {isPlaying ? (
                   <Pause className="h-4 w-4" />
+                ) : isBuffering ? (
+                  <span
+                    className="inline-flex h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+                    aria-hidden="true"
+                  />
                 ) : (
                   <Play className="h-4 w-4 ml-0.5" />
                 )}
               </Button>
 
-              <div className="flex-1 min-w-[200px] overflow-hidden">
-                <h3 className="text-sm font-medium truncate">{currentEpisode.title}</h3>
-                <p className="text-xs opacity-70">
-                  {new Date(currentEpisode.pubDate).toLocaleDateString('fr-FR')}
-                </p>
+              <div className="flex items-center space-x-2 flex-shrink-0">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span className="text-xs font-medium">LIVE</span>
+                <span className="text-xs opacity-60">|</span>
+                <span className="text-xs opacity-70" suppressHydrationWarning>
+                  {isHydrated && !isSafari
+                    ? clockTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+                    : null}
+                </span>
               </div>
-            </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto sm:flex-1">
-              <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                value={currentPosition}
-                onChange={onSeek}
-                step={0.1}
-                className="soundcloud-range flex-1"
-                aria-label="Progression du podcast"
-              />
-              <div className="text-xs w-24 text-right tabular-nums opacity-70">
-                {formatDuration(currentPosition)} / {formatDuration(duration)}
+              <div className="flex-1 min-w-[200px] overflow-hidden">
+                <div className="animate-marquee whitespace-nowrap">
+                  {currentTrack ? (
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold">
+                        {currentTrack.title}
+                      </span>
+                      {currentTrack.artist ? (
+                        <>
+                          <span className="text-sm opacity-60">•</span>
+                          <span className="text-sm opacity-70">{currentTrack.artist}</span>
+                        </>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
-          </div>
-        ) : null}
-      </div>
+          ) : currentEpisode ? (
+            <div className="flex flex-col w-full gap-3 sm:flex-row sm:items-center sm:gap-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <Button
+                  size="sm"
+                  onClick={onClosePodcast}
+                  variant="outline"
+                  className={`flex items-center space-x-1 border-[var(--primary)]/30 ${
+                    isDark ? 'text-white hover:bg-white/10' : 'text-[var(--foreground)] hover:bg-[var(--primary)]/10'
+                  }`}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="text-xs">{t("player.backToLive")}</span>
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className={`text-xs px-2 py-1 ${isDark ? 'text-white hover:text-[var(--primary)]' : 'text-[var(--foreground)] hover:text-[var(--primary)]'}`}
+                  aria-label={t("player.soundcloud")}
+                >
+                  <a href={currentEpisode.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                    <ExternalLink className="h-3 w-3" />
+                    <span className="hidden sm:inline">{t("player.soundcloud")}</span>
+                  </a>
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={togglePlay}
+                  className={`rounded-full h-10 w-10 flex-shrink-0 transition-colors focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                    isPlaying
+                      ? 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90'
+                      : isDark
+                        ? 'border border-white/15 bg-black text-white hover:bg-white/10'
+                        : 'border border-primary/30 bg-[var(--white)] text-[var(--foreground)] hover:bg-[var(--primary)]/10'
+                  }`}
+                >
+                  {isPlaying ? (
+                    <Pause className="h-4 w-4" />
+                  ) : (
+                    <Play className="h-4 w-4 ml-0.5" />
+                  )}
+                </Button>
+
+                <div className="flex-1 min-w-[200px] overflow-hidden">
+                  <h3 className="text-sm font-medium truncate">{currentEpisode.title}</h3>
+                  <p className="text-xs opacity-70">
+                    {new Date(currentEpisode.pubDate).toLocaleDateString('fr-FR')}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto sm:flex-1">
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  value={currentPosition}
+                  onChange={onSeek}
+                  step={0.1}
+                  className="soundcloud-range flex-1"
+                  aria-label="Progression du podcast"
+                />
+                <div className="text-xs w-24 text-right tabular-nums opacity-70">
+                  {formatDuration(currentPosition)} / {formatDuration(duration)}
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
       </>
     );
   }

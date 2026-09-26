@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
+import { getActiveStreamSource, NOWPLAYING_URLS } from "@/lib/streamConfig";
 
 const CACHE_TTL_MS = 15_000; // 15 secondes
 
-let cachedTrack: { expiresAt: number; payload: { title: string; artist: string } } | null = null;
+let cachedTrack: {
+  expiresAt: number;
+  source: string;
+  payload: { title: string; artist: string };
+} | null = null;
 
 export async function GET() {
   const now = Date.now();
-  
-  if (cachedTrack && cachedTrack.expiresAt > now) {
+  const activeSource = await getActiveStreamSource();
+
+  // Le cache n'est valide que s'il correspond à la source actuellement active
+  if (cachedTrack && cachedTrack.expiresAt > now && cachedTrack.source === activeSource) {
     return NextResponse.json(cachedTrack.payload, {
       headers: {
         "cache-control": "public, s-maxage=15, stale-while-revalidate=30",
@@ -16,7 +23,7 @@ export async function GET() {
   }
 
   try {
-    const TRACK_INFO_URL = "https://stream.radiobeguin.com/api/nowplaying/1";
+    const TRACK_INFO_URL = NOWPLAYING_URLS[activeSource];
     const upstream = await fetch(TRACK_INFO_URL, {
       headers: {
         "cache-control": "no-cache",
@@ -25,7 +32,7 @@ export async function GET() {
     });
 
     if (!upstream.ok) {
-      if (cachedTrack) {
+      if (cachedTrack && cachedTrack.source === activeSource) {
         return NextResponse.json(cachedTrack.payload, {
           headers: {
             "cache-control": "public, s-maxage=10, stale-while-revalidate=30",
@@ -43,6 +50,7 @@ export async function GET() {
 
     cachedTrack = {
       payload: track,
+      source: activeSource,
       expiresAt: now + CACHE_TTL_MS,
     };
 
@@ -53,7 +61,7 @@ export async function GET() {
     });
   } catch (error) {
     console.error("[live-track]", error);
-    if (cachedTrack) {
+    if (cachedTrack && cachedTrack.source === activeSource) {
       return NextResponse.json(cachedTrack.payload, {
         headers: {
           "cache-control": "public, s-maxage=10, stale-while-revalidate=30",
