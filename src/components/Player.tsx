@@ -1,6 +1,7 @@
 'use client';
 
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { Play, Pause, ArrowLeft, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePlayer } from '@/lib/PlayerContext';
@@ -16,6 +17,15 @@ const RADIO_STREAM_HLS_URL = null;
 const TRACK_INFO_URL = '/api/live-track';
 const PLAYBACK_STORAGE_KEY = 'radio-beguin:playback-state';
 const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
+
+// Taille de l'image externe à gauche du widget SoundCloud (= hauteur de l'iframe)
+const SC_WIDGET_HEIGHT = 120;
+// Si SoundCloud ignore show_artwork=false, mets ici la largeur (en px) de sa pochette (ex: 120)
+// pour la rogner. Laisser à 0 tant que show_artwork=false fonctionne.
+const SC_ARTWORK_CROP_PX = 0;
+
+// Page de l'épisode sur le site
+const getEpisodePageUrl = (episode: PodcastEpisode) => `/shows/${episode.id}`;
 
 const buildLiveStreamUrl = (baseUrl: string) =>
   `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}ts=${Date.now()}`;
@@ -85,7 +95,7 @@ export default function Player() {
   const playbackRestoredRef = useRef(false);
   const wasLivePlayingRef = useRef(false);
   const lastLiveUrlRef = useRef<string | null>(null);
-  const lastLiveBaseUrlRef = useRef<string | null>(null); // ← Ajouté ici
+  const lastLiveBaseUrlRef = useRef<string | null>(null);
   const lastLivePauseAtRef = useRef<number | null>(null);
 
   const getLiveUrl = useCallback(() => {
@@ -234,9 +244,9 @@ export default function Player() {
 
     if (activePlayer === 'live') {
       const liveUrl = getLiveUrl();
-      const shouldSwitch = !audio.src || lastLiveBaseUrlRef.current !== liveStreamUrl; // ← Modifié
+      const shouldSwitch = !audio.src || lastLiveBaseUrlRef.current !== liveStreamUrl;
       if (shouldSwitch) {
-        lastLiveBaseUrlRef.current = liveStreamUrl; // ← Ajouté
+        lastLiveBaseUrlRef.current = liveStreamUrl;
         lastLiveUrlRef.current = liveUrl;
         audio.src = liveUrl;
         audio.load();
@@ -323,8 +333,8 @@ export default function Player() {
 
     if (activePlayer === 'live') {
       const liveUrl = getLiveUrl();
-      if (!audio.src || lastLiveBaseUrlRef.current !== liveStreamUrl) { // ← Modifié
-        lastLiveBaseUrlRef.current = liveStreamUrl; // ← Ajouté
+      if (!audio.src || lastLiveBaseUrlRef.current !== liveStreamUrl) {
+        lastLiveBaseUrlRef.current = liveStreamUrl;
         lastLiveUrlRef.current = liveUrl;
         audio.src = liveUrl;
       }
@@ -350,7 +360,7 @@ export default function Player() {
     return () => {
       cleanup();
     };
-  }, [activePlayer, currentEpisode, liveStreamUrl]); // ← Ajout de liveStreamUrl
+  }, [activePlayer, currentEpisode, liveStreamUrl]);
 
   useEffect(() => {
     if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
@@ -498,7 +508,7 @@ export default function Player() {
   if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast' && currentEpisode) {
     const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
       currentEpisode.link
-    )}&auto_play=true&visual=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&color=%232f1c17`;
+    )}&auto_play=true&visual=false&show_artwork=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&color=%232f1c17`;
     innerContent = (
       <div className="container mx-auto px-4 py-2 flex flex-col gap-3">
         <div className="flex items-center gap-3">
@@ -516,20 +526,30 @@ export default function Player() {
         </div>
 
         <div className="flex items-center gap-3">
-          <img
-            src={currentEpisode.artworkUrl}
-            alt=""
-            className="w-14 h-14 rounded-md object-cover flex-shrink-0"
-          />
+          <Link
+            href={getEpisodePageUrl(currentEpisode)}
+            aria-label={currentEpisode.title}
+            className="flex-shrink-0 rounded-md transition-opacity hover:opacity-80 focus-visible:ring-2 focus-visible:ring-primary/40"
+          >
+            <img
+              src={currentEpisode.artworkUrl}
+              alt=""
+              style={{ width: SC_WIDGET_HEIGHT, height: SC_WIDGET_HEIGHT }}
+              className="rounded-md object-cover block"
+            />
+          </Link>
           <div className="flex-1 rounded-md overflow-hidden">
             <iframe
               key={currentEpisode.id}
-              width="100%"
-              height="120"
+              height={SC_WIDGET_HEIGHT}
               allow="autoplay"
               allowFullScreen
               src={embedUrl}
-              className="border-0 block"
+              className="border-0 block max-w-none"
+              style={{
+                width: `calc(100% + ${SC_ARTWORK_CROP_PX}px)`,
+                marginLeft: `-${SC_ARTWORK_CROP_PX}px`,
+              }}
             />
           </div>
         </div>

@@ -31,9 +31,9 @@ function ShowLine({ show }) {
   const tags = show.tags && show.tags.length ? show.tags : null;
 
   return (
-    <div className="flex items-center gap-3 py-2 group">
+    <div className="flex items-center gap-3 py-1.5 group">
       {show.image && (
-        <div className="w-20 h-20 rounded overflow-hidden bg-foreground/5 shrink-0">
+        <div className="w-16 h-16 rounded overflow-hidden bg-foreground/5 shrink-0">
           {show.link ? (
             <Link href={show.link}>
               <img
@@ -98,7 +98,7 @@ export default function UpcomingShowsSection({ shows }) {
   const groups = groupShowsByDate(shows || []);
 
   return (
-    <section>
+    <section className="w-full max-w-lg">
       <h2 className="text-3xl font-bold mb-4">
         {locale === "en" ? "Upcoming shows" : "Émissions à venir"}
       </h2>
@@ -110,16 +110,16 @@ export default function UpcomingShowsSection({ shows }) {
             : "Aucune émission à venir annoncée pour le moment."}
         </p>
       ) : (
-        <div className="max-h-[420px] overflow-y-auto pr-2 space-y-3">
+        <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2">
           {groups.map((group) => (
-            <div key={group.date} className="border-b border-foreground/10 pb-2">
-              <div className="flex items-start justify-between gap-4">
+            <div key={group.date} className="border-b border-foreground/10 pb-1.5">
+              <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   {group.shows.map((show) => (
                     <ShowLine key={show.id} show={show} />
                   ))}
                 </div>
-                <p className="text-xl font-bold text-right shrink-0 pt-1">
+                <p className="text-base font-bold text-right shrink-0 pt-2">
                   {formatDayHeading(group.date, locale)}
                 </p>
               </div>

@@ -3,9 +3,11 @@ import { getAllEvents } from "@/lib/events";
 import { getAllUpcomingShows } from "@/lib/upcomingShows";
 import { fetchPodcastPlaylists } from "@/lib/podcasts";
 import { getActiveStreamSource } from "@/lib/streamConfig";
+import { getAllNews } from "@/lib/news";
 import AdminEventsForm from "@/components/AdminEventsForm";
 import AdminUpcomingShowsForm from "@/components/AdminUpcomingShowsForm";
 import AdminStreamForm from "@/components/AdminStreamForm";
+import AdminNewsForm from "@/components/AdminNewsForm";
 
 export const dynamic = "force-dynamic";
 
@@ -14,10 +16,14 @@ export default async function AdminPage() {
   const upcomingShows = await getAllUpcomingShows();
   const playlists = await fetchPodcastPlaylists();
   const activeStreamSource = await getActiveStreamSource();
+  const news = await getAllNews();
 
   return (
     <div className="min-h-screen bg-background text-foreground max-w-4xl mx-auto px-4 md:px-8 py-8">
-      <h1 className="text-2xl font-bold mb-6">Flux radio actif</h1>
+      <h1 className="text-2xl font-bold mb-6">News (accueil)</h1>
+      <AdminNewsForm initialNews={news} />
+
+      <h1 className="text-2xl font-bold mb-6 mt-16">Flux radio actif</h1>
       <AdminStreamForm initialSource={activeStreamSource} />
 
       <h1 className="text-2xl font-bold mb-6 mt-16">Émissions à venir</h1>

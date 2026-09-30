@@ -5,10 +5,12 @@ import { readFile } from "fs/promises";
 import UpcomingShowsSection from "@/components/UpcomingShowsSection";
 import SelectionSection from "@/components/SelectionSection";
 import UpcomingEventsSection from "@/components/UpcomingEventsSection";
+import NewsSection from "@/components/NewsSection";
 import { fetchPodcastPlaylists } from "@/lib/podcasts";
 import type { PodcastEpisode } from "@/lib/podcasts";
 import { getUpcomingShowsSorted } from "@/lib/upcomingShows";
 import { getUpcomingEvents } from "@/lib/events";
+import { getAllNews } from "@/lib/news";
 
 export const dynamic = "force-dynamic";
 
@@ -46,30 +48,45 @@ const getEpisodesPool = cache(async (): Promise<PodcastEpisode[]> => {
 });
 
 export default async function Page() {
-  const [upcomingShows, pool, playlists, upcomingEvents] = await Promise.all([
+  const [upcomingShows, pool, playlists, upcomingEvents, news] = await Promise.all([
     getUpcomingShowsSorted(),
     getEpisodesPool(),
     fetchPodcastPlaylists(),
     getUpcomingEvents(),
+    getAllNews(),
   ]);
 
   const featuredEvents = upcomingEvents.slice(0, 3);
   const hasUpcomingShows = upcomingShows && upcomingShows.length > 0;
+  const hasNews = news && news.length > 0;
+  const hasEvents = featuredEvents && featuredEvents.length > 0;
+
+  // Nombre de colonnes réellement actives (Shows / News / Events) pour équilibrer la grille
+  const activeColumns = [hasUpcomingShows, hasNews, hasEvents].filter(Boolean).length;
+  const gridColsClass =
+    activeColumns >= 3
+      ? "lg:grid-cols-3"
+      : activeColumns === 2
+      ? "lg:grid-cols-2"
+      : "lg:grid-cols-1";
 
   return (
     <div className="min-h-screen bg-background text-foreground max-w-7xl mx-auto px-4 md:px-8 pt-2 pb-6 md:pt-3">
-      {/* Conteneur pour les sections "Upcoming Shows" et "Events" */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6 items-start">
-        {/* Section "Upcoming Shows" */}
-        {hasUpcomingShows && (
-          <UpcomingShowsSection shows={upcomingShows} />
-        )}
+      {/* Conteneur pour "Upcoming Shows", "News" et "Events" côte à côte */}
+      {activeColumns > 0 && (
+        <div className={`grid grid-cols-1 ${gridColsClass} gap-8 mb-6 items-start`}>
+          {/* Section "Upcoming Shows" (le programme) */}
+          {hasUpcomingShows && (
+            <UpcomingShowsSection shows={upcomingShows} />
+          )}
 
-        {/* Section "Events" - toujours à 50% de largeur, même seule */}
-        <div className={hasUpcomingShows ? "" : "lg:col-start-1"}>
-          <UpcomingEventsSection events={featuredEvents} />
+          {/* Section "News" */}
+          {hasNews && <NewsSection news={news} />}
+
+          {/* Section "Events" */}
+          {hasEvents && <UpcomingEventsSection events={featuredEvents} />}
         </div>
-      </div>
+      )}
 
       {/* Sélection */}
       <SelectionSection initialEpisodes={pool} />
