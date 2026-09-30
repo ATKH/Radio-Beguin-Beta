@@ -1,6 +1,24 @@
 {
   "episodes": [
     {
+      "id": "2393680716",
+      "title": "Bommerang",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-vV7yvg8o6f0Ogmmp-rN6MBA-t500x500.jpg",
+      "pubDate": "2026/09/03 13:22:22 +0000",
+      "link": "https://soundcloud.com/radiobeguin/gather?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Une petite traversée de la musique sous le prisme des échos en tous genres. Un voyage sonore rempli de spectres, de résonances et de réverbérations.\n« The words become like things. I’m throwing things out into the world and they are boomerang-ing, back. Boom-mer-rang-ing-ing. Boom-mer-rang-ing-ing, back. » Nancy Holt\n\nTracklist :\nNancy Holt, Richard Serra - Boomerang \nTim Hecker - I'm Transmitting Tonight\nOval - Do While\n Ulla - Song \nNicolas Jaar - Être \nSteve Roden - stars of ice IV \nAlvin Lucier - I Am Sitting in a Room \nJames Ferraro - QR JR\nBernard Heidsieck & Françoise Janicot - Encoconnage\nHype Williams - Your Girl Smells Chung When She Wears Dior \nMarina Herlop - miu \nThe Mothers Of Invention - Are You Hung Up? \nNick Cave and the Bad Seeds - Sad Waters \nArthur Russell - Soon-To-Be Innocent Fun/Let's See\n Colin Stetson - Infliction \nLucki - What I Wanna  \nBlack Kray - STEVIE J AND JOSELINE\n xaviersobased - FanOut",
+      "tags": [
+        "meditation core",
+        "Ambient",
+        "Experimental",
+        "experimental hip hop"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2393680716/streams/ad1d6dbd-3ed3-42db-875d-15ad25b5a367/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
       "id": "2392547661",
       "title": "RIPISYLVE #15 ep spe Ambient Flute w SmallWaterBodies",
       "artworkUrl": "https://i1.sndcdn.com/artworks-FRApSMIVEvnT6sXO-b6ljtQ-t500x500.jpg",
@@ -23150,7 +23168,7 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-vV7yvg8o6f0Ogmmp-rN6MBA-t500x500.jpg",
       "description": "",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/gather-fm?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 3,
+      "trackCount": 4,
       "tags": [],
       "lastUpdated": "2026/09/03 13:28:22 +0000",
       "episodeIds": [
@@ -23160,19 +23178,19 @@
         "2238855545"
       ],
       "latestEpisode": {
-        "id": "2331098267",
-        "title": "Label Escho special",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-gl45Q7OsiUC8509M-by6z2g-t500x500.jpg",
-        "pubDate": "2026/06/01 08:51:58 +0000",
-        "link": "https://soundcloud.com/radiobeguin/label-escho-special?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Fondé à Copenhague 2005, Escho est un label qui s’évertue à proposer une sélection musicale à la croisée des sensibilités, avec une prédominance articulée autour d’une pop alternative aux influences ambient et indie-rock. Comptant parmi ses rangs des artistes comme Smerz, Elias Rønnenfelt ou encore Astrid Sonne, le label danois jouit d’une belle popularité ces dernières années, qui n’est pas prête de cesser. \nGather vous invite à y plonger le temps d’un mix.",
+        "id": "2393680716",
+        "title": "Bommerang",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-vV7yvg8o6f0Ogmmp-rN6MBA-t500x500.jpg",
+        "pubDate": "2026/09/03 13:22:22 +0000",
+        "link": "https://soundcloud.com/radiobeguin/gather?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Une petite traversée de la musique sous le prisme des échos en tous genres. Un voyage sonore rempli de spectres, de résonances et de réverbérations.\n« The words become like things. I’m throwing things out into the world and they are boomerang-ing, back. Boom-mer-rang-ing-ing. Boom-mer-rang-ing-ing, back. » Nancy Holt\n\nTracklist :\nNancy Holt, Richard Serra - Boomerang \nTim Hecker - I'm Transmitting Tonight\nOval - Do While\n Ulla - Song \nNicolas Jaar - Être \nSteve Roden - stars of ice IV \nAlvin Lucier - I Am Sitting in a Room \nJames Ferraro - QR JR\nBernard Heidsieck & Françoise Janicot - Encoconnage\nHype Williams - Your Girl Smells Chung When She Wears Dior \nMarina Herlop - miu \nThe Mothers Of Invention - Are You Hung Up? \nNick Cave and the Bad Seeds - Sad Waters \nArthur Russell - Soon-To-Be Innocent Fun/Let's See\n Colin Stetson - Infliction \nLucki - What I Wanna  \nBlack Kray - STEVIE J AND JOSELINE\n xaviersobased - FanOut",
         "tags": [
-          "metro boulot",
-          "indie",
-          "pop",
-          "ambient"
+          "meditation core",
+          "Ambient",
+          "Experimental",
+          "experimental hip hop"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2331098267/streams/7aa1b50d-f615-438c-bc55-583452bc6647/hls",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2393680716/streams/ad1d6dbd-3ed3-42db-875d-15ad25b5a367/hls",
         "streamProtocol": "hls",
         "sharing": "public",
         "trackAuthorization": null
@@ -26682,6 +26700,7 @@
     "footwork",
     "hip-hop",
     "indie",
+    "meditation core",
     "Metro boulot",
     "Shatta",
     "Afrobeat",
@@ -26701,7 +26720,6 @@
     "jazz",
     "juke",
     "jungle",
-    "meditation core",
     "Méditation Core",
     "Memphis",
     "metro boulot",
@@ -26733,6 +26751,7 @@
     "deconstructed Club",
     "drone",
     "dubstep",
+    "experimental hip hop",
     "experimental hip-hop",
     "Experimental Rap",
     "field recording",
@@ -26781,5 +26800,5 @@
     "trip-hop",
     "UK funky"
   ],
-  "lastUpdated": "2026-09-14T07:32:22.824Z"
+  "lastUpdated": "2026-09-25T07:56:06.229Z"
 }
