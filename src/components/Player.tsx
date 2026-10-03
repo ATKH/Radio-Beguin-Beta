@@ -10,6 +10,9 @@ import Hls from 'hls.js';
 import AudioVisualizer from '@/components/ui/AudioVisualizer';
 import { useLocale } from '@/lib/LocaleContext';
 import type { PodcastEpisode } from '@/lib/podcasts';
+import PlaylistMenu, { PlaylistIcon } from '@/components/PlaylistMenu';
+import { getOnDemandMeta, getPlaylistName, nextEpisode, peekNext } from '@/lib/onDemandQueue';
+import { playlistLabel, usePlaylistLang } from '@/lib/playlistMeta';
 
 const DEFAULT_RADIO_STREAM_URL = 'https://stream.radiobeguin.com/listen/radio_b%C3%A9guin/radio.mp3';
 const RADIO_STREAM_AAC_URL: string | null = null;
@@ -45,6 +48,8 @@ const detectProtocol = (
 
 async function resolveStreamSource(episode: PodcastEpisode): Promise<ResolvedStream | null> {
   if (!episode?.id) return null;
+  // Épisodes à la demande AzuraCast : l'URL audio est directe
+  if (episode.id.startsWith('az:')) return { url: episode.audioUrl, protocol: 'progressive' };
   const url = `/api/sc-play/${episode.id}?ts=${Date.now()}`;
   return { url, protocol: 'progressive' };
 }
@@ -71,16 +76,18 @@ export default function Player() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
+  const preloadRef = useRef<HTMLAudioElement | null>(null);
   const { activePlayer, currentEpisode, setCurrentEpisode, playLive } = usePlayer();
   const { theme } = useTheme();
   const { t } = useLocale();
+  const lang = usePlaylistLang();
   const isDark = theme === 'dark';
+  // Épisode issu des playlists AzuraCast (jamais affiché dans le widget SoundCloud)
+  const isOnDemand = !!currentEpisode?.id?.startsWith('az:');
+  const showScEmbed = USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast' && !isOnDemand;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState<{ title: string; artist: string } | null>(null);
-  const [clockTime, setClockTime] = useState(new Date());
-  const [isHydrated, setIsHydrated] = useState(false);
-  const [isSafari, setIsSafari] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
@@ -98,24 +105,69 @@ export default function Player() {
   const lastLiveBaseUrlRef = useRef<string | null>(null);
   const lastLivePauseAtRef = useRef<number | null>(null);
 
+  const failedSkipsRef = useRef(0);
+  const resumeAttemptsRef = useRef(0);
+  const resumePositionRef = useRef(0);
+
+  // Annule le téléchargement du titre suivant s'il est en cours (changement de playlist, retour au direct)
+  const abortPreload = () => {
+    const p = preloadRef.current;
+    if (p && p.getAttribute('src')) {
+      p.removeAttribute('src');
+      p.load();
+    }
+  };
+
+  // Playlist à la demande : si un titre est illisible, on passe au suivant (3 essais d'affilée maximum)
+  const skipBrokenTrack = (episodeId: string) => {
+    failedSkipsRef.current += 1;
+    if (failedSkipsRef.current > 3) {
+      failedSkipsRef.current = 0;
+      return;
+    }
+    const next = nextEpisode(episodeId);
+    if (next) setCurrentEpisode(next);
+  };
+
+  // Playlist à la demande : si la lecture se coupe en cours de route (connexion qui lâche),
+  // on recharge le même fichier et on reprend à la même seconde (2 essais max).
+  // On ne passe au titre suivant que si la reprise échoue ou si le titre n'a jamais démarré.
+  const handleOnDemandFailure = (audio: HTMLAudioElement, episodeId: string) => {
+    const position = audio.currentTime;
+    if (position > 2 && resumeAttemptsRef.current < 2) {
+      resumeAttemptsRef.current += 1;
+      resumePositionRef.current = position;
+      audio.addEventListener(
+        'loadedmetadata',
+        () => {
+          audio.currentTime = position;
+          audio
+            .play()
+            .then(() => setIsPlaying(true))
+            .catch(() => {});
+        },
+        { once: true }
+      );
+      audio.load();
+      return;
+    }
+    resumeAttemptsRef.current = 0;
+    skipBrokenTrack(episodeId);
+  };
+
   const getLiveUrl = useCallback(() => {
     return buildLiveStreamUrl(liveStreamUrl);
   }, [liveStreamUrl]);
 
   const PLAYER_MIN_HEIGHT = 58;
+
+  // Titre et artiste affichés dans la barre : ceux du direct, ou de la playlist en cours
+  const onDemandMeta = isOnDemand ? getOnDemandMeta(currentEpisode) : null;
+  const displayTrack = onDemandMeta
+    ? { title: onDemandMeta.trackTitle, artist: onDemandMeta.artist }
+    : currentTrack;
   const HEADER_HEIGHT = 56;
   const LINE_HEIGHT = 2;
-
-  useEffect(() => {
-    setIsHydrated(true);
-    if (typeof navigator !== "undefined") {
-      const ua = navigator.userAgent;
-      const safari = /safari/i.test(ua) && !/chrome|crios|edg|opr|opera/i.test(ua);
-      setIsSafari(safari);
-    }
-    const timer = setInterval(() => setClockTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -219,7 +271,7 @@ export default function Player() {
 
   // Gestion audio (MP3 / HLS / Live)
   useEffect(() => {
-    if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
+    if (showScEmbed) return;
     if (!audioRef.current) return;
     const audio = audioRef.current;
     let hlsInstance: Hls | null = null;
@@ -267,6 +319,11 @@ export default function Player() {
       }
 
       const { url, protocol } = resolved;
+      // Le lecteur n'est plus sur le flux direct : force son rechargement au retour en live
+      lastLiveBaseUrlRef.current = null;
+      resumeAttemptsRef.current = 0;
+      // Si on lance autre chose que le titre préchargé, on annule ce téléchargement
+      if (preloadRef.current && preloadRef.current.src !== url) abortPreload();
       const playRequestId =
         typeof currentEpisode.playRequestId === 'number' ? currentEpisode.playRequestId : null;
       const isManualRequest =
@@ -290,8 +347,13 @@ export default function Player() {
           .play()
           .then(() => setIsPlaying(true))
           .catch((err) => {
-            console.error(errorLabel, err);
+            // Annulation normale quand on change de titre : rien à signaler
+            if (err?.name === 'AbortError') return;
+            console.error(errorLabel, err, 'URL:', url);
             setIsPlaying(false);
+            if (err?.name === 'NotSupportedError' && currentEpisode.id.startsWith('az:')) {
+              skipBrokenTrack(currentEpisode.id);
+            }
           })
           .finally(() => {
             resetResumeIntent();
@@ -363,25 +425,71 @@ export default function Player() {
   }, [activePlayer, currentEpisode, liveStreamUrl]);
 
   useEffect(() => {
-    if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
+    if (showScEmbed) return;
     const audio = audioRef.current;
     if (!audio) return;
 
     const onLoadedMetadata = () => setDuration(audio.duration || 0);
-    const onTimeUpdate = () => setCurrentPosition(audio.currentTime);
+    const onTimeUpdate = () => {
+      setCurrentPosition(audio.currentTime);
+      // Après une reprise, si la lecture avance bien pendant 30 s, on repart à zéro :
+      // un fichier d'une heure peut ainsi être repris plusieurs fois sans être abandonné
+      if (resumeAttemptsRef.current > 0 && audio.currentTime - resumePositionRef.current > 30) {
+        resumeAttemptsRef.current = 0;
+      }
+      // Playlist à la demande : on ne précharge le titre suivant que dans les 45 dernières secondes
+      if (
+        currentEpisode?.id?.startsWith('az:') &&
+        Number.isFinite(audio.duration) &&
+        audio.duration - audio.currentTime < 45
+      ) {
+        const nxt = peekNext(currentEpisode.id);
+        if (nxt) {
+          preloadRef.current ??= new Audio();
+          preloadRef.current.preload = 'auto';
+          if (preloadRef.current.src !== nxt.audioUrl) preloadRef.current.src = nxt.audioUrl;
+        }
+      }
+    };
     const onError = () => {
       if (!audio.src) return;
       const mediaError = audio.error;
       const details = mediaError
         ? { code: mediaError.code, message: mediaError.message, type: mediaError.constructor?.name }
         : null;
-      console.warn('⚠️ Erreur audio', details, 'URL:', audio.src);
+      console.warn('⚠️ Erreur audio', details, 'URL:', audio.src, {
+        currentTime: audio.currentTime,
+        duration: audio.duration,
+        networkState: audio.networkState,
+      });
       setIsPlaying(false);
       setIsBuffering(false);
+      if (currentEpisode?.id?.startsWith('az:') && mediaError && mediaError.code !== 1) {
+        handleOnDemandFailure(audio, currentEpisode.id);
+      }
     };
-    const onEnded = () => setIsPlaying(false);
+    const onEnded = () => {
+      setIsPlaying(false);
+      // Playlist à la demande : on enchaîne automatiquement sur le titre suivant
+      if (currentEpisode?.id?.startsWith('az:')) {
+        // Fin anormale (le flux s'arrête bien avant la durée annoncée) : on tente de reprendre
+        if (Number.isFinite(audio.duration) && audio.duration - audio.currentTime > 10) {
+          console.warn('⚠️ Lecture interrompue avant la fin', {
+            currentTime: audio.currentTime,
+            duration: audio.duration,
+          });
+          handleOnDemandFailure(audio, currentEpisode.id);
+          return;
+        }
+        const next = nextEpisode(currentEpisode.id);
+        if (next) setCurrentEpisode(next);
+      }
+    };
     const onWaiting = () => setIsBuffering(true);
-    const onPlaying = () => setIsBuffering(false);
+    const onPlaying = () => {
+      setIsBuffering(false);
+      failedSkipsRef.current = 0;
+    };
     const onCanPlay = () => setIsBuffering(false);
 
     audio.addEventListener('loadedmetadata', onLoadedMetadata);
@@ -404,7 +512,7 @@ export default function Player() {
   }, [activePlayer, currentEpisode]);
 
   const togglePlay = () => {
-    if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast') return;
+    if (showScEmbed) return;
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -454,6 +562,7 @@ export default function Player() {
   };
 
   const onClosePodcast = () => {
+    abortPreload();
     playLive();
     setCurrentEpisode(null);
     setIsPlaying(false);
@@ -505,7 +614,7 @@ export default function Player() {
   }, []);
 
   let innerContent: React.ReactNode;
-  if (USE_SOUNDCLOUD_EMBED && activePlayer === 'podcast' && currentEpisode) {
+  if (showScEmbed && currentEpisode) {
     const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
       currentEpisode.link
     )}&auto_play=true&visual=false&show_artwork=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&color=%232f1c17`;
@@ -562,8 +671,22 @@ export default function Player() {
         {analyserRef.current && isPlaying ? <AudioVisualizer analyser={analyserRef.current} /> : null}
 
         <div className="container mx-auto px-4 py-2 flex flex-col gap-3 sm:flex-row sm:flex-nowrap sm:items-center sm:gap-4 sm:justify-between">
-          {activePlayer === 'live' ? (
+          {activePlayer === 'live' || isOnDemand ? (
             <div className="flex flex-wrap items-center gap-3 w-full">
+              {isOnDemand && (
+                <Button
+                  size="sm"
+                  onClick={onClosePodcast}
+                  variant="outline"
+                  className={`flex items-center space-x-1 border-[var(--primary)]/30 ${
+                    isDark ? 'text-white hover:bg-white/10' : 'text-[var(--foreground)] hover:bg-[var(--primary)]/10'
+                  }`}
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="text-xs">{t('player.backToLive')}</span>
+                </Button>
+              )}
+
               <Button
                 variant="ghost"
                 size="sm"
@@ -588,28 +711,31 @@ export default function Player() {
                 )}
               </Button>
 
-              <div className="flex items-center space-x-2 flex-shrink-0">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                <span className="text-xs font-medium">LIVE</span>
-                <span className="text-xs opacity-60">|</span>
-                <span className="text-xs opacity-70" suppressHydrationWarning>
-                  {isHydrated && !isSafari
-                    ? clockTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
-                    : null}
-                </span>
-              </div>
+              {isOnDemand ? (
+                <PlaylistMenu>
+                  <PlaylistIcon key={getPlaylistName()} name={getPlaylistName()} size={24} />
+                  <span className="text-xs font-medium uppercase tracking-wide">
+                    {playlistLabel(getPlaylistName(), lang)}
+                  </span>
+                </PlaylistMenu>
+              ) : (
+                <PlaylistMenu>
+                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                  <span className="text-xs font-medium">LIVE</span>
+                </PlaylistMenu>
+              )}
 
               <div className="flex-1 min-w-[200px] overflow-hidden">
                 <div className="animate-marquee whitespace-nowrap">
-                  {currentTrack ? (
+                  {displayTrack ? (
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold">
-                        {currentTrack.title}
+                        {displayTrack.title}
                       </span>
-                      {currentTrack.artist ? (
+                      {displayTrack.artist ? (
                         <>
                           <span className="text-sm opacity-60">•</span>
-                          <span className="text-sm opacity-70">{currentTrack.artist}</span>
+                          <span className="text-sm opacity-70">{displayTrack.artist}</span>
                         </>
                       ) : null}
                     </div>
@@ -632,18 +758,20 @@ export default function Player() {
                   <span className="text-xs">{t("player.backToLive")}</span>
                 </Button>
 
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className={`text-xs px-2 py-1 ${isDark ? 'text-white hover:text-[var(--primary)]' : 'text-[var(--foreground)] hover:text-[var(--primary)]'}`}
-                  aria-label={t("player.soundcloud")}
-                >
-                  <a href={currentEpisode.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-                    <ExternalLink className="h-3 w-3" />
-                    <span className="hidden sm:inline">{t("player.soundcloud")}</span>
-                  </a>
-                </Button>
+                {!isOnDemand && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    asChild
+                    className={`text-xs px-2 py-1 ${isDark ? 'text-white hover:text-[var(--primary)]' : 'text-[var(--foreground)] hover:text-[var(--primary)]'}`}
+                    aria-label={t("player.soundcloud")}
+                  >
+                    <a href={currentEpisode.link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                      <ExternalLink className="h-3 w-3" />
+                      <span className="hidden sm:inline">{t("player.soundcloud")}</span>
+                    </a>
+                  </Button>
+                )}
 
                 <Button
                   variant="ghost"

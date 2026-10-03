@@ -38,6 +38,9 @@ const serializeEpisode = (episode: PodcastEpisode | null): StoredEpisode => {
 
 const reviveEpisode = (raw: StoredEpisode): PodcastEpisode | null => {
   if (!raw || !raw.id) return null;
+  // Les épisodes des playlists AzuraCast ne sont pas restaurés (on revient au direct) :
+  // leur URL audio n'est pas stockée et ne passe pas par l'API SoundCloud.
+  if (raw.id.startsWith('az:')) return null;
   const { audioUrl: _ignored, streamProtocol, ...rest } = raw as PodcastEpisode;
   return {
     ...rest,
