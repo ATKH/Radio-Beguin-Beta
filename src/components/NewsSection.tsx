@@ -30,7 +30,7 @@ function LinkButton({ item, locale }: { item: NewsItem; locale: string }) {
   const label = customLabel || (locale === "en" ? "Learn more" : "En savoir plus");
 
   const className =
-    "inline-flex items-center gap-1 self-start text-xs font-semibold uppercase tracking-wide px-3 py-0 rounded-full border border-foreground/30 hover:bg-foreground/10 transition-colors mt-3";
+    "inline-flex items-center self-start text-xs font-semibold uppercase tracking-wide px-4 py-1.5 rounded-full border border-foreground/30 hover:bg-foreground/10 transition-colors";
 
   if (isExternal) {
     return (
@@ -46,13 +46,13 @@ function LinkButton({ item, locale }: { item: NewsItem; locale: string }) {
   );
 }
 
-// Le titre de la news est maintenant affiché comme titre de section (dans NewsSection)
 function NewsCard({ item, locale }: { item: NewsItem; locale: string }) {
   const title = getLocalizedEventText(item, "title", locale);
-  const text = getLocalizedEventText(item, "text", locale);
+  const text: string = getLocalizedEventText(item, "text", locale) || "";
+  const paragraphs: string[] = text.split(/\n+/).filter((p: string) => p.trim());
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 items-start">
+    <div className="flex flex-col sm:flex-row gap-5 items-start">
       {item.image && (
         <div className="w-full sm:w-44 md:w-52 shrink-0 aspect-[4/3] sm:aspect-square rounded-lg overflow-hidden bg-foreground/5">
           <img
@@ -65,8 +65,13 @@ function NewsCard({ item, locale }: { item: NewsItem; locale: string }) {
           />
         </div>
       )}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <p className="text-sm text-foreground/70 line-clamp-5">{text}</p>
+      <div className="flex-1 min-w-0 flex flex-col gap-3 max-w-prose">
+        <div className="space-y-2 text-[15px] leading-relaxed text-foreground/80">
+          {paragraphs.map((p: string, i: number) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
+
         {item.link && <LinkButton item={item} locale={locale} />}
       </div>
     </div>
