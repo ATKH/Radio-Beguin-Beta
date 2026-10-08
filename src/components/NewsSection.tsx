@@ -21,7 +21,7 @@ type Props = {
   news: NewsItem[];
 };
 
-const AUTO_ROTATE_MS = 6000;
+const AUTO_ROTATE_MS = 5000;
 
 function LinkButton({ item, locale }: { item: NewsItem; locale: string }) {
   const href = item.link!;
@@ -98,21 +98,6 @@ export default function NewsSection({ news }: Props) {
         </h2>
         <NewsCard item={activeItem} locale={locale} />
       </div>
-      {news.length > 1 && (
-        <div className="flex justify-start gap-1.5 mt-3">
-          {news.map((item, index) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setActiveIndex(index)}
-              aria-label={`Voir la news ${index + 1}`}
-              className={`h-1.5 rounded-full transition-all ${
-                index === activeIndex ? "w-5 bg-foreground" : "w-1.5 bg-foreground/25"
-              }`}
-            />
-          ))}
-        </div>
-      )}
       <style jsx>{`
         @keyframes fadein {
           from {
