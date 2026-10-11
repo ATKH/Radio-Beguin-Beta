@@ -1,6 +1,200 @@
 {
   "episodes": [
     {
+      "id": "2413016532",
+      "title": "Festival OFF Arles 2026 • La preuve argentique à l’ère de l’I.A.",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-OyTen7wYlyBXGoJq-WIKbdg-t500x500.jpg",
+      "pubDate": "2026/10/04 18:34:08 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-2026-o-la?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "",
+      "tags": [
+        "talk"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413016532/streams/5578052e-8e23-4234-9579-63ee7f03f2bd/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413014825",
+      "title": "Festival OFF Arles 2026 • Les siestes electroniques de Lou Muguet",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-MwN6FN0TFexJc9v0-yQCmLg-t500x500.jpg",
+      "pubDate": "2026/10/04 18:33:04 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-2026-o-les?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Les siestes electroniques de Lou Muguet",
+      "tags": [
+        "Meditation Core",
+        "live",
+        "ambient"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413014825/streams/4beea65f-60ca-41ac-981f-6521e5ddbd37/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413011342",
+      "title": "Festival OFF Arles 2026 • Photographie et co-création : l’institutionnalisation en question",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-RzQe13Ym2AftTv34-mDNzhQ-t500x500.jpg",
+      "pubDate": "2026/10/04 18:30:44 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-2026-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Discussion entre le Collectif POP et le Réseau Diagonal avec Andrea Eichenberger, Karl Joseph, Amandine Turri Hoelken, Hortense Soichet et Camille Varlet, modérée par Lydia Echeverria.",
+      "tags": [
+        "Talk"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413011342/streams/1cf8156a-2f56-4666-af93-0880fc03c51c/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413009464",
+      "title": "Festival OFF Arles 2026 • Voir autrement : quand la photographie sociale révèle les capacités d’agir",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-ecEyhJz3zrkpXvah-YM4zdg-t500x500.jpg",
+      "pubDate": "2026/10/04 18:29:11 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-2026-o-voir?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Avec François Le Guen, Valérie Horwitz, Séverine Le Gall (TEDO), Matthieu Chanut (CCFD) et Emmanuel Fagnou (L’Œil Sensible / France terre d’asile), autour des représentations de la vulnérabilité et de la dignité.",
+      "tags": [
+        "Talk"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413009464/streams/69b7717b-035b-4e78-8ab2-d80ee5db3a1a/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413004043",
+      "title": "Festival OFF Arles • Le OFF au platines avec Vaal et DJ Noway !",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-Ame47dzOp8ZfTFFB-l3nIig-t500x500.jpg",
+      "pubDate": "2026/10/04 18:14:08 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-o-le-off-au?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "",
+      "tags": [
+        "Appels de Phares",
+        "breaks",
+        "club",
+        "ghetto"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413004043/streams/e02ca715-0dfa-444e-bab2-c70fd7791955/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413003341",
+      "title": "Festival OFF Arles • Témoigner sur le long cours : comment raconter l’invasion russe en Ukraine ?",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-Dzuj7qn7AMW2wiKY-UgTIow-t500x500.jpg",
+      "pubDate": "2026/10/04 18:12:06 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-o-t-moigner?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "En partenariat avec Reporters sans frontières, avec Pierre Haski, Aïda Belloulid, Pauline Maufrais et Adrien Vautier, autour des formes de témoignage et d’engagement face à la guerre.",
+      "tags": [
+        "talk"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413003341/streams/01ea3d2e-d028-4091-b3b2-9f96d193f948/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413002714",
+      "title": "Festival OFF Arles 2026 •  Discussion autour de l’exposition Au bord des mondes",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-y5yMHtAP8ylFYLGq-n0mlqw-t500x500.jpg",
+      "pubDate": "2026/10/04 18:10:30 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Rencontre avec les artistes de l’exposition.",
+      "tags": [
+        "Talk",
+        "talk"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413002714/streams/4c1786e0-b79c-481a-b591-54898e5aaeb8/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413002093",
+      "title": "Festival OFF Arles 2026 • Hors-Champ : les silences forcés de la photographie",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-gshLZ7azwGiSnJaO-ZwFFPA-t500x500.jpg",
+      "pubDate": "2026/10/04 18:08:50 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-o-hors?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Avec Jordan Beal, photographe, Nadine Hounkpatin, commissaire d’exposition, Agnès Tricoire, avocate et présidente de l’Observatoire de la liberté de création.\nModération : Guillaume Lanneau, président de La SAIF autour de l’auto-censure et l’invisibilisation des regards artistiques.",
+      "tags": [
+        "talk"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413002093/streams/7cfc0273-164b-49d4-b343-61ccf24695fd/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2413001268",
+      "title": "Festival OFF Arles 2026 • Agent d’artistes : quel rôle pour votre carrière ?",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-ODblJxpFGnS70Poo-RGgz1Q-t500x500.jpg",
+      "pubDate": "2026/10/04 18:06:44 +0000",
+      "link": "https://soundcloud.com/radiobeguin/festival-off-arles-o-agent?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Avec Les Agents Associés, Émilie Wallet (Ask & Wallet) et Éric Barbero (Barbero & You), autour des enjeux de représentation, de négociation et de protection des œuvres.",
+      "tags": [
+        "talk"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413001268/streams/3a525e41-60f2-478e-9bd4-e102c1f97418/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2410504296",
+      "title": "Correspondances sonores #1 • VHS (08.10.2026)",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-tC15VXXGi9SMktIF-wo452Q-t500x500.jpg",
+      "pubDate": "2026/09/30 14:11:23 +0000",
+      "link": "https://soundcloud.com/radiobeguin/correspondances-sonores-1-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Ici c'est un peu comme un vidéo-club sonore. On y trouve de l'action, de l'émotion, des films d'auteur et parfois des ovnis, enfin bref tout genre de choses. Une sélection de musique principalement électronique, par dj VHS.\n\nDe la nouveauté et de l'ancien, pour un même objectif : le plaisir des oreilles.\nUn melting pot de mes dernières trouvailles, des albums qui m'ont forgé musicalement et des curiosités.\n\nTracklist \n1. Ravey Intro 2 - Dr, Rubinstein (joué en 33 tours)\n2. Nostalgia – De sang Froid\n3. Transpac Network - Transpac\n4. Mathematische Modelle - Der Zyklus\n5. Suspicion Transmission (No Drum Mix) -Jordan GCZ\n6. False Fight – V Vertigo\n7. Belgian Salsa – Orchid\n8. Tango Romeo Alpha – Sintex Botexx\n9. Days of Past – Central Intelligence\n10. Dub Acid – Tom Carruthers\n11. So Deep -  Jack Smooth\n12. ½ Gott – Erstling\n13. Sine Two ( Short Cut ) - Space Cat\n14. Sequent 'C – Tangerine Dream (~-8%)\n15. A New Home – Redshpae\n16. Vacuum – Eman (~-8%)\n17. Homage – Innershades\n18. The Hardest Heart (Suburban Mix) – Blank & Jones ft.Anne Clark (~-8%)\n19. Rave Runner – Fabrizio Rat (~-9%)\n20. From Kings To Queens – Frankie Bones (~-6%)\n21. Progression – Kayashi\n22. Intercadence – Trybet (~-8%)\n23. The politics of Dancing – Dandanedado\n24. 1:38... - Delph (-8%)",
+      "tags": [
+        "Appels de Phares",
+        "Trance",
+        "acid",
+        "electro"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2410504296/streams/855745d5-ebf7-4c5c-bb99-2b2a66af822d/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2410032489",
+      "title": "Where's the Afters /Ep 2 • Oscar DW (03.10.2026)",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-F3wn20XcULX8QS5K-kmCh1g-t500x500.jpg",
+      "pubDate": "2026/09/29 17:49:36 +0000",
+      "link": "https://soundcloud.com/radiobeguin/where?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Where ?\n\nLejos Te Llevas El Espejo De Tu Rostro - Jorge Reyes & Antonio Zepeda - 1986 - Philips\nSpiralgalaxie - Project STS-31 - 2016 - Solar One Music\nB1 - Benjamin Brunn - 2021 - blundar\nParadise Part 1 - Atlantis - 1992 - Apollo\nKönigsforst 7 - Gas - 1998 - Mille Plateaux\nDreaming - Jon Hassell - 2018 - Ndeya\nPulling Out Of Ricardo And The Dust Is Falling Fast - The KLF - 1990 - KLF Communications\nRainbows Appear - Not Waving - 2021 - Ecstatic\nMeadow - MNLTH - 2016 - Organic Analogue Records\nStegosauria - Mike Parker & Donato Dozzy - 2016 - Spazio Disponibile\nIII (Simone Bauer Edit) - halos - 2023 - Annulled\nHaiti - Pan Sonic - 2007 - Blast First Petite\nPunisher - Rezzett - 2026\nShores of Caladan - Rhythmic Theory - 2015 - Ancient Monarchy\nPop 4 - Gas - 2000 - Mille Plateaux\nShadow From Tartarus - Actress - 2012 - Honest Jon’s Records\nCircumradiant Dawn - Dead Can Dance - 1985 - 4AD\nA Small Intricate Box, Which Contains Old Blue Opium Marzipan - Muslimgauze - 2003 - Staalplaat\nKodomotachi - Susumu Yokota - 1999 - Skintone",
+      "tags": [
+        "Meditation Core",
+        "ambient",
+        "experimental"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2410032489/streams/d6cb5e7a-5a64-4b6c-9f18-bed87afc2832/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2408547708",
+      "title": "Ecran Total • Nathan (30.09.26)",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-wkY3TyOWxD7Yi36Z-vkCcwQ-t500x500.jpg",
+      "pubDate": "2026/09/27 11:21:13 +0000",
+      "link": "https://soundcloud.com/radiobeguin/ecran-total-o-nathan-30-09-26?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Nouvelle saison pour Ecran Total !\n\nTracklist \n\nD’Eon - 118\nOrbient - In Time (Korean version)\nCoil - Theme From The Gay Man’s Guide To Safer Sex \nRhode & Brown, Sianza - Rayo De Luz (Original Mix)\nOmodaka - Ryotsu Jingu\nAsa Tate - Brahmaputra (Good Block Remix)\nAlex Kassian X Spooky - Orange Colored Liquid (Part 1)\nReflex Blue - Trip Sit (Elevate Mix)\nAnanda Project - Can You Find The Heart (Rui Da Silva Saffron Vocal Mix)\nAlvar - Follow \nMidland - Without Pause \nMoa - Trance 1-30 « Lake of Sticks » ",
+      "tags": [
+        "Crépuscule",
+        "Trance",
+        "leftfield",
+        "balearic"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2408547708/streams/0ff0b070-610a-4fa7-ab02-3f3e23e0bae6/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
       "id": "2393680716",
       "title": "Bommerang",
       "artworkUrl": "https://i1.sndcdn.com/artworks-vV7yvg8o6f0Ogmmp-rN6MBA-t500x500.jpg",
@@ -22933,6 +23127,73 @@
   ],
   "playlists": [
     {
+      "id": "2307111720",
+      "title": "Correspondances Sonores",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-tC15VXXGi9SMktIF-wo452Q-t500x500.jpg",
+      "description": "DJ VHS Présente Correspondance Sonore \n\n''Ici c'est un peu comme un vidéo-club sonore. On y trouve de l'action, de l'émotion, des films d'auteur et parfois des ovnis, enfin bref tout genre de choses. Une sélection de musique principalement électronique, par dj VHS.\n\nDe la nouveauté et de l'ancien, pour un même objectif : le plaisir des oreilles.\n\nUn melting pot de mes dernières trouvailles, des albums qui m'ont forgé musicalement et des curiosités.''",
+      "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/correspondances-sonores?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "trackCount": 1,
+      "tags": [],
+      "lastUpdated": "2026/10/11 09:50:36 +0000",
+      "episodeIds": [
+        "2410504296"
+      ],
+      "latestEpisode": {
+        "id": "2410504296",
+        "title": "Correspondances sonores #1 • VHS (08.10.2026)",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-tC15VXXGi9SMktIF-wo452Q-t500x500.jpg",
+        "pubDate": "2026/09/30 14:11:23 +0000",
+        "link": "https://soundcloud.com/radiobeguin/correspondances-sonores-1-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Ici c'est un peu comme un vidéo-club sonore. On y trouve de l'action, de l'émotion, des films d'auteur et parfois des ovnis, enfin bref tout genre de choses. Une sélection de musique principalement électronique, par dj VHS.\n\nDe la nouveauté et de l'ancien, pour un même objectif : le plaisir des oreilles.\nUn melting pot de mes dernières trouvailles, des albums qui m'ont forgé musicalement et des curiosités.\n\nTracklist \n1. Ravey Intro 2 - Dr, Rubinstein (joué en 33 tours)\n2. Nostalgia – De sang Froid\n3. Transpac Network - Transpac\n4. Mathematische Modelle - Der Zyklus\n5. Suspicion Transmission (No Drum Mix) -Jordan GCZ\n6. False Fight – V Vertigo\n7. Belgian Salsa – Orchid\n8. Tango Romeo Alpha – Sintex Botexx\n9. Days of Past – Central Intelligence\n10. Dub Acid – Tom Carruthers\n11. So Deep -  Jack Smooth\n12. ½ Gott – Erstling\n13. Sine Two ( Short Cut ) - Space Cat\n14. Sequent 'C – Tangerine Dream (~-8%)\n15. A New Home – Redshpae\n16. Vacuum – Eman (~-8%)\n17. Homage – Innershades\n18. The Hardest Heart (Suburban Mix) – Blank & Jones ft.Anne Clark (~-8%)\n19. Rave Runner – Fabrizio Rat (~-9%)\n20. From Kings To Queens – Frankie Bones (~-6%)\n21. Progression – Kayashi\n22. Intercadence – Trybet (~-8%)\n23. The politics of Dancing – Dandanedado\n24. 1:38... - Delph (-8%)",
+        "tags": [
+          "Appels de Phares",
+          "Trance",
+          "acid",
+          "electro"
+        ],
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2410504296/streams/855745d5-ebf7-4c5c-bb99-2b2a66af822d/hls",
+        "streamProtocol": "hls",
+        "sharing": "public",
+        "trackAuthorization": null
+      }
+    },
+    {
+      "id": "2309209254",
+      "title": "Festival OFF Arles 2026",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-DP2BWr7x5NukUU9D-pr1WCQ-t500x500.jpg",
+      "description": "",
+      "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/festival-off-arles-2026?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "trackCount": 9,
+      "tags": [],
+      "lastUpdated": "2026/10/11 09:44:38 +0000",
+      "episodeIds": [
+        "2413001268",
+        "2413002093",
+        "2413002714",
+        "2413003341",
+        "2413009464",
+        "2413011342",
+        "2413016532",
+        "2413014825",
+        "2413004043"
+      ],
+      "latestEpisode": {
+        "id": "2413016532",
+        "title": "Festival OFF Arles 2026 • La preuve argentique à l’ère de l’I.A.",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-OyTen7wYlyBXGoJq-WIKbdg-t500x500.jpg",
+        "pubDate": "2026/10/04 18:34:08 +0000",
+        "link": "https://soundcloud.com/radiobeguin/festival-off-arles-2026-o-la?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "",
+        "tags": [
+          "talk"
+        ],
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2413016532/streams/5578052e-8e23-4234-9579-63ee7f03f2bd/hls",
+        "streamProtocol": "hls",
+        "sharing": "public",
+        "trackAuthorization": null
+      }
+    },
+    {
       "id": "2272738763",
       "title": "Fête de la musique 2026",
       "artworkUrl": "https://i1.sndcdn.com/artworks-7SQmDkUglUzfo7Ee-4ntfHw-t500x500.jpg",
@@ -22974,26 +23235,26 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-1zLGlyzp6vUvGI6k-eEx8yg-t500x500.jpg",
       "description": "",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/wheres-the-afters?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 1,
+      "trackCount": 2,
       "tags": [],
-      "lastUpdated": "2026/06/25 11:13:26 +0000",
+      "lastUpdated": "2026/09/30 14:06:47 +0000",
       "episodeIds": [
+        "2410032489",
         "2346258266"
       ],
       "latestEpisode": {
-        "id": "2346258266",
-        "title": "Where's the Afters /ep.01 • Oscar DW (25.06.26)",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-1zLGlyzp6vUvGI6k-eEx8yg-t500x500.jpg",
-        "pubDate": "2026/06/25 09:50:56 +0000",
-        "link": "https://soundcloud.com/radiobeguin/wheres-the-afters?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Brought to you by Oscar DW, who is a recent arrival in Lyon, hailing from the Oxford (UK) scene (Infundibulum, OUEMS x OPS, ...).\n\nFirst episode journeying from electro to garage, dubstep and grime back to techno, finishing with some acid.\n\nTracklist:\nIntro Temple Of Dos De Aqua - Drexciya - 1999 - Tresor\nFlow - Freezie Freekie - 2002 - Satamile Records\nEarth - Cybotron - 2024 - Tresor\nI Can Complete You (Silicon Scally Mix) - Luke Slater - 2002 - Mute\n000.1 - CNCPT - 2015 - Brenda\nCrazy Intro - Benny Ill V DJ Hatcha - 2003 - Tempa\nTouch - DJ Abstract - 2003 - Tempa\nDub Fluid - Funk Ethics - 2009 - Destructive Recordings\nNo Kya (F Remix) - Asusu - 2010 - Project Squared\nListen - DJ Shorty - 2002 - Road\nUndertaker - Wonder - 2006 - Dump Valve Recordings\nDivision - Female - 1996 - Downwards\nUntitled (Stereotype B2) - Robert Hood - 1998 - M-Plant\nRear Window - A Made Up Sound - 2010 - Delsin\nClone Alone - Silicon Scally - 2005 - Satamile Records\nLeave It All Behind - Instra:mental - 2009 - Apple Pips\nChimay Rouge - Global Goon - 2008 - WéMè Records\n\"\n\nKind regards,\nOscar",
+        "id": "2410032489",
+        "title": "Where's the Afters /Ep 2 • Oscar DW (03.10.2026)",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-F3wn20XcULX8QS5K-kmCh1g-t500x500.jpg",
+        "pubDate": "2026/09/29 17:49:36 +0000",
+        "link": "https://soundcloud.com/radiobeguin/where?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Where ?\n\nLejos Te Llevas El Espejo De Tu Rostro - Jorge Reyes & Antonio Zepeda - 1986 - Philips\nSpiralgalaxie - Project STS-31 - 2016 - Solar One Music\nB1 - Benjamin Brunn - 2021 - blundar\nParadise Part 1 - Atlantis - 1992 - Apollo\nKönigsforst 7 - Gas - 1998 - Mille Plateaux\nDreaming - Jon Hassell - 2018 - Ndeya\nPulling Out Of Ricardo And The Dust Is Falling Fast - The KLF - 1990 - KLF Communications\nRainbows Appear - Not Waving - 2021 - Ecstatic\nMeadow - MNLTH - 2016 - Organic Analogue Records\nStegosauria - Mike Parker & Donato Dozzy - 2016 - Spazio Disponibile\nIII (Simone Bauer Edit) - halos - 2023 - Annulled\nHaiti - Pan Sonic - 2007 - Blast First Petite\nPunisher - Rezzett - 2026\nShores of Caladan - Rhythmic Theory - 2015 - Ancient Monarchy\nPop 4 - Gas - 2000 - Mille Plateaux\nShadow From Tartarus - Actress - 2012 - Honest Jon’s Records\nCircumradiant Dawn - Dead Can Dance - 1985 - 4AD\nA Small Intricate Box, Which Contains Old Blue Opium Marzipan - Muslimgauze - 2003 - Staalplaat\nKodomotachi - Susumu Yokota - 1999 - Skintone",
         "tags": [
-          "Appels de phares",
-          "electro",
-          "garage",
-          "Techno"
+          "Meditation Core",
+          "ambient",
+          "experimental"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2346258266/streams/a00a7d24-0e7b-422f-87f2-7106eb8becb8/hls",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2410032489/streams/d6cb5e7a-5a64-4b6c-9f18-bed87afc2832/hls",
         "streamProtocol": "hls",
         "sharing": "public",
         "trackAuthorization": null
@@ -23233,13 +23494,14 @@
     {
       "id": "2112199628",
       "title": "Ecran Total",
-      "artworkUrl": "https://i1.sndcdn.com/artworks-MXLzalA3H6Z7jKao-BRRMSA-t500x500.jpg",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-wkY3TyOWxD7Yi36Z-vkCcwQ-t500x500.jpg",
       "description": "Écran Total :\n\nUne émission sans étiquette, qui se balade entre les styles selon le moment et l’humeur. Ambiant, jazz, funk, IDM, trance… tout peut arriver. L'idée : se connecter et se laisser porter.\n\n\nTikTok : https://www.tiktok.com/@ecran.total?_t=ZN-8x76SwzZ8xq&_r=1\nInstagram : https://www.instagram.com/ecran_total_hqigsh=dDZ4dG1zZHRnMHZ3&utm_source=qr\n\nSpotify : https://open.spotify.com/playlist/75R1hUUOFlzNnHkPMeAb8a?si=Ki_n_TZUSi2i6afrH2ohtg&pi=ZsLoLyJHRvypw",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/ecran-total?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 9,
+      "trackCount": 10,
       "tags": [],
-      "lastUpdated": "2026/07/09 07:19:34 +0000",
+      "lastUpdated": "2026/09/27 12:08:33 +0000",
       "episodeIds": [
+        "2408547708",
         "2356062833",
         "2338569263",
         "2316862196",
@@ -23251,19 +23513,19 @@
         "2210267063"
       ],
       "latestEpisode": {
-        "id": "2356062833",
-        "title": "Ecran Total #9",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-MXLzalA3H6Z7jKao-BRRMSA-t500x500.jpg",
-        "pubDate": "2026/07/09 07:15:56 +0000",
-        "link": "https://soundcloud.com/radiobeguin/ecran-total-9?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Ce mois-ci je vous propose une heure beaucoup plus club que d’habitude avec une heure de house, de trance et de breakbeat. \n\nSofia Theme - X.Y.R\nAquarius Heaven  - Universe \nKo Yang - Koinobori \nOcto Octa - Keep Pressing On \nDust-e-1 - The Lights \nAgresivnes - I Need A Breakbeat \nKittens - Underworld\nCores - Iowa\nMat Silver vs Tony Burt - Ultimate Wave (B.Breach Break remix)\nPiezo - Their Amnesiac Couriers\nVon Riu - Psykoz \nThe Criminal Minds - Flynny’s Theme",
+        "id": "2408547708",
+        "title": "Ecran Total • Nathan (30.09.26)",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-wkY3TyOWxD7Yi36Z-vkCcwQ-t500x500.jpg",
+        "pubDate": "2026/09/27 11:21:13 +0000",
+        "link": "https://soundcloud.com/radiobeguin/ecran-total-o-nathan-30-09-26?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Nouvelle saison pour Ecran Total !\n\nTracklist \n\nD’Eon - 118\nOrbient - In Time (Korean version)\nCoil - Theme From The Gay Man’s Guide To Safer Sex \nRhode & Brown, Sianza - Rayo De Luz (Original Mix)\nOmodaka - Ryotsu Jingu\nAsa Tate - Brahmaputra (Good Block Remix)\nAlex Kassian X Spooky - Orange Colored Liquid (Part 1)\nReflex Blue - Trip Sit (Elevate Mix)\nAnanda Project - Can You Find The Heart (Rui Da Silva Saffron Vocal Mix)\nAlvar - Follow \nMidland - Without Pause \nMoa - Trance 1-30 « Lake of Sticks » ",
         "tags": [
           "Crépuscule",
-          "house",
-          "trance",
-          "breaks"
+          "Trance",
+          "leftfield",
+          "balearic"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2356062833/streams/34138594-e8c6-4075-bd3f-75e0ab29e076/hls",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2408547708/streams/0ff0b070-610a-4fa7-ab02-3f3e23e0bae6/hls",
         "streamProtocol": "hls",
         "sharing": "public",
         "trackAuthorization": null
@@ -26577,8 +26839,8 @@
     "Abysses",
     "Techno",
     "Métro Boulot",
-    "Crépuscule",
     "Talk",
+    "Crépuscule",
     "Meditation Core",
     "Electro",
     "Breaks",
@@ -26625,11 +26887,11 @@
     "Reggaeton",
     "Garage",
     "Hardcore",
+    "ambient",
     "Bain de soleil",
     "Modern Classical",
     "New Age",
     "Synth Pop",
-    "ambient",
     "Live",
     "Noise",
     "Trap",
@@ -26655,8 +26917,9 @@
     "R n B",
     "Boogie",
     "Balearic House",
-    "Funk",
     "breaks",
+    "Funk",
+    "talk",
     "Latin Folk",
     "Spoken Word",
     "Batida",
@@ -26675,13 +26938,14 @@
     "Cumbia",
     "Dark Disco",
     "Drill",
+    "electro",
+    "experimental",
     "Psytrance",
     "Soul",
     "trance",
-    "electro",
+    "club",
     "Emo Rap",
     "Eurodance",
-    "experimental",
     "Free Jazz",
     "house",
     "hyperpop",
@@ -26690,19 +26954,19 @@
     "Metal",
     "pop",
     "Raptor House",
-    "talk",
     "uk funky",
     "Zouk",
     "breakbeat",
-    "club",
     "Cold Wave",
     "Électro",
     "footwork",
+    "ghetto",
     "hip-hop",
     "indie",
     "meditation core",
     "Metro boulot",
     "Shatta",
+    "acid",
     "Afrobeat",
     "ambient-techno",
     "Balani",
@@ -26716,7 +26980,6 @@
     "electronica",
     "Experimental Hip Hop",
     "Funana",
-    "ghetto",
     "jazz",
     "juke",
     "jungle",
@@ -26732,13 +26995,13 @@
     "Soca",
     "trip hop",
     "Trip-Hop",
-    "acid",
     "Afroclub",
     "ambient techno",
     "appel de phares",
     "Appel de phares",
     "Arabic Pop",
     "baile funk",
+    "balearic",
     "Blues",
     "Bossanova",
     "bouyon",
@@ -26770,8 +27033,10 @@
     "instrumental",
     "Kizomba",
     "Kwaito",
+    "leftfield",
     "leftfield techno",
     "letfielf House",
+    "live",
     "Maloya",
     "Marimba",
     "méditation core",
@@ -26800,5 +27065,5 @@
     "trip-hop",
     "UK funky"
   ],
-  "lastUpdated": "2026-09-25T07:56:06.229Z"
+  "lastUpdated": "2026-10-11T11:44:25.617Z"
 }
