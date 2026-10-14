@@ -110,7 +110,7 @@ export default function UpcomingShowsSection({ shows }) {
             : "Aucune émission à venir annoncée pour le moment."}
         </p>
       ) : (
-        <div className="max-h-[400px] overflow-y-auto pr-2 space-y-2">
+        <div className="max-h-[280px] overflow-y-auto pr-2 space-y-2">
           {groups.map((group) => (
             <div key={group.date} className="border-b border-foreground/10 pb-1.5">
               <div className="flex items-start justify-between gap-3">

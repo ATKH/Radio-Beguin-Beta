@@ -4,11 +4,16 @@ export type Lang = 'fr' | 'en';
 
 // scale : ajuste la taille d'une icône (1 = taille normale). Certaines icônes ont plus ou moins
 // de marge dans leur fichier, ce qui les fait paraître plus grandes ou plus petites que les autres.
-type Meta = { en: string; icon?: string; scale?: number };
+type Meta = { en: string; icon?: string | string[]; scale?: number };
 
 // Les icônes sont les fichiers déjà présents à la racine de `public/`.
 // Les espaces et accents des noms de fichiers sont encodés pour l'URL.
 const icon = (file: string) => encodeURI(`/${file}`);
+
+// Fichier avec accent : on essaie les deux écritures possibles de l'accent (précomposé / décomposé),
+// car selon le système, le nom du fichier en ligne peut ne pas être écrit comme dans le code.
+const accented = (file: string) =>
+  [...new Set([file.normalize('NFC'), file.normalize('NFD')])].map(icon);
 
 // Clé = nom de la playlist tel qu'écrit dans le genre AzuraCast, sans accents ni majuscules.
 // Pour utiliser un PNG plutôt qu'un SVG, remplace simplement le nom du fichier
@@ -16,10 +21,13 @@ const icon = (file: string) => encodeURI(`/${file}`);
 const META: Record<string, Meta> = {
   'appels de phares': { en: 'High Beams', icon: icon('Appels de Phares.svg') },
   'bain de soleil': { en: 'Sunbath', icon: icon('Bain de Soleil.svg') },
-  crepuscule: { en: 'Twilight', icon: icon('Crépuscule.svg') },
+  crepuscule: { en: 'Twilight', icon: [icon('crepuscule.svg'), ...accented('Crépuscule.svg')] },
   curiosites: { en: 'Curiosities', icon: icon('Curiosites.svg') },
   'meditation core': { en: 'Meditation Core', icon: icon('Meditation Core.svg') },
-  'metro boulot': { en: 'Daily Grind', icon: icon('Métro Boulot.svg') },
+  'metro boulot': {
+    en: 'Daily Grind',
+    icon: [icon('metro-boulot.svg'), icon('metro-boulot.png'), ...accented('Métro Boulot.svg')],
+  },
   abysses: { en: 'Abyss', icon: icon('Abysses.png'), scale: 0.7 },
   talk: { en: 'Talk', icon: icon('Talk.svg') },
   'xdj-rr': { en: 'XDJ-RR' }, // pas d'icône : petite flèche par défaut
@@ -28,7 +36,7 @@ const META: Record<string, Meta> = {
 
 // Ordre d'affichage dans le menu (les playlists non listées viennent après, par ordre alphabétique,
 // puis « Autres émissions » en tout dernier).
-const ORDER = ['meditation core', 'metro boulot', 'curiosités' , 'bain de soleil', 'crepuscule', 'appels de phares', 'abysses', 'talk'];
+const ORDER = ['meditation core', 'metro boulot', 'bain de soleil', 'crepuscule', 'appels de phares', 'abysses', 'talk'];
 
 const normalize = (name: string) =>
   name
@@ -56,9 +64,11 @@ export function playlistIconScale(name: string): number {
   return META[normalize(name)]?.scale ?? 1;
 }
 
-/** Chemin de l'icône de la playlist, ou null s'il n'y en a pas. */
-export function playlistIcon(name: string): string | null {
-  return META[normalize(name)]?.icon ?? null;
+/** Chemins possibles de l'icône de la playlist, du plus probable au moins probable (vide s'il n'y en a pas). */
+export function playlistIcons(name: string): string[] {
+  const value = META[normalize(name)]?.icon;
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
 }
 
 /** Langue courante du site. Lit le contexte de langue existant (locale / lang / language). */

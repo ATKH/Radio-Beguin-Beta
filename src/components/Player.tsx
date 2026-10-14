@@ -13,6 +13,7 @@ import type { PodcastEpisode } from '@/lib/podcasts';
 import PlaylistMenu, { PlaylistIcon } from '@/components/PlaylistMenu';
 import { getOnDemandMeta, getPlaylistName, nextEpisode, peekNext } from '@/lib/onDemandQueue';
 import { playlistLabel, usePlaylistLang } from '@/lib/playlistMeta';
+import { useShowLink } from '@/lib/showLink';
 
 const DEFAULT_RADIO_STREAM_URL = 'https://stream.radiobeguin.com/listen/radio_b%C3%A9guin/radio.mp3';
 const RADIO_STREAM_AAC_URL: string | null = null;
@@ -166,6 +167,8 @@ export default function Player() {
   const displayTrack = onDemandMeta
     ? { title: onDemandMeta.trackTitle, artist: onDemandMeta.artist }
     : currentTrack;
+  // Direct ou playlist : si le titre correspond à une émission, il devient un lien vers sa page
+  const showHref = useShowLink(displayTrack?.title);
   const HEADER_HEIGHT = 56;
   const LINE_HEIGHT = 2;
 
@@ -725,13 +728,19 @@ export default function Player() {
                 </PlaylistMenu>
               )}
 
-              <div className="flex-1 min-w-[200px] overflow-hidden">
-                <div className="animate-marquee whitespace-nowrap">
+              <div className="w-full min-w-0 overflow-hidden sm:w-auto sm:flex-1 sm:min-w-[200px]">
+                <div className="animate-marquee whitespace-nowrap max-sm:!animate-none max-sm:!whitespace-normal">
                   {displayTrack ? (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold">
-                        {displayTrack.title}
-                      </span>
+                    <div className="flex flex-wrap items-center gap-x-2 sm:flex-nowrap">
+                      {showHref ? (
+                        <Link href={showHref} className="text-sm font-semibold underline-offset-4 hover:underline">
+                          {displayTrack.title}
+                        </Link>
+                      ) : (
+                        <span className="text-sm font-semibold">
+                          {displayTrack.title}
+                        </span>
+                      )}
                       {displayTrack.artist ? (
                         <>
                           <span className="text-sm opacity-60">•</span>

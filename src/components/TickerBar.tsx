@@ -2,7 +2,10 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { Heart } from "lucide-react";
 import MonkeyGameTicker from "@/components/MonkeyGameTicker";
+import { usePlaylistLang } from "@/lib/playlistMeta";
 
 type TickerBarProps = {
   text?: string;
@@ -13,6 +16,16 @@ const REPEAT_COUNT = 4;
 const MONKEY_CLEAN_THRESHOLD = 235;
 const THIN_SPACE = "\u2009";
 const LETTER_VARIANTS = ["rise", "drop", "swing-left", "swing-right", "flat"] as const;
+
+// Vitesse de défilement : on garde la même vitesse que l'ancienne barre (200 s pour « Radio Béguin »),
+// quel que soit le nombre de messages. Une « unité » = une lettre ; un singe + espaces = MONKEY_UNITS.
+const SECONDS_PER_UNIT = 2.3;
+const MONKEY_UNITS = 10;
+
+const HEART_LABEL = {
+  fr: "Proposer un message pour la barre",
+  en: "Suggest a message for the bar",
+} as const;
 
 type LetterBlueprint =
   | { kind: "letter"; char: string; variant: typeof LETTER_VARIANTS[number]; index: number }
@@ -115,8 +128,10 @@ const processMonkeyImage = () => {
 };
 
 export default function TickerBar({ text, messages }: TickerBarProps) {
+  const lang = usePlaylistLang();
   const [isGameActive, setIsGameActive] = useState(false);
   const [monkeyUrl, setMonkeyUrl] = useState<string | null>(null);
+  const [communityMessages, setCommunityMessages] = useState<string[]>([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -134,6 +149,23 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
     };
   }, []);
 
+  // Messages proposés par les auditeurs et validés par l'équipe
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/ticker/messages")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: unknown) => {
+        if (cancelled || !Array.isArray(data)) return;
+        setCommunityMessages(data.filter((m): m is string => typeof m === "string"));
+      })
+      .catch(() => {
+        // pas de souci : la barre garde son message habituel
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const normalizedMessages = useMemo(() => {
     if (messages?.length) {
       return messages.map(message => message.trim()).filter(Boolean);
@@ -144,27 +176,42 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
 
   const baseMessage = normalizedMessages[0] ?? "Radio Béguin";
 
-  const messageBlueprint = useMemo(() => createLetterBlueprint(baseMessage), [baseMessage]);
+  // Le message habituel d'abord, puis les messages validés, qui tournent en boucle
+  const blueprints = useMemo(
+    () =>
+      [baseMessage, ...communityMessages]
+        .map(createLetterBlueprint)
+        .filter((blueprint) => blueprint.length > 0),
+    [baseMessage, communityMessages]
+  );
 
   const tickerSegments = useMemo<Segment[]>(() => {
-    if (messageBlueprint.length === 0) return [];
+    if (blueprints.length === 0) return [];
     const segments: Segment[] = [];
-    const effectiveRepeat = Math.max(REPEAT_COUNT, 4);
 
-    for (let repeat = 0; repeat < effectiveRepeat; repeat += 1) {
-      segments.push({ kind: "message", key: `msg-${repeat}`, blueprint: messageBlueprint });
-      segments.push({ kind: "message", key: `msg-gap-${repeat}`, blueprint: [] });
-      segments.push({ kind: "monkey", key: `monkey-${repeat}` });
-      segments.push({ kind: "message", key: `msg-gap-after-${repeat}`, blueprint: [] });
+    // Le cycle complet (tous les messages) est répété REPEAT_COUNT fois pour une boucle sans coupure
+    for (let repeat = 0; repeat < REPEAT_COUNT; repeat += 1) {
+      blueprints.forEach((blueprint, index) => {
+        const id = `${repeat}-${index}`;
+        segments.push({ kind: "message", key: `msg-${id}`, blueprint });
+        segments.push({ kind: "message", key: `msg-gap-${id}`, blueprint: [] });
+        segments.push({ kind: "monkey", key: `monkey-${id}` });
+        segments.push({ kind: "message", key: `msg-gap-after-${id}`, blueprint: [] });
+      });
     }
 
     return segments;
-  }, [messageBlueprint]);
+  }, [blueprints]);
 
-  const scrollDuration = 200;
+  // Plus il y a de messages, plus la durée augmente, pour garder la même vitesse
+  const scrollDuration = useMemo(() => {
+    const units =
+      blueprints.reduce((sum, blueprint) => sum + blueprint.length + MONKEY_UNITS, 0) * REPEAT_COUNT;
+    return Math.max(60, Math.round(units * SECONDS_PER_UNIT));
+  }, [blueprints]);
 
   return (
-    <div className="ticker-gradient text-[var(--ticker-foreground)] border-y-2 border-black relative overflow-hidden">
+    <div className="ticker-gradient text-[var(--ticker-foreground)] border-y-2 border-[var(--ticker-border,#0a0a0a)] relative overflow-hidden">
       <div className="container mx-auto px-4 py-2 min-h-[48px] flex w-full items-center">
         {isGameActive ? (
           <MonkeyGameTicker
@@ -173,73 +220,85 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
             }}
           />
         ) : (
-          <div className="ticker-track flex-1">
-            <span
-              className="ticker-text font-semibold tracking-[0.25em] uppercase text-sm"
-              style={{ animationDuration: `${scrollDuration}s` }}
-            >
-              {tickerSegments.map(segment => {
-                if (segment.kind === "monkey") {
-                  return (
-                    <span key={segment.key} className="ticker-segment">
-                      <button
-                        type="button"
-                        onClick={() => setIsGameActive(true)}
-                        className="ticker-monkey-button"
-                        aria-label="Lancer le jeu du Singe Béguin"
-                      >
-                        <span className="ticker-monkey">
-                          <Image
-                            src={monkeyUrl ?? "/Singe4_clean.png"}
-                            alt=""
-                            width={36}
-                            height={36}
-                            className="ticker-monkey__image animate-monkey-step"
-                            draggable={false}
-                            unoptimized
-                          />
-                        </span>
-                      </button>
-                      {/* no separator après le singe */}
-                    </span>
-                  );
-                }
-
-                return (
-                  <span key={segment.key} className="ticker-segment ticker-segment--message">
-                    {segment.blueprint.length === 0 ? (
-                      <span className="ticker-gap-large" aria-hidden="true">
-                        {THIN_SPACE.repeat(16)}
+          <>
+            <div className="ticker-track flex-1">
+              <span
+                className="ticker-text font-semibold tracking-[0.25em] uppercase text-sm"
+                style={{ animationDuration: `${scrollDuration}s` }}
+              >
+                {tickerSegments.map(segment => {
+                  if (segment.kind === "monkey") {
+                    return (
+                      <span key={segment.key} className="ticker-segment">
+                        <button
+                          type="button"
+                          onClick={() => setIsGameActive(true)}
+                          className="ticker-monkey-button"
+                          aria-label="Lancer le jeu du Singe Béguin"
+                        >
+                          <span className="ticker-monkey">
+                            <Image
+                              src={monkeyUrl ?? "/Singe4_clean.png"}
+                              alt=""
+                              width={36}
+                              height={36}
+                              className="ticker-monkey__image animate-monkey-step"
+                              draggable={false}
+                              unoptimized
+                            />
+                          </span>
+                        </button>
+                        {/* no separator après le singe */}
                       </span>
-                    ) : (
-                      segment.blueprint.map(unit => {
-                        if (unit.kind === "letter") {
+                    );
+                  }
+
+                  return (
+                    <span key={segment.key} className="ticker-segment ticker-segment--message">
+                      {segment.blueprint.length === 0 ? (
+                        <span className="ticker-gap-large" aria-hidden="true">
+                          {THIN_SPACE.repeat(16)}
+                        </span>
+                      ) : (
+                        segment.blueprint.map(unit => {
+                          if (unit.kind === "letter") {
+                            return (
+                              <span
+                                key={`${segment.key}-letter-${unit.index}`}
+                                className={`ticker-letter ticker-letter--${unit.variant}`}
+                              >
+                                {unit.char}
+                              </span>
+                            );
+                          }
+
                           return (
                             <span
-                              key={`${segment.key}-letter-${unit.index}`}
-                              className={`ticker-letter ticker-letter--${unit.variant}`}
+                              key={`${segment.key}-gap-${unit.index}`}
+                              className="ticker-spacing"
+                              aria-hidden="true"
                             >
-                              {unit.char}
+                              {THIN_SPACE.repeat(4)}
                             </span>
                           );
-                        }
+                        })
+                      )}
+                    </span>
+                  );
+                })}
+              </span>
+            </div>
 
-                        return (
-                          <span
-                            key={`${segment.key}-gap-${unit.index}`}
-                            className="ticker-spacing"
-                            aria-hidden="true"
-                          >
-                            {THIN_SPACE.repeat(4)}
-                          </span>
-                        );
-                      })
-                    )}
-                  </span>
-                );
-              })}
-            </span>
-          </div>
+            {/* Cœur : renvoie vers la page où l'on propose un message pour la barre */}
+            <Link
+              href="/ticker"
+              aria-label={HEART_LABEL[lang]}
+              title={HEART_LABEL[lang]}
+              className="ml-3 flex-shrink-0 rounded-full p-1.5 transition-transform hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current"
+            >
+              <Heart className="h-5 w-5" fill="currentColor" aria-hidden="true" />
+            </Link>
+          </>
         )}
       </div>
     </div>

@@ -6,7 +6,7 @@ import { usePlayer } from '@/lib/PlayerContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { getPlaylistName, startPlaylist } from '@/lib/onDemandQueue';
 import {
-  playlistIcon,
+  playlistIcons,
   playlistIconScale,
   playlistLabel,
   playlistRank,
@@ -62,8 +62,8 @@ const toEpisode = (t: Track) =>
 /** Icône singe d'une playlist ; si elle manque ou ne charge pas, petite flèche aléatoire. */
 export function PlaylistIcon({ name, size = 28 }: { name: string; size?: number }) {
   const { theme } = useTheme();
-  const [failed, setFailed] = useState(false);
-  const src = playlistIcon(name);
+  const [attempt, setAttempt] = useState(0);
+  const src = playlistIcons(name)[attempt] ?? null;
   const imgSize = Math.round(size * playlistIconScale(name));
   const glow = GLOW_IN_DARK && theme === 'dark';
   return (
@@ -72,15 +72,16 @@ export function PlaylistIcon({ name, size = 28 }: { name: string; size?: number 
       style={{ width: size, height: size }}
       aria-hidden="true"
     >
-      {src && !failed ? (
+      {src ? (
         <img
+          key={src}
           src={src}
           alt=""
           width={imgSize}
           height={imgSize}
           className="object-contain"
           style={{ width: imgSize, height: imgSize, ...(glow ? { filter: DARK_GLOW } : {}) }}
-          onError={() => setFailed(true)}
+          onError={() => setAttempt((n) => n + 1)}
         />
       ) : (
         <Shuffle className="h-4 w-4 opacity-50" />
