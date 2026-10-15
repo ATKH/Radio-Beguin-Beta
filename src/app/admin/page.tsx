@@ -8,6 +8,8 @@ import AdminEventsForm from "@/components/AdminEventsForm";
 import AdminUpcomingShowsForm from "@/components/AdminUpcomingShowsForm";
 import AdminStreamForm from "@/components/AdminStreamForm";
 import AdminNewsForm from "@/components/AdminNewsForm";
+import AdminTabs from "@/components/AdminTabs";
+import TickerAdmin from "@/components/TickerAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -18,19 +20,61 @@ export default async function AdminPage() {
   const activeStreamSource = await getActiveStreamSource();
   const news = await getAllNews();
 
+  const tabs = [
+    {
+      id: "flux",
+      label: "Flux Radio",
+      content: (
+        <>
+          <h2 className="text-2xl font-bold mb-6">Flux radio actif</h2>
+          <AdminStreamForm initialSource={activeStreamSource} />
+        </>
+      ),
+    },
+    {
+      id: "shows",
+      label: "Upcoming Shows",
+      content: (
+        <>
+          <h2 className="text-2xl font-bold mb-6">Émissions à venir</h2>
+          <AdminUpcomingShowsForm
+            initialShows={upcomingShows}
+            playlists={playlists}
+          />
+        </>
+      ),
+    },
+    {
+      id: "events",
+      label: "Events",
+      content: (
+        <>
+          <h2 className="text-2xl font-bold mb-6">Édition des événements</h2>
+          <AdminEventsForm initialEvents={events} />
+        </>
+      ),
+    },
+    {
+      id: "news",
+      label: "News",
+      content: (
+        <>
+          <h2 className="text-2xl font-bold mb-6">News (accueil)</h2>
+          <AdminNewsForm initialNews={news} />
+        </>
+      ),
+    },
+    {
+      id: "ticker",
+      usesPassword: false,
+      label: "Ticker Message validation",
+      content: <TickerAdmin />,
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground max-w-4xl mx-auto px-4 md:px-8 py-8">
-      <h1 className="text-2xl font-bold mb-6">News (accueil)</h1>
-      <AdminNewsForm initialNews={news} />
-
-      <h1 className="text-2xl font-bold mb-6 mt-16">Flux radio actif</h1>
-      <AdminStreamForm initialSource={activeStreamSource} />
-
-      <h1 className="text-2xl font-bold mb-6 mt-16">Émissions à venir</h1>
-      <AdminUpcomingShowsForm initialShows={upcomingShows} playlists={playlists} />
-
-      <h1 className="text-2xl font-bold mb-6 mt-16">Édition des événements</h1>
-      <AdminEventsForm initialEvents={events} />
+      <AdminTabs tabs={tabs} />
     </div>
   );
 }

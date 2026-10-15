@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAdminPassword } from "@/components/AdminPassword";
 
 const makeId = () => Math.random().toString(36).slice(2, 10);
 
@@ -18,7 +19,7 @@ const emptyNews = () => ({
 });
 
 export default function AdminNewsForm({ initialNews }) {
-  const [password, setPassword] = useState("");
+  const { password } = useAdminPassword();
   const [news, setNews] = useState(() =>
     initialNews && initialNews.length > 0
       ? initialNews.map((n) => ({ titleEn: "", textEn: "", linkLabel: "", linkLabelEn: "", ...n }))
@@ -67,17 +68,6 @@ export default function AdminNewsForm({ initialNews }) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <label className="block text-sm font-medium mb-1">Mot de passe</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border rounded px-3 py-2 w-full max-w-xs"
-          placeholder="Mot de passe admin"
-        />
-      </div>
-
       <div className="space-y-6">
         {news.map((item, index) => (
           <div key={item.id} className="border rounded p-4 space-y-4">

@@ -168,7 +168,7 @@ export default function Player() {
     ? { title: onDemandMeta.trackTitle, artist: onDemandMeta.artist }
     : currentTrack;
   // Direct ou playlist : si le titre correspond à une émission, il devient un lien vers sa page
-  const showHref = useShowLink(displayTrack?.title);
+  const showHref = useShowLink(displayTrack?.title, displayTrack?.artist);
   const HEADER_HEIGHT = 56;
   const LINE_HEIGHT = 2;
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAdminPassword } from "@/components/AdminPassword";
 
 type StreamSource = "main" | "backup";
 
@@ -11,7 +12,7 @@ const OPTIONS: { value: StreamSource; label: string }[] = [
 
 export default function AdminStreamForm({ initialSource }: { initialSource: StreamSource }) {
   const [source, setSource] = useState<StreamSource>(initialSource);
-  const [password, setPassword] = useState("");
+  const { password } = useAdminPassword();
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -42,13 +43,11 @@ export default function AdminStreamForm({ initialSource }: { initialSource: Stre
 
   return (
     <div className="flex flex-col gap-3">
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Mot de passe admin"
-        className="border rounded px-3 py-2 max-w-xs"
-      />
+      {!password && (
+        <p className="text-sm opacity-70">
+          Saisis le mot de passe en haut de la page pour modifier le flux.
+        </p>
+      )}
 
       {OPTIONS.map((opt) => (
         <label key={opt.value} className="flex items-center gap-2 cursor-pointer">

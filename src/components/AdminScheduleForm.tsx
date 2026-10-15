@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAdminPassword } from "@/components/AdminPassword";
 
 const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
 
@@ -14,7 +15,7 @@ const PRESETS = [
 ];
 
 export default function AdminScheduleForm({ initialSchedule }) {
-  const [password, setPassword] = useState("");
+  const { password, setPassword, shared } = useAdminPassword();
   const [schedule, setSchedule] = useState(initialSchedule);
   const [status, setStatus] = useState(null); // "saving" | "success" | "error"
   const [errorMsg, setErrorMsg] = useState("");

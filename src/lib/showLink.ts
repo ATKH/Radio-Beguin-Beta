@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
-type Entry = { id: string; key: string };
+// key = titre normalisé ; hay = titre + étiquettes (styles, artistes…), pour chercher les noms d'artistes
+type Entry = { id: string; key: string; hay: string };
 type ShowData = { playlists: Entry[]; episodes: Entry[] };
 
 // Même normalisation que la recherche de la page Shows
@@ -19,8 +20,21 @@ let dataPromise: Promise<ShowData> | null = null;
 const toEntries = (list: unknown): Entry[] =>
   (Array.isArray(list) ? list : [])
     .filter((p: any) => p?.id !== undefined && typeof p?.title === 'string')
-    .map((p: any) => ({ id: String(p.id), key: normalizeText(p.title) }))
+    .map((p: any) => {
+      const key = normalizeText(p.title);
+      const tags = Array.isArray(p.tags) ? p.tags.map((t: unknown) => normalizeText(String(t))).join(' ') : '';
+      return { id: String(p.id), key, hay: `${key} ${tags}`.trim() };
+    })
     .filter((p) => p.key.length > 0);
+
+// « Maïa Neel & Ptt.snt, Louis Celante » -> ['maia neel', 'ptt snt', 'louis celante']
+function artistNames(artist?: string | null): string[] {
+  if (!artist) return [];
+  return artist
+    .split(/\s*(?:,|&|\/|;|\bfeat\.?|\bft\.?|\bx\b|\bet\b|\band\b)\s*/i)
+    .map(normalizeText)
+    .filter((name) => name.length >= 4);
+}
 
 function loadData(): Promise<ShowData> {
   if (!dataPromise) {
@@ -84,7 +98,8 @@ function matchTitle(target: string, entries: Entry[]): string | null {
  *  3. sinon l'émission (« Scrambled Eggs ») -> /shows/playlist/<émission>.
  * Prudent : en cas de doute, aucun lien.
  */
-export function findShowHref(title: string, data: ShowData): string | null {
+export function findShowHref(title: string, data: ShowData, artist?: string | null): string | null {
+  const names = artistNames(artist);
   const full = normalizeText(title);
   const short = normalizeText(title.replace(/\([^)]*\)|\[[^\]]*\]/g, ' '));
   if (!short && !full) return null;
@@ -99,8 +114,30 @@ export function findShowHref(title: string, data: ShowData): string | null {
   // (« Saint-Gilles Reggae Club #13 » -> « Saint-Gilles Reggae Club #13 - Grégoire Bruno (15.03.22) »).
   // Seulement si le titre porte un numéro et qu'un seul épisode correspond.
   if (short.length >= 8 && /\d/.test(short)) {
-    const starts = data.episodes.filter((e) => e.key === short || e.key.startsWith(`${short} `));
+    let starts = data.episodes.filter((e) => e.key === short || e.key.startsWith(`${short} `));
+    // Plusieurs épisodes possibles : les artistes départagent
+    if (starts.length > 1 && names.length > 0) {
+      starts = starts.filter((e) => names.some((n) => e.hay.includes(n)));
+    }
     if (starts.length === 1) return `/shows/${encodeURIComponent(starts[0].id)}`;
+  }
+
+  // Recherche par artistes : un épisode qui cite au moins un des artistes
+  // ET partage au moins la moitié des mots importants du titre. Un seul vainqueur net, sinon rien.
+  if (names.length > 0) {
+    const words = short.split(' ').filter((w) => w.length >= 3);
+    const needed = Math.max(1, Math.ceil(words.length / 2));
+    const scored = data.episodes
+      .map((e) => {
+        const artistHits = names.filter((n) => e.hay.includes(n)).length;
+        const wordHits = words.filter((w) => e.key.includes(w)).length;
+        return { e, artistHits, wordHits, score: artistHits * 2 + wordHits };
+      })
+      .filter((s) => s.artistHits >= 1 && s.wordHits >= needed)
+      .sort((a, b) => b.score - a.score);
+    if (scored.length > 0 && (scored.length === 1 || scored[0].score > scored[1].score)) {
+      return `/shows/${encodeURIComponent(scored[0].e.id)}`;
+    }
   }
 
   let playlistId = matchTitle(short, data.playlists) ?? matchTitle(full, data.playlists);
@@ -116,7 +153,11 @@ export function findShowHref(title: string, data: ShowData): string | null {
 }
 
 /** Adresse de la page de l'épisode ou de l'émission en cours, ou null si rien ne correspond. */
-export function useShowLink(title: string | undefined | null, enabled = true): string | null {
+export function useShowLink(
+  title: string | undefined | null,
+  artist?: string | null,
+  enabled = true
+): string | null {
   const [href, setHref] = useState<string | null>(null);
 
   useEffect(() => {
@@ -126,12 +167,12 @@ export function useShowLink(title: string | undefined | null, enabled = true): s
       return;
     }
     loadData().then((data) => {
-      if (!cancelled) setHref(findShowHref(title, data));
+      if (!cancelled) setHref(findShowHref(title, data, artist));
     });
     return () => {
       cancelled = true;
     };
-  }, [title, enabled]);
+  }, [title, artist, enabled]);
 
   return href;
 }

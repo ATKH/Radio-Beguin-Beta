@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAdminPassword } from "@/components/AdminPassword";
 
 const slugify = (value) =>
   value
@@ -31,7 +32,7 @@ const emptyEvent = () => ({
 });
 
 export default function AdminEventsForm({ initialEvents }) {
-  const [password, setPassword] = useState("");
+  const { password } = useAdminPassword();
   const [events, setEvents] = useState(initialEvents || []);
   const [status, setStatus] = useState(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -154,17 +155,6 @@ export default function AdminEventsForm({ initialEvents }) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <label className="block text-sm font-medium mb-1">Mot de passe</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border rounded px-3 py-2 w-full max-w-xs"
-          placeholder="Mot de passe admin"
-        />
-      </div>
-
       <div className="space-y-6">
         {events.map((event, index) => (
           <div key={event.id} className="border rounded p-4 space-y-3">

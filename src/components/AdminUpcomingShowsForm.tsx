@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAdminPassword } from "@/components/AdminPassword";
 
 const makeId = () => Math.random().toString(36).slice(2, 10);
 
@@ -18,7 +19,7 @@ const emptyShow = () => ({
 });
 
 export default function AdminUpcomingShowsForm({ initialShows, playlists }) {
-  const [password, setPassword] = useState("");
+  const { password } = useAdminPassword();
   const [shows, setShows] = useState(() =>
     (initialShows || []).map((s) => ({ ...s, tagsText: (s.tags || []).join(", ") }))
   );
@@ -99,17 +100,6 @@ export default function AdminUpcomingShowsForm({ initialShows, playlists }) {
 
   return (
     <div className="space-y-8">
-      <div>
-        <label className="block text-sm font-medium mb-1">Mot de passe</label>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border rounded px-3 py-2 w-full max-w-xs"
-          placeholder="Mot de passe admin"
-        />
-      </div>
-
       <div className="space-y-6">
         {shows.map((show, index) => (
           <div key={show.id} className="border rounded p-4 space-y-3">
