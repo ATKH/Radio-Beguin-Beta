@@ -27,6 +27,19 @@ const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
 // de « fin anormale » (Firefox estime mal la durée de ces MP3).
 const isFirefox = typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent);
 
+// Firefox (ordinateur uniquement) : le serveur coupe la connexion quand Firefox met la lecture en pause,
+// et il ne sait pas reprendre à une position. On télécharge donc le fichier en une seule fois,
+// puis on le lit depuis la mémoire. Pas sur mobile (fichiers de 70 à 180 Mo).
+const useFullDownload =
+  isFirefox && typeof navigator !== 'undefined' && !/android|mobile/i.test(navigator.userAgent);
+
+async function fetchAsBlobUrl(url: string, signal: AbortSignal): Promise<string> {
+  const res = await fetch(url, { signal });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const blob = await res.blob();
+  return URL.createObjectURL(blob);
+}
+
 // Taille de l'image externe à gauche du widget SoundCloud (= hauteur de l'iframe)
 const SC_WIDGET_HEIGHT = 120;
 // Si SoundCloud ignore show_artwork=false, mets ici la largeur (en px) de sa pochette (ex: 120)
@@ -114,6 +127,7 @@ export default function Player() {
   const failedSkipsRef = useRef(0);
   const resumeAttemptsRef = useRef(0);
   const resumePositionRef = useRef(0);
+  const blobUrlRef = useRef<string | null>(null);
 
   // Annule le téléchargement du titre suivant s'il est en cours (changement de playlist, retour au direct)
   const abortPreload = () => {
@@ -283,6 +297,7 @@ export default function Player() {
     if (!audioRef.current) return;
     const audio = audioRef.current;
     let hlsInstance: Hls | null = null;
+    let fetchController: AbortController | null = null;
     let cancelled = false;
 
     const cleanup = () => {
@@ -293,6 +308,11 @@ export default function Player() {
       if (analyserRef.current) {
         analyserRef.current.disconnect();
         analyserRef.current = null;
+      }
+      // Libère la mémoire du titre téléchargé en entier (Firefox)
+      if (blobUrlRef.current) {
+        URL.revokeObjectURL(blobUrlRef.current);
+        blobUrlRef.current = null;
       }
     };
 
@@ -387,7 +407,26 @@ export default function Player() {
           resetResumeIntent();
         }
       } else {
-        audio.src = url;
+        let sourceUrl = url;
+        if (useFullDownload && currentEpisode.id.startsWith('az:')) {
+          try {
+            setIsBuffering(true);
+            fetchController = new AbortController();
+            const blobUrl = await fetchAsBlobUrl(url, fetchController.signal);
+            if (cancelled) {
+              URL.revokeObjectURL(blobUrl);
+              return;
+            }
+            blobUrlRef.current = blobUrl;
+            sourceUrl = blobUrl;
+          } catch (err) {
+            // Changement de titre pendant le téléchargement : rien à signaler
+            if (cancelled || (err as { name?: string })?.name === 'AbortError') return;
+            console.warn('⚠️ Téléchargement complet impossible, lecture directe:', err);
+          }
+          setIsBuffering(false);
+        }
+        audio.src = sourceUrl;
         audio.load();
         handleAutoPlay('❌ Erreur lecture MP3:');
       }
@@ -397,6 +436,7 @@ export default function Player() {
       setupPodcastPlayback();
       return () => {
         cancelled = true;
+        fetchController?.abort();
         cleanup();
       };
     }
