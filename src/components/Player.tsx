@@ -22,6 +22,11 @@ const TRACK_INFO_URL = '/api/live-track';
 const PLAYBACK_STORAGE_KEY = 'radio-beguin:playback-state';
 const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
 
+// Firefox : le serveur des médias à la demande ignore les requêtes partielles (Range).
+// Sur Firefox on désactive donc le préchargement du titre suivant et la détection
+// de « fin anormale » (Firefox estime mal la durée de ces MP3).
+const isFirefox = typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent);
+
 // Taille de l'image externe à gauche du widget SoundCloud (= hauteur de l'iframe)
 const SC_WIDGET_HEIGHT = 120;
 // Si SoundCloud ignore show_artwork=false, mets ici la largeur (en px) de sa pochette (ex: 120)
@@ -441,7 +446,9 @@ export default function Player() {
         resumeAttemptsRef.current = 0;
       }
       // Playlist à la demande : on ne précharge le titre suivant que dans les 45 dernières secondes
+      // (désactivé sur Firefox, voir isFirefox en haut du fichier)
       if (
+        !isFirefox &&
         currentEpisode?.id?.startsWith('az:') &&
         Number.isFinite(audio.duration) &&
         audio.duration - audio.currentTime < 45
@@ -476,7 +483,8 @@ export default function Player() {
       // Playlist à la demande : on enchaîne automatiquement sur le titre suivant
       if (currentEpisode?.id?.startsWith('az:')) {
         // Fin anormale (le flux s'arrête bien avant la durée annoncée) : on tente de reprendre
-        if (Number.isFinite(audio.duration) && audio.duration - audio.currentTime > 10) {
+        // (désactivé sur Firefox : la durée y est mal estimée, ce qui donne de fausses alertes)
+        if (!isFirefox && Number.isFinite(audio.duration) && audio.duration - audio.currentTime > 10) {
           console.warn('⚠️ Lecture interrompue avant la fin', {
             currentTime: audio.currentTime,
             duration: audio.duration,
