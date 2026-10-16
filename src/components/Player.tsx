@@ -22,14 +22,13 @@ const TRACK_INFO_URL = '/api/live-track';
 const PLAYBACK_STORAGE_KEY = 'radio-beguin:playback-state';
 const USE_SOUNDCLOUD_EMBED = process.env.NEXT_PUBLIC_USE_SC_EMBED === 'true';
 
-// Firefox : le serveur des médias à la demande ignore les requêtes partielles (Range).
-// Sur Firefox on désactive donc le préchargement du titre suivant et la détection
-// de « fin anormale » (Firefox estime mal la durée de ces MP3).
+// Firefox : le serveur des médias à la demande ignore les requêtes partielles (Range)
+// et coupe les connexions mises en pause. Sur Firefox on ne précharge donc pas le titre
+// suivant (économie de bande passante). En cas de coupure : voir recoverWithFullDownload.
 const isFirefox = typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent);
 
-// Firefox (ordinateur uniquement) : le serveur coupe la connexion quand Firefox met la lecture en pause,
-// et il ne sait pas reprendre à une position. On télécharge donc le fichier en une seule fois,
-// puis on le lit depuis la mémoire. Pas sur mobile (fichiers de 70 à 180 Mo).
+// Firefox (ordinateur uniquement) : en cas de coupure, on télécharge le fichier en entier une seule fois
+// et on reprend à la même seconde depuis la mémoire. Pas sur mobile (fichiers de 70 à 180 Mo).
 const useFullDownload =
   isFirefox && typeof navigator !== 'undefined' && !/android|mobile/i.test(navigator.userAgent);
 
@@ -128,6 +127,7 @@ export default function Player() {
   const resumeAttemptsRef = useRef(0);
   const resumePositionRef = useRef(0);
   const blobUrlRef = useRef<string | null>(null);
+  const recoveryAbortRef = useRef<AbortController | null>(null);
 
   // Annule le téléchargement du titre suivant s'il est en cours (changement de playlist, retour au direct)
   const abortPreload = () => {
@@ -149,6 +149,47 @@ export default function Player() {
     if (next) setCurrentEpisode(next);
   };
 
+  // Firefox (ordinateur) : après une coupure, télécharge le fichier en entier (une seule requête continue),
+  // puis reprend à la même seconde depuis la mémoire. Si le téléchargement échoue : titre suivant.
+  const recoverWithFullDownload = async (
+    audio: HTMLAudioElement,
+    episodeId: string,
+    position: number
+  ) => {
+    setIsBuffering(true);
+    recoveryAbortRef.current?.abort();
+    const controller = new AbortController();
+    recoveryAbortRef.current = controller;
+    try {
+      const blobUrl = await fetchAsBlobUrl(audio.src, controller.signal);
+      if (controller.signal.aborted) {
+        URL.revokeObjectURL(blobUrl);
+        return;
+      }
+      if (blobUrlRef.current) URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = blobUrl;
+      audio.addEventListener(
+        'loadedmetadata',
+        () => {
+          audio.currentTime = position;
+          audio
+            .play()
+            .then(() => setIsPlaying(true))
+            .catch(() => {});
+        },
+        { once: true }
+      );
+      audio.src = blobUrl;
+      audio.load();
+    } catch (err) {
+      // Changement de titre pendant le téléchargement : rien à signaler
+      if ((err as { name?: string })?.name === 'AbortError') return;
+      console.warn('⚠️ Téléchargement complet impossible:', err);
+      setIsBuffering(false);
+      skipBrokenTrack(episodeId);
+    }
+  };
+
   // Playlist à la demande : si la lecture se coupe en cours de route (connexion qui lâche),
   // on recharge le même fichier et on reprend à la même seconde (2 essais max).
   // On ne passe au titre suivant que si la reprise échoue ou si le titre n'a jamais démarré.
@@ -157,6 +198,11 @@ export default function Player() {
     if (position > 2 && resumeAttemptsRef.current < 2) {
       resumeAttemptsRef.current += 1;
       resumePositionRef.current = position;
+      // Firefox ordinateur : un seul téléchargement complet, puis reprise depuis la mémoire
+      if (useFullDownload && !audio.src.startsWith('blob:')) {
+        void recoverWithFullDownload(audio, episodeId, position);
+        return;
+      }
       audio.addEventListener(
         'loadedmetadata',
         () => {
@@ -297,7 +343,6 @@ export default function Player() {
     if (!audioRef.current) return;
     const audio = audioRef.current;
     let hlsInstance: Hls | null = null;
-    let fetchController: AbortController | null = null;
     let cancelled = false;
 
     const cleanup = () => {
@@ -309,7 +354,9 @@ export default function Player() {
         analyserRef.current.disconnect();
         analyserRef.current = null;
       }
-      // Libère la mémoire du titre téléchargé en entier (Firefox)
+      // Annule une reprise en cours et libère la mémoire du titre téléchargé en entier (Firefox)
+      recoveryAbortRef.current?.abort();
+      recoveryAbortRef.current = null;
       if (blobUrlRef.current) {
         URL.revokeObjectURL(blobUrlRef.current);
         blobUrlRef.current = null;
@@ -407,26 +454,7 @@ export default function Player() {
           resetResumeIntent();
         }
       } else {
-        let sourceUrl = url;
-        if (useFullDownload && currentEpisode.id.startsWith('az:')) {
-          try {
-            setIsBuffering(true);
-            fetchController = new AbortController();
-            const blobUrl = await fetchAsBlobUrl(url, fetchController.signal);
-            if (cancelled) {
-              URL.revokeObjectURL(blobUrl);
-              return;
-            }
-            blobUrlRef.current = blobUrl;
-            sourceUrl = blobUrl;
-          } catch (err) {
-            // Changement de titre pendant le téléchargement : rien à signaler
-            if (cancelled || (err as { name?: string })?.name === 'AbortError') return;
-            console.warn('⚠️ Téléchargement complet impossible, lecture directe:', err);
-          }
-          setIsBuffering(false);
-        }
-        audio.src = sourceUrl;
+        audio.src = url;
         audio.load();
         handleAutoPlay('❌ Erreur lecture MP3:');
       }
@@ -436,7 +464,6 @@ export default function Player() {
       setupPodcastPlayback();
       return () => {
         cancelled = true;
-        fetchController?.abort();
         cleanup();
       };
     }
@@ -523,8 +550,12 @@ export default function Player() {
       // Playlist à la demande : on enchaîne automatiquement sur le titre suivant
       if (currentEpisode?.id?.startsWith('az:')) {
         // Fin anormale (le flux s'arrête bien avant la durée annoncée) : on tente de reprendre
-        // (désactivé sur Firefox : la durée y est mal estimée, ce qui donne de fausses alertes)
-        if (!isFirefox && Number.isFinite(audio.duration) && audio.duration - audio.currentTime > 10) {
+        // (pas pour un fichier déjà entièrement en mémoire : sa fin est alors la vraie fin)
+        if (
+          !audio.src.startsWith('blob:') &&
+          Number.isFinite(audio.duration) &&
+          audio.duration - audio.currentTime > 10
+        ) {
           console.warn('⚠️ Lecture interrompue avant la fin', {
             currentTime: audio.currentTime,
             duration: audio.duration,
