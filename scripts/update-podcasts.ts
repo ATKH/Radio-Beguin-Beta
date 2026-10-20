@@ -1,16 +1,11 @@
 // scripts/update-podcasts.ts
+// ⚠️ Doit rester le premier import : charge .env.local avant les modules SoundCloud.
+import "./load-env";
 import path from "path";
 import { writeFile, readFile, mkdir } from "fs/promises";
-import dotenv from "dotenv";
 import { fetchAggregatedSoundCloudData } from "@/lib/soundcloud/fetcher";
 
-// @ts-ignore – on autorise l'import CommonJS
-import { getAccessToken } from "./auth.cjs";
-
-// Charger les variables d’environnement locales.
-// override: true → .env.local (token fraîchement écrit par soundcloud:authorize)
-// prime sur un éventuel vieux token exporté dans le shell, qui causait les 401.
-dotenv.config({ path: path.join(process.cwd(), ".env.local"), override: true });
+import { getAccessToken } from "@/lib/soundcloud/auth";
 
 type PodcastEntry = { url?: string; [key: string]: unknown };
 
