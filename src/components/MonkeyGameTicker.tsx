@@ -65,6 +65,11 @@ const OBSTACLE_INTERVAL_JITTER_MIN = 0.65;
 const OBSTACLE_INTERVAL_JITTER_MAX = 1.45;
 const MOBILE_WIDTH_THRESHOLD = 768;
 
+// Image des coeurs (dans /public) : si elle est introuvable, le coeur dessiné en code sert de repli
+const HEART_SPRITE_SRC = "/Coeur.png";
+// true = rendu lissé (dessin), false = pixel art net
+const HEART_SMOOTHING = true;
+
 // Images des obstacles (dans /public)
 const GROUND_SPRITE_SRCS = ["/ObstacleBas1.png", "/ObstacleBas2.png", "/ObstacleBas3.png"];
 const OVERHEAD_SPRITE_SRCS = ["/ObstacleHaut1.png"];
@@ -230,6 +235,11 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     const isReady = (img: HTMLImageElement) => img.complete && img.naturalWidth > 0;
     const spriteRatio = (img: HTMLImageElement, fallback: number) =>
       isReady(img) ? img.naturalWidth / img.naturalHeight : fallback;
+
+    // Image des coeurs : la largeur affichée vaut `size`, la hauteur suit les proportions du dessin
+    const heartSprite = loadImage(HEART_SPRITE_SRC);
+    const heartDrawHeight = (size: number) =>
+      isReady(heartSprite) ? size / spriteRatio(heartSprite, 1) : size * 0.9;
 
     const pointerQuery = window.matchMedia("(pointer: coarse)");
     const updateIsMobile = () => {
@@ -421,8 +431,13 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
 
       ctx.save();
       ctx.fillStyle = heartTint;
+      ctx.imageSmoothingEnabled = HEART_SMOOTHING;
       for (const heart of heartsRef.current) {
-        drawHeart(ctx, heart.x, heart.y, heart.size);
+        if (isReady(heartSprite)) {
+          ctx.drawImage(heartSprite, heart.x, heart.y, heart.size, heartDrawHeight(heart.size));
+        } else {
+          drawHeart(ctx, heart.x, heart.y, heart.size);
+        }
       }
       ctx.restore();
 
@@ -527,7 +542,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
         const heartLeft = heart.x;
         const heartRight = heart.x + heart.size;
         const heartTop = heart.y;
-        const heartBottom = heart.y + heart.size * 0.9;
+        const heartBottom = heart.y + heartDrawHeight(heart.size);
 
         const monkeyLeft = monkey.x + 6;
         const monkeyRight = monkey.x + MONKEY_WIDTH - 6;
