@@ -4,6 +4,9 @@
 import React from 'react';
 import { useLocale } from '@/lib/LocaleContext';
 
+const SUBMIT_SHOW_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSdjaus9ncwxirEmYtk-qc5zO6g0FluI41QurmPV2Sf49xf9IQ/viewform';
+
 export default function AboutPage() {
   const { locale } = useLocale();
 
@@ -14,11 +17,12 @@ export default function AboutPage() {
           "Radio Béguin is a non-profit association made up of a passionate team of volunteers. It is a project aimed at creating connections, supported by numerous resident artists, sound content creators and music lovers who always put their hearts into it.",
         ]
       : [
-          "Radio Béguin est une webradio basée à Lyon diffusant en continu une programmation réfléchie et évolutive pour accompagner vos journées. Ponctuée de nombreuses émissions : talk radios, DJ sets variés et événements en direct, la voix est donnée à celleux que l’on entend que trop rarement. Un espace d’expression qui regorge de nouvelles idées et s’aventure où les rencontres l’amènent à Lyon ou ailleurs. Personne n’est à l’abri d’avoir le béguin !",
+          "Radio Béguin est une webradio basée à Lyon diffusant en continu une programmation réfléchie et évolutive pour accompagner vos journées. Ponctuée de nombreuses émissions : talk radios, DJ sets variés et événements en direct, la voix est donnée à celleux que l’on entend que trop rarement. Un espace d’expression qui regorge de nouvelles idées et s’aventure où les rencontres l’amènent à Lyon ou ailleurs. Personne n’est à l’abri d’avoir le béguin !",
           "Radio Béguin est une association à but non lucratif constituée d’une équipe bénévole passionnée. C’est un projet porté dans le but de créer du lien, projet soutenu par de nombreux artistes résident.es, créateur·ices de contenus sonores et mélomanes qui, toujours, y mettent du cœur.",
         ];
 
   const supportLabel = locale === 'en' ? 'Support us' : 'Pour nous soutenir';
+  const submitShowLabel = locale === 'en' ? 'Submit a show' : 'Proposer un show';
 
   return (
     <main className="min-h-screen px-4 md:px-8 py-12 max-w-5xl mx-auto text-[var(--foreground)]">
@@ -31,7 +35,7 @@ export default function AboutPage() {
         ))}
       </section>
 
-      <div className="px-6 md:px-8">
+      <div className="px-6 md:px-8 flex flex-wrap gap-4">
         <a
           href="https://www.helloasso.com/associations/radio-beguin"
           target="_blank"
@@ -39,6 +43,15 @@ export default function AboutPage() {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--primary)] text-[var(--primary-foreground)] font-semibold hover:bg-[var(--primary)]/90 transition"
         >
           {supportLabel}
+        </a>
+
+        <a
+          href={SUBMIT_SHOW_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[var(--primary)] text-[var(--primary)] font-semibold hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] transition"
+        >
+          {submitShowLabel}
         </a>
       </div>
     </main>
