@@ -18,6 +18,7 @@ type Obstacle = {
   width: number;
   height: number;
   variant: "ground" | "overhead";
+  sprite: number; // index dans la liste d'images de sa variante
 };
 
 type MonkeyState = {
@@ -44,8 +45,8 @@ const GRAVITY = 900; // px per second^2
 const JUMP_VELOCITY = 360; // px per second
 const HEART_SPAWN_INTERVAL = 1400; // ms
 const OBSTACLE_SPAWN_INTERVAL = 2000; // ms
-const OBSTACLE_WIDTH = 20;
-const OBSTACLE_HEIGHT = 18;
+const OBSTACLE_WIDTH = 30; // largeur de repli si l'image n'est pas encore chargée
+const OBSTACLE_HEIGHT = 35; // hauteur d'affichage des obstacles au sol
 const OBSTACLE_SPEED = HEART_SPEED;
 const GROUND_OFFSET = 6;
 const LEFT_MARGIN = 16;
@@ -55,12 +56,22 @@ const GAME_OVER_FREEZE_DURATION = 1400;
 const MONKEY_CLEAN_THRESHOLD = 230;
 const KEY_CAPTURE_KEYS = new Set(["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " ", "Escape"]);
 const DUCK_HEIGHT = Math.round(MONKEY_HEIGHT * 0.55);
-const OVERHEAD_HEIGHT = 14;
-const OVERHEAD_CLEARANCE = 6;
+const OVERHEAD_HEIGHT = 26; // hauteur d'affichage de l'obstacle en hauteur
+const OVERHEAD_FALLBACK_WIDTH = OBSTACLE_WIDTH + 12;
+// Marge (px) entre le bas de l'obstacle en hauteur et le haut du singe baissé : plus c'est grand, plus c'est facile de passer
+const OVERHEAD_DUCK_MARGIN = 4;
 const DIFFICULTY_MAX = 1.75;
 const OBSTACLE_INTERVAL_JITTER_MIN = 0.65;
 const OBSTACLE_INTERVAL_JITTER_MAX = 1.45;
 const MOBILE_WIDTH_THRESHOLD = 768;
+
+// Images des obstacles (dans /public)
+const GROUND_SPRITE_SRCS = ["/ObstacleBas1.png", "/ObstacleBas2.png", "/ObstacleBas3.png"];
+const OVERHEAD_SPRITE_SRCS = ["/ObstacleHaut1.png"];
+// Marge retirée de chaque côté de la hitbox des obstacles (px), pour compenser le vide autour du dessin
+const OBSTACLE_HITBOX_INSET = 3;
+// true = rendu lissé (dessins), false = pixel art net
+const OBSTACLE_SMOOTHING = true;
 
 function heartPath(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
   ctx.moveTo(x + size / 2, y + size);
@@ -146,7 +157,8 @@ function drawHeart(ctx: CanvasRenderingContext2D, x: number, y: number, size: nu
   ctx.restore();
 }
 
-function drawObstacle(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
+// Repli : triangle d'origine, utilisé tant que l'image n'est pas chargée
+function drawObstacleFallback(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number) {
   ctx.beginPath();
   ctx.moveTo(x, y + height);
   ctx.lineTo(x + width / 2, y);
@@ -206,6 +218,18 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     const monkeyImage = new window.Image();
     monkeyImage.crossOrigin = "anonymous";
     const spriteRef = { current: monkeyImage } as { current: HTMLImageElement };
+
+    // Images des obstacles
+    const loadImage = (src: string) => {
+      const img = new window.Image();
+      img.src = src;
+      return img;
+    };
+    const groundSprites = GROUND_SPRITE_SRCS.map(loadImage);
+    const overheadSprites = OVERHEAD_SPRITE_SRCS.map(loadImage);
+    const isReady = (img: HTMLImageElement) => img.complete && img.naturalWidth > 0;
+    const spriteRatio = (img: HTMLImageElement, fallback: number) =>
+      isReady(img) ? img.naturalWidth / img.naturalHeight : fallback;
 
     const pointerQuery = window.matchMedia("(pointer: coarse)");
     const updateIsMobile = () => {
@@ -403,9 +427,16 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       ctx.restore();
 
       ctx.save();
+      ctx.imageSmoothingEnabled = OBSTACLE_SMOOTHING;
       ctx.fillStyle = "rgba(0, 0, 0, 0.9)";
       for (const obstacle of obstaclesRef.current) {
-        drawObstacle(ctx, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        const sprites = obstacle.variant === "overhead" ? overheadSprites : groundSprites;
+        const img = sprites[obstacle.sprite];
+        if (img && isReady(img)) {
+          ctx.drawImage(img, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        } else {
+          drawObstacleFallback(ctx, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        }
       }
       ctx.restore();
 
@@ -530,21 +561,32 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
         const allowOverhead = !isMobileRef.current;
         const spawnOverhead = allowOverhead && Math.random() < spawnOverheadChance;
         if (spawnOverhead) {
-          const overheadY = Math.max(ground - MONKEY_HEIGHT - OVERHEAD_CLEARANCE - 2, 10);
+          const spriteIndex = Math.floor(Math.random() * overheadSprites.length);
+          const ratio = spriteRatio(overheadSprites[spriteIndex], OVERHEAD_FALLBACK_WIDTH / OVERHEAD_HEIGHT);
+          const obstacleWidth = Math.round(OVERHEAD_HEIGHT * ratio);
+          // Le bas de l'obstacle est placé juste au-dessus de la tête du singe baissé
+          // (le singe debout, lui, le touche : il faut donc se baisser)
+          const overheadBottom = ground - DUCK_HEIGHT + 2 - OVERHEAD_DUCK_MARGIN;
+          const overheadY = Math.max(overheadBottom - OVERHEAD_HEIGHT, 0);
           obstaclesRef.current.push({
-            x: -OBSTACLE_WIDTH,
+            x: -obstacleWidth,
             y: overheadY,
-            width: OBSTACLE_WIDTH + 12,
+            width: obstacleWidth,
             height: OVERHEAD_HEIGHT,
             variant: "overhead",
+            sprite: spriteIndex,
           });
         } else {
+          const spriteIndex = Math.floor(Math.random() * groundSprites.length);
+          const ratio = spriteRatio(groundSprites[spriteIndex], OBSTACLE_WIDTH / OBSTACLE_HEIGHT);
+          const obstacleWidth = Math.round(OBSTACLE_HEIGHT * ratio);
           obstaclesRef.current.push({
-            x: -OBSTACLE_WIDTH,
+            x: -obstacleWidth,
             y: ground - OBSTACLE_HEIGHT + 3,
-            width: OBSTACLE_WIDTH,
+            width: obstacleWidth,
             height: OBSTACLE_HEIGHT,
             variant: "ground",
+            sprite: spriteIndex,
           });
         }
       }
@@ -558,8 +600,8 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
           continue;
         }
 
-        const obsLeft = obstacle.x;
-        const obsRight = obstacle.x + obstacle.width;
+        const obsLeft = obstacle.x + OBSTACLE_HITBOX_INSET;
+        const obsRight = obstacle.x + obstacle.width - OBSTACLE_HITBOX_INSET;
         const obsTop = obstacle.y;
         const obsBottom = obstacle.y + obstacle.height;
 
