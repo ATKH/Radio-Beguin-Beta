@@ -52,7 +52,6 @@ const GROUND_OFFSET = 6;
 const LEFT_MARGIN = 16;
 const RIGHT_MARGIN = 24;
 const AUTO_SCROLL_SPEED = -55;
-const GAME_OVER_FREEZE_DURATION = 1400;
 const MONKEY_CLEAN_THRESHOLD = 230;
 const KEY_CAPTURE_KEYS = new Set(["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight", " ", "Escape"]);
 const DUCK_HEIGHT = Math.round(MONKEY_HEIGHT * 0.55);
@@ -175,6 +174,9 @@ function drawObstacleFallback(ctx: CanvasRenderingContext2D, x: number, y: numbe
 export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  // Incrémenté à chaque "Rejouer" : relance l'effet du jeu depuis zéro
+  const [runId, setRunId] = useState(0);
   const inputsRef = useRef<Inputs>({ left: false, right: false });
   const heartsRef = useRef<Heart[]>([]);
   const obstaclesRef = useRef<Obstacle[]>([]);
@@ -187,7 +189,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
   const scoreRef = useRef<number>(0);
   const exitGameRef = useRef<() => void>(() => {});
   const isMobileRef = useRef<boolean>(false);
-  const gameOverTimeoutRef = useRef<number | null>(null);
+  const restartRef = useRef<() => void>(() => {});
   const isGameOverRef = useRef<boolean>(false);
   const monkeyRef = useRef<MonkeyState>({
     x: 0,
@@ -247,12 +249,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     };
     const handlePointerChange = () => updateIsMobile();
 
-    const clearScheduledExit = () => {
-      if (gameOverTimeoutRef.current !== null) {
-        window.clearTimeout(gameOverTimeoutRef.current);
-        gameOverTimeoutRef.current = null;
-      }
-    };
+    restartRef.current = () => setRunId((id) => id + 1);
 
     isGameOverRef.current = false;
     nextObstacleIntervalRef.current = OBSTACLE_SPAWN_INTERVAL;
@@ -337,6 +334,19 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     };
 
     resizeCanvas();
+
+    // Remise à zéro du singe et des touches (utile quand on rejoue)
+    {
+      const { ground: startGround, width: startWidth } = groundRef.current;
+      const m = monkeyRef.current;
+      m.x = startWidth - MONKEY_WIDTH - RIGHT_MARGIN;
+      m.y = startGround;
+      m.vy = 0;
+      m.canJump = true;
+      m.isDucking = false;
+      inputsRef.current = { left: false, right: false };
+    }
+
     const resizeObserver = new ResizeObserver(resizeCanvas);
     resizeObserver.observe(canvas);
 
@@ -353,6 +363,14 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (KEY_CAPTURE_KEYS.has(event.key)) {
         event.preventDefault();
+      }
+      // Partie terminée : Espace / ↑ / Entrée pour rejouer (Échap pour quitter, géré plus bas)
+      if (
+        isGameOverRef.current &&
+        (event.code === "Space" || event.code === "ArrowUp" || event.code === "Enter")
+      ) {
+        restartRef.current();
+        return;
       }
       switch (event.code) {
         case "Escape":
@@ -418,6 +436,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     nextObstacleIntervalRef.current = OBSTACLE_SPAWN_INTERVAL;
     scoreRef.current = 0;
     setScore(0);
+    setGameOver(false);
 
     let running = true;
 
@@ -466,7 +485,6 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
     };
 
     const exitGame = () => {
-      clearScheduledExit();
       if (!running) return;
       running = false;
       onExit();
@@ -644,9 +662,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
         renderFrame(monkey, width, height, ground);
         if (!isGameOverRef.current) {
           isGameOverRef.current = true;
-          gameOverTimeoutRef.current = window.setTimeout(() => {
-            exitGame();
-          }, GAME_OVER_FREEZE_DURATION);
+          setGameOver(true);
         }
         return;
       }
@@ -668,7 +684,6 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       canvas.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      clearScheduledExit();
       isGameOverRef.current = false;
       pointerQuery.removeEventListener?.("change", handlePointerChange);
       pointerQuery.removeListener?.(handlePointerChange);
@@ -676,7 +691,7 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       resizeObserver.disconnect();
       exitGameRef.current = () => {};
     };
-  }, [onExit]);
+  }, [onExit, runId]);
 
   return (
     <div className="relative flex h-10 w-full items-center justify-center px-2">
@@ -688,16 +703,37 @@ export default function MonkeyGameTicker({ onExit }: MonkeyGameTickerProps) {
       <div className="pointer-events-none absolute left-2.5 top-0.5 text-[9px] font-semibold uppercase tracking-[0.2em]">
         Score&nbsp;: {score}
       </div>
-      <div className="pointer-events-none absolute bottom-0.5 left-2.5 right-2.5 text-[8px] uppercase tracking-[0.2em] opacity-80">
-        Touchez ou ↑ pour sauter • ↓ pour se baisser • ← → pour ajuster • Évite les obstacles • Échap pour quitter
-      </div>
-      <button
-        type="button"
-        onClick={() => exitGameRef.current()}
-        className="absolute right-2 top-0.5 rounded-full bg-black/15 px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.2em] text-black/80 backdrop-blur transition hover:bg-black/25"
-      >
-        Quitter
-      </button>
+      {gameOver ? (
+        <div className="absolute inset-0 flex items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => restartRef.current()}
+            className="rounded-full bg-black/80 px-3 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-black"
+          >
+            Rejouer
+          </button>
+          <button
+            type="button"
+            onClick={() => exitGameRef.current()}
+            className="rounded-full bg-black/15 px-3 py-0.5 text-[9px] font-semibold uppercase tracking-[0.2em] text-black/80 backdrop-blur transition hover:bg-black/25"
+          >
+            Quitter
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="pointer-events-none absolute bottom-0.5 left-2.5 right-2.5 text-[8px] uppercase tracking-[0.2em] opacity-80">
+            Touchez ou ↑ pour sauter • ↓ pour se baisser • ← → pour ajuster • Évite les obstacles • Échap pour quitter
+          </div>
+          <button
+            type="button"
+            onClick={() => exitGameRef.current()}
+            className="absolute right-2 top-0.5 rounded-full bg-black/15 px-2 py-0.5 text-[8px] font-semibold uppercase tracking-[0.2em] text-black/80 backdrop-blur transition hover:bg-black/25"
+          >
+            Quitter
+          </button>
+        </>
+      )}
     </div>
   );
 }
