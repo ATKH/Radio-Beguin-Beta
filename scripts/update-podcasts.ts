@@ -9,6 +9,27 @@ import { getAccessToken } from "@/lib/soundcloud/auth";
 
 type PodcastEntry = { url?: string; [key: string]: unknown };
 
+// Abandonne avec un message clair si SoundCloud ne répond pas,
+// au lieu de rester bloqué indéfiniment.
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error(`${label} : pas de réponse après ${ms / 1000} s`)),
+      ms
+    );
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      }
+    );
+  });
+}
+
 // Supporte les deux formes de cache : tableau brut ou objet { podcasts: [...] }
 function extractList(data: unknown): PodcastEntry[] | null {
   if (Array.isArray(data)) return data as PodcastEntry[];
@@ -21,13 +42,17 @@ function extractList(data: unknown): PodcastEntry[] | null {
 async function main() {
   try {
     // Vérifie qu’on a un token valide (utile pour fetcher SoundCloud en local)
-    const token = await getAccessToken();
+    const token = await withTimeout(getAccessToken(), 30_000, "Jeton SoundCloud");
     if (!token) {
       console.warn("⚠️ Aucun access_token SoundCloud valide. Mode fallback public.");
     }
 
     // Récupère toutes les données SoundCloud (épisodes + playlists)
-    const data = await fetchAggregatedSoundCloudData();
+    const data = await withTimeout(
+      fetchAggregatedSoundCloudData(),
+      900_000,
+      "Récupération SoundCloud"
+    );
 
     // 👉 Ajout d'un timestamp pour forcer un changement Git
     (data as any).lastUpdated = new Date().toISOString();
