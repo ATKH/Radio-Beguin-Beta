@@ -1,6 +1,24 @@
 {
   "episodes": [
     {
+      "id": "2426400249",
+      "title": "Écran Total #11 (oct 2026)",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-qaqrG787dKyb0t1I-RnsR1Q-t500x500.jpg",
+      "pubDate": "2026/10/26 18:44:39 +0000",
+      "link": "https://soundcloud.com/radiobeguin/cran-total-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Ce mois-ci, je vous ai préparé une heure de mix bien cosy, bien automnale. Il y aura de l’ambient, du downtempo, des choses IDM et synth pop. \n\nTracklist :\n\n    Resavoir – Altostratus\n    Leftfield – Fanfare of Life\n    Paper Desert – In the Nursery \n    Simon Popp, Polygonia – Nectar Flow \n    The Infinite Wheel – Java Dub \n    Motion Ward – A New Extremity \n    Nina Simone – Strange Fruit\n    Mikron – Severance \n    Aspen – This Is Why Only Teenagers Can Really Love Music\n    Mùm – The Ballad Of Broken Birdie Records (Ruxpin Remix II) \n    Sade – Make Some Room\n    A.S.O. – Rain Down (Purelink’s Say Less Mix)\n    Kiss The Sky – Living For You",
+      "tags": [
+        "Métro Boulot",
+        "Ambient",
+        "downtempo",
+        "synth-pop"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2426400249/streams/11a44a22-28ec-48d9-b485-f37aa316b555/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
       "id": "2417397051",
       "title": "Ripisylve #16  w Xuri Mae",
       "artworkUrl": "https://i1.sndcdn.com/artworks-IWwocejYfV3rcy45-LKZrOg-t500x500.jpg",
@@ -194,7 +212,7 @@
     },
     {
       "id": "2408547708",
-      "title": "Ecran Total • Nathan (30.09.26)",
+      "title": "Ecran Total #10 (sept 2026)",
       "artworkUrl": "https://i1.sndcdn.com/artworks-wkY3TyOWxD7Yi36Z-vkCcwQ-t500x500.jpg",
       "pubDate": "2026/09/27 11:21:13 +0000",
       "link": "https://soundcloud.com/radiobeguin/ecran-total-o-nathan-30-09-26?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
@@ -23498,13 +23516,14 @@
     {
       "id": "2112199628",
       "title": "Ecran Total",
-      "artworkUrl": "https://i1.sndcdn.com/artworks-wkY3TyOWxD7Yi36Z-vkCcwQ-t500x500.jpg",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-qaqrG787dKyb0t1I-RnsR1Q-t500x500.jpg",
       "description": "Écran Total :\n\nUne émission sans étiquette, qui se balade entre les styles selon le moment et l’humeur. Ambiant, jazz, funk, IDM, trance… tout peut arriver. L'idée : se connecter et se laisser porter.\n\n\nTikTok : https://www.tiktok.com/@ecran.total?_t=ZN-8x76SwzZ8xq&_r=1\nInstagram : https://www.instagram.com/ecran_total_hqigsh=dDZ4dG1zZHRnMHZ3&utm_source=qr\n\nSpotify : https://open.spotify.com/playlist/75R1hUUOFlzNnHkPMeAb8a?si=Ki_n_TZUSi2i6afrH2ohtg&pi=ZsLoLyJHRvypw",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/ecran-total?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 10,
+      "trackCount": 11,
       "tags": [],
-      "lastUpdated": "2026/09/27 12:08:33 +0000",
+      "lastUpdated": "2026/10/26 18:45:15 +0000",
       "episodeIds": [
+        "2426400249",
         "2408547708",
         "2356062833",
         "2338569263",
@@ -23517,19 +23536,19 @@
         "2210267063"
       ],
       "latestEpisode": {
-        "id": "2408547708",
-        "title": "Ecran Total • Nathan (30.09.26)",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-wkY3TyOWxD7Yi36Z-vkCcwQ-t500x500.jpg",
-        "pubDate": "2026/09/27 11:21:13 +0000",
-        "link": "https://soundcloud.com/radiobeguin/ecran-total-o-nathan-30-09-26?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Nouvelle saison pour Ecran Total !\n\nTracklist \n\nD’Eon - 118\nOrbient - In Time (Korean version)\nCoil - Theme From The Gay Man’s Guide To Safer Sex \nRhode & Brown, Sianza - Rayo De Luz (Original Mix)\nOmodaka - Ryotsu Jingu\nAsa Tate - Brahmaputra (Good Block Remix)\nAlex Kassian X Spooky - Orange Colored Liquid (Part 1)\nReflex Blue - Trip Sit (Elevate Mix)\nAnanda Project - Can You Find The Heart (Rui Da Silva Saffron Vocal Mix)\nAlvar - Follow \nMidland - Without Pause \nMoa - Trance 1-30 « Lake of Sticks » ",
+        "id": "2426400249",
+        "title": "Écran Total #11 (oct 2026)",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-qaqrG787dKyb0t1I-RnsR1Q-t500x500.jpg",
+        "pubDate": "2026/10/26 18:44:39 +0000",
+        "link": "https://soundcloud.com/radiobeguin/cran-total-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Ce mois-ci, je vous ai préparé une heure de mix bien cosy, bien automnale. Il y aura de l’ambient, du downtempo, des choses IDM et synth pop. \n\nTracklist :\n\n    Resavoir – Altostratus\n    Leftfield – Fanfare of Life\n    Paper Desert – In the Nursery \n    Simon Popp, Polygonia – Nectar Flow \n    The Infinite Wheel – Java Dub \n    Motion Ward – A New Extremity \n    Nina Simone – Strange Fruit\n    Mikron – Severance \n    Aspen – This Is Why Only Teenagers Can Really Love Music\n    Mùm – The Ballad Of Broken Birdie Records (Ruxpin Remix II) \n    Sade – Make Some Room\n    A.S.O. – Rain Down (Purelink’s Say Less Mix)\n    Kiss The Sky – Living For You",
         "tags": [
-          "Crépuscule",
-          "Trance",
-          "leftfield",
-          "balearic"
+          "Métro Boulot",
+          "Ambient",
+          "downtempo",
+          "synth-pop"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2408547708/streams/0ff0b070-610a-4fa7-ab02-3f3e23e0bae6/hls",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2426400249/streams/11a44a22-28ec-48d9-b485-f37aa316b555/hls",
         "streamProtocol": "hls",
         "sharing": "public",
         "trackAuthorization": null
@@ -26038,7 +26057,7 @@
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/le-beguin-pour?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
       "trackCount": 444,
       "tags": [],
-      "lastUpdated": "2026/06/04 06:48:02 +0000",
+      "lastUpdated": "2026/10/27 17:41:36 +0000",
       "episodeIds": [
         "2333061893",
         "2129221608",
@@ -26921,11 +26940,11 @@
     "Latin Folk",
     "Spoken Word",
     "Batida",
+    "downtempo",
     "Gqom",
     "Punk",
     "Arabic Traditional",
     "Chanson",
-    "downtempo",
     "Ghetto",
     "Grime",
     "Krautrock",
@@ -26991,6 +27010,7 @@
     "Salsa",
     "Shaabi",
     "Soca",
+    "synth-pop",
     "trip hop",
     "Trip-Hop",
     "Afroclub",
@@ -27057,11 +27077,10 @@
     "spiritual jazz",
     "spititual Jazz",
     "synth pop",
-    "synth-pop",
     "tech house",
     "techno",
     "trip-hop",
     "UK funky"
   ],
-  "lastUpdated": "2026-10-20T08:00:00.495Z"
+  "lastUpdated": "2026-10-30T08:06:21.180Z"
 }
