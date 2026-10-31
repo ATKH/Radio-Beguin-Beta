@@ -17,6 +17,9 @@ const MONKEY_CLEAN_THRESHOLD = 235;
 const THIN_SPACE = "\u2009";
 const LETTER_VARIANTS = ["rise", "drop", "swing-left", "swing-right", "flat"] as const;
 
+// Espace entre les mots : 4 = large, 3 = moyen, 2 = serré, 1 = très serré
+const WORD_GAP_SPACES = 2;
+
 // Vitesse de défilement : on garde la même vitesse que l'ancienne barre (200 s pour « Radio Béguin »),
 // quel que soit le nombre de messages. Une « unité » = une lettre ; un singe + espaces = MONKEY_UNITS.
 const SECONDS_PER_UNIT = 2.3;
@@ -152,14 +155,17 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
   // Messages proposés par les auditeurs et validés par l'équipe
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/ticker/messages")
+    fetch("/api/ticker/messages", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data: unknown) => {
         if (cancelled || !Array.isArray(data)) return;
-        setCommunityMessages(data.filter((m): m is string => typeof m === "string"));
+        setCommunityMessages(
+          data.filter((m): m is string => typeof m === "string" && m.trim() !== "")
+        );
       })
-      .catch(() => {
+      .catch((error) => {
         // pas de souci : la barre garde son message habituel
+        console.error("Impossible de charger les messages de la barre", error);
       });
     return () => {
       cancelled = true;
@@ -176,14 +182,19 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
 
   const baseMessage = normalizedMessages[0] ?? "Radio Béguin";
 
-  // Le message habituel d'abord, puis les messages validés, qui tournent en boucle
-  const blueprints = useMemo(
-    () =>
-      [baseMessage, ...communityMessages]
-        .map(createLetterBlueprint)
-        .filter((blueprint) => blueprint.length > 0),
-    [baseMessage, communityMessages]
-  );
+  // Roulement : Radio Béguin, message 1, Radio Béguin, message 2, ...
+  // Avec un seul message, il alterne simplement avec Radio Béguin.
+  const blueprints = useMemo(() => {
+    const base = createLetterBlueprint(baseMessage);
+    const community = communityMessages
+      .map(createLetterBlueprint)
+      .filter((blueprint) => blueprint.length > 0);
+
+    if (base.length === 0) return community;
+    if (community.length === 0) return [base];
+
+    return community.flatMap((blueprint) => [base, blueprint]);
+  }, [baseMessage, communityMessages]);
 
   const tickerSegments = useMemo<Segment[]>(() => {
     if (blueprints.length === 0) return [];
@@ -248,7 +259,7 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
                             />
                           </span>
                         </button>
-                        {/* no separator après le singe */}
+                        {/* pas de séparateur après le singe */}
                       </span>
                     );
                   }
@@ -278,7 +289,7 @@ export default function TickerBar({ text, messages }: TickerBarProps) {
                               className="ticker-spacing"
                               aria-hidden="true"
                             >
-                              {THIN_SPACE.repeat(4)}
+                              {THIN_SPACE.repeat(WORD_GAP_SPACES)}
                             </span>
                           );
                         })
