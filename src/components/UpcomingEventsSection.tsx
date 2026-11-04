@@ -22,20 +22,16 @@ function formatEventDate(dateStr, locale) {
 export default function UpcomingEventsSection({ events = [] }) {
   const { locale } = useLocale();
 
-  // Si `events` est vide ou undefined, ne rien afficher
-  if (!events || events.length === 0) {
-    return null;
-  }
-
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
 
   useEffect(() => {
-    if (events.length <= 1) return;
+    if (!events || events.length <= 1) return;
 
+    let fadeTimeout;
     const interval = setInterval(() => {
       setIsFading(true);
-      setTimeout(() => {
+      fadeTimeout = setTimeout(() => {
         setCurrentEventIndex((prevIndex) =>
           prevIndex === events.length - 1 ? 0 : prevIndex + 1
         );
@@ -43,10 +39,19 @@ export default function UpcomingEventsSection({ events = [] }) {
       }, 500);
     }, 10000);
 
-    return () => clearInterval(interval);
-  }, [events.length]);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(fadeTimeout);
+    };
+  }, [events?.length]);
 
-  const currentEvent = events[currentEventIndex];
+  // Si `events` est vide ou undefined, ne rien afficher
+  // (placé après les hooks pour respecter les règles des hooks React)
+  if (!events || events.length === 0) {
+    return null;
+  }
+
+  const currentEvent = events[currentEventIndex] ?? events[0];
   const title = getLocalizedEventText(currentEvent, "title", locale);
   const shortDescription = getLocalizedEventText(currentEvent, "shortDescription", locale);
 
@@ -72,28 +77,29 @@ export default function UpcomingEventsSection({ events = [] }) {
         </Button>
       </div>
 
-      {/* Carrousel — toujours empilé verticalement (colonne souvent étroite) */}
+      {/* Carrousel — empilé sur mobile, affiche à gauche + texte à droite dès `sm` */}
       <div className="relative">
         <div
-          className={`flex flex-col gap-3 transition-opacity duration-500 ${
+          className={`flex flex-col sm:flex-row gap-4 transition-opacity duration-500 ${
             isFading ? "opacity-0" : "opacity-100"
           }`}
         >
           {/* Image */}
           {currentEvent.image && (
-            <div className="w-full flex justify-center">
-              <Link href={`/events/${currentEvent.slug}`} className="block w-full max-w-[220px]">
-                <img
-                  src={currentEvent.image}
-                  alt={title}
-                  className="w-full h-auto object-contain rounded-lg mx-auto"
-                />
-              </Link>
-            </div>
+            <Link
+              href={`/events/${currentEvent.slug}`}
+              className="block w-full sm:w-[220px] shrink-0"
+            >
+              <img
+                src={currentEvent.image}
+                alt={title}
+                className="w-full h-auto object-contain rounded-lg"
+              />
+            </Link>
           )}
 
           {/* Infos */}
-          <div className="w-full flex flex-col">
+          <div className="flex-1 min-w-0 flex flex-col">
             <p className="text-xs uppercase tracking-wide text-foreground/70 mb-1">
               {formatEventDate(currentEvent.date, locale)}
               {currentEvent.time ? ` \u00b7 ${currentEvent.time}` : ""}
