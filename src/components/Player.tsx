@@ -1,6 +1,6 @@
 'use client';
 
-import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Play, Pause, ArrowLeft, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -39,11 +39,60 @@ async function fetchAsBlobUrl(url: string, signal: AbortSignal): Promise<string>
   return URL.createObjectURL(blob);
 }
 
-// Taille de l'image externe à gauche du widget SoundCloud (= hauteur de l'iframe)
-const SC_WIDGET_HEIGHT = 120;
-// Si SoundCloud ignore show_artwork=false, mets ici la largeur (en px) de sa pochette (ex: 120)
-// pour la rogner. Laisser à 0 tant que show_artwork=false fonctionne.
-const SC_ARTWORK_CROP_PX = 0;
+// Hauteur du lecteur SoundCloud intégré (px) : 20 = mini lecteur d'une ligne, le plus discret.
+// Il change d'aspect tout seul : titre à l'arrêt, ondes en lecture (c'est SoundCloud qui décide).
+// Si le bouton est trop petit à toucher sur mobile, essaie 40 (et retire le py-[10px] du conteneur).
+const SC_WIDGET_HEIGHT = 20;
+// Pochette (lien vers la page de l'épisode) à côté du lecteur, au format du bouton rond de la barre
+const SC_ARTWORK_SIZE = 40;
+// Couleur d'accent du lecteur (bouton lecture, progression) : remplace par le violet de ton site
+const SC_ACCENT_COLOR = '#a78bfa';
+// Pochette cliquable à côté du lecteur : mets true pour la remettre
+const SC_SHOW_ARTWORK = false;
+// Titre de l'épisode écrit par le site dans la barre. Il n'apparaît que PENDANT LA LECTURE,
+// quand le mini lecteur affiche ses ondes ; à l'arrêt le lecteur montre déjà le titre lui-même.
+const SC_SHOW_TITLE = true;
+// Le lecteur SoundCloud affiche-t-il sa propre pochette / le nom du compte (« radio béguin ») ?
+// false = plus sobre (comme avant). Le titre, le logo SoundCloud et son lien restent affichés.
+const SC_WIDGET_ARTWORK = false;
+const SC_WIDGET_USER = false;
+// Mode sombre : le mini lecteur SoundCloud reste toujours sur fond blanc (il ignore « inverse »).
+// On ne le filtre plus : on le pose dans une pastille claire, il s'affiche ainsi tel que SoundCloud
+// l'a conçu. Changer de thème ne doit JAMAIS modifier l'URL de l'iframe (sinon elle se recharge
+// et l'épisode repart du début).
+const SC_DARK_WRAPPER = 'bg-white px-4 py-[10px]';
+
+// API officielle du lecteur SoundCloud intégré (https://w.soundcloud.com/player/api.js) :
+// elle sert ici uniquement à savoir si le lecteur est en lecture ou en pause.
+type ScWidget = {
+  bind: (event: string, callback: () => void) => void;
+  unbind: (event: string) => void;
+};
+declare global {
+  interface Window {
+    SC?: { Widget: ((iframe: HTMLIFrameElement) => ScWidget) & { Events: Record<string, string> } };
+  }
+}
+
+let scApiPromise: Promise<void> | null = null;
+function loadScWidgetApi(): Promise<void> {
+  if (typeof window === 'undefined') return Promise.reject(new Error('no window'));
+  if (window.SC?.Widget) return Promise.resolve();
+  if (!scApiPromise) {
+    scApiPromise = new Promise<void>((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://w.soundcloud.com/player/api.js';
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => {
+        scApiPromise = null;
+        reject(new Error('Impossible de charger l’API du lecteur SoundCloud'));
+      };
+      document.head.appendChild(script);
+    });
+  }
+  return scApiPromise;
+}
 
 // Page de l'épisode sur le site
 const getEpisodePageUrl = (episode: PodcastEpisode) => `/shows/${episode.id}`;
@@ -109,6 +158,9 @@ export default function Player() {
   const [duration, setDuration] = useState(0);
   const [currentPosition, setCurrentPosition] = useState(0);
   const [isBuffering, setIsBuffering] = useState(false);
+  // Lecteur SoundCloud intégré : joue-t-il en ce moment ? (sert à afficher ou non le titre du site)
+  const [scPlaying, setScPlaying] = useState(false);
+  const scIframeRef = useRef<HTMLIFrameElement>(null);
   const [liveStreamUrl, setLiveStreamUrl] = useState(DEFAULT_RADIO_STREAM_URL);
   const resumeIntentRef = useRef<{ shouldResume: boolean; target: 'live' | 'podcast' | null }>({
     shouldResume: false,
@@ -128,6 +180,30 @@ export default function Player() {
   const resumePositionRef = useRef(0);
   const blobUrlRef = useRef<string | null>(null);
   const recoveryAbortRef = useRef<AbortController | null>(null);
+
+  // URL de l'iframe SoundCloud : ne dépend QUE de l'épisode (pas du thème).
+  // Si cette URL change, l'iframe se recharge et l'épisode redémarre (auto_play).
+  const scEmbedUrl = useMemo(() => {
+    if (!currentEpisode?.link) return null;
+    const params = new URLSearchParams({
+      url: currentEpisode.link,
+      auto_play: 'true',
+      visual: 'false',
+      hide_related: 'true',
+      show_comments: 'false',
+      show_reposts: 'false',
+      show_teaser: 'false',
+      show_playcount: 'false',
+      show_user: String(SC_WIDGET_USER),
+      show_artwork: String(SC_WIDGET_ARTWORK),
+      buying: 'false',
+      sharing: 'false',
+      download: 'false',
+      liking: 'false',
+      color: SC_ACCENT_COLOR,
+    });
+    return `https://w.soundcloud.com/player/?${params.toString()}`;
+  }, [currentEpisode?.link]);
 
   // Annule le téléchargement du titre suivant s'il est en cours (changement de playlist, retour au direct)
   const abortPreload = () => {
@@ -695,28 +771,67 @@ export default function Player() {
     };
   }, []);
 
-  let innerContent: React.ReactNode;
-  if (showScEmbed && currentEpisode) {
-    const embedUrl = `https://w.soundcloud.com/player/?url=${encodeURIComponent(
-      currentEpisode.link
-    )}&auto_play=true&visual=false&show_artwork=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false&color=%232f1c17`;
-    innerContent = (
-      <div className="container mx-auto px-4 py-2 flex flex-col gap-3">
-        <div className="flex items-center gap-3">
-          <Button
-            size="sm"
-            onClick={onClosePodcast}
-            variant="outline"
-            className={`flex items-center space-x-1 border-[var(--primary)]/30 ${
-              isDark ? 'text-white hover:bg-white/10' : 'text-[var(--foreground)] hover:bg-[var(--primary)]/10'
-            }`}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-xs">{t('player.backToLive')}</span>
-          </Button>
-        </div>
+  // Écoute lecture / pause du lecteur SoundCloud pour n'afficher le titre du site qu'en lecture
+  useEffect(() => {
+    if (!showScEmbed || !currentEpisode) return;
+    const iframe = scIframeRef.current;
+    if (!iframe) return;
+    let cancelled = false;
+    let widget: ScWidget | null = null;
+    setScPlaying(false);
 
-        <div className="flex items-center gap-3">
+    loadScWidgetApi()
+      .then(() => {
+        if (cancelled || !window.SC) return;
+        widget = window.SC.Widget(iframe);
+        const events = window.SC.Widget.Events;
+        const on = (event: string, value: boolean) =>
+          widget?.bind(event, () => {
+            if (!cancelled) setScPlaying(value);
+          });
+        on(events.PLAY, true);
+        on(events.PLAY_PROGRESS, true); // au cas où « play » serait passé avant la connexion
+        on(events.PAUSE, false);
+        on(events.FINISH, false);
+      })
+      .catch((err) => {
+        console.warn('⚠️ API du lecteur SoundCloud indisponible:', err);
+        // Sans l'API on ne sait pas s'il joue : mieux vaut afficher le titre (quitte à le voir en double)
+        if (!cancelled) setScPlaying(true);
+      });
+
+    return () => {
+      cancelled = true;
+      try {
+        const events = window.SC?.Widget.Events;
+        if (widget && events) {
+          [events.PLAY, events.PLAY_PROGRESS, events.PAUSE, events.FINISH].forEach((e) => widget?.unbind(e));
+        }
+      } catch {
+        // l'iframe n'existe plus : rien à nettoyer
+      }
+    };
+  }, [showScEmbed, currentEpisode?.id]);
+
+  let innerContent: React.ReactNode;
+  if (showScEmbed && currentEpisode && scEmbedUrl) {
+    // Le lecteur reste intact et visible : SoundCloud interdit de masquer
+    // ou de modifier ses mentions (logo, lien vers le titre).
+    innerContent = (
+      <div className="container mx-auto flex flex-wrap items-center gap-3 px-4 py-2">
+        <Button
+          size="sm"
+          onClick={onClosePodcast}
+          variant="outline"
+          className={`flex items-center space-x-1 border-[var(--primary)]/30 ${
+            isDark ? 'text-white hover:bg-white/10' : 'text-[var(--foreground)] hover:bg-[var(--primary)]/10'
+          }`}
+        >
+          <ArrowLeft className="h-4 w-4" />
+          <span className="text-xs">{t('player.backToLive')}</span>
+        </Button>
+
+        {SC_SHOW_ARTWORK ? (
           <Link
             href={getEpisodePageUrl(currentEpisode)}
             aria-label={currentEpisode.title}
@@ -725,24 +840,42 @@ export default function Player() {
             <img
               src={currentEpisode.artworkUrl}
               alt=""
-              style={{ width: SC_WIDGET_HEIGHT, height: SC_WIDGET_HEIGHT }}
-              className="rounded-md object-cover block"
+              style={{ width: SC_ARTWORK_SIZE, height: SC_ARTWORK_SIZE }}
+              className="block rounded-md object-cover"
             />
           </Link>
-          <div className="flex-1 rounded-md overflow-hidden">
-            <iframe
-              key={currentEpisode.id}
-              height={SC_WIDGET_HEIGHT}
-              allow="autoplay"
-              allowFullScreen
-              src={embedUrl}
-              className="border-0 block max-w-none"
-              style={{
-                width: `calc(100% + ${SC_ARTWORK_CROP_PX}px)`,
-                marginLeft: `-${SC_ARTWORK_CROP_PX}px`,
-              }}
-            />
+        ) : null}
+
+        {SC_SHOW_TITLE && scPlaying ? (
+          // Même présentation que le titre du direct : en gras, défilant s'il est trop long
+          <div className="min-w-0 max-w-full overflow-hidden sm:max-w-[28%]">
+            <div className="animate-marquee whitespace-nowrap max-sm:!animate-none max-sm:!whitespace-normal">
+              <Link
+                href={getEpisodePageUrl(currentEpisode)}
+                className="text-sm font-semibold underline-offset-4 hover:underline"
+              >
+                {currentEpisode.title}
+              </Link>
+            </div>
           </div>
+        ) : null}
+
+        {/* Mode sombre : pastille claire autour du lecteur (il est toujours blanc) */}
+        <div
+          className={`flex min-w-[200px] flex-1 items-center overflow-hidden rounded-full ${
+            isDark ? SC_DARK_WRAPPER : 'bg-transparent'
+          }`}
+          style={{ minHeight: 40 }}
+        >
+          <iframe
+            ref={scIframeRef}
+            key={currentEpisode.id}
+            title={currentEpisode.title}
+            height={SC_WIDGET_HEIGHT}
+            allow="autoplay"
+            src={scEmbedUrl}
+            className="block w-full border-0"
+          />
         </div>
       </div>
     );
