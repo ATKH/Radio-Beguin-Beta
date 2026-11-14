@@ -1,6 +1,42 @@
 {
   "episodes": [
     {
+      "id": "2437445205",
+      "title": "Correspondances sonores #2 • VHS (nov 2026)",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-vTfb1zdfsF0eKm5j-swygGg-t500x500.jpg",
+      "pubDate": "2026/11/13 13:12:50 +0000",
+      "link": "https://soundcloud.com/radiobeguin/correspondances-sonores-2-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "Ici c'est un peu comme un vidéo-club sonore. On y trouve de l'action, de l'émotion, des films d'auteur et parfois des ovnis, enfin bref tout genre de choses. Une sélection de musique principalement électronique, par dj VHS.\n\nDe la nouveauté et de l'ancien, pour un même objectif : le plaisir des oreilles.\nUn melting pot de mes dernières trouvailles, des albums qui m'ont forgé musicalement et des curiosités.\n\nTracklist\n1. Manipulations - Schicksal\n2. Intro - Structure\n3. Rejekto (Perfekto mix) - Robotiko Rejekto\n4. From Below - Junq\n5. Compression - Frank De Wulf\n6. You Too (Bonzo Mix) - Zerocks\n7. Tragic Revolution - Intension\n8. Axis (Instrumental) - Equinoxious\n9. Müde - Meese X Hell\n10. Time 2 Time - Sam Kin\n11. Take One - N-Gynn\n12. Williams - Yaleesa Hall\n13. Velvet Sky of Sonar 6 - Sonar Base\n14. Cloudhopping - Alien Mutation vs Indigo Egg\n15. Kierron Rajoilla - Praktika\n16. Love Ball - Dr. DNA\n17. Polterguys - Kasjmir\n18. Youth Of The Galaxy - Doof (~-7%)\n19. Voices Of The Rainforest -Live At The Erotica, Paris (Blackout Mix) - New London School Of Electronics\n20. Reversed Field Pinch (RFP) - Prefix Moniker\n21. Flowers Of Intelligence - Zenith (~-5%)\n22. Emergence - Marc Namblard\n23. Change - Meredith Monk\n24. Bonus Track : Afterlude - Borderland (<3 Juan Atkins)\"",
+      "tags": [
+        "Crépuscule",
+        "Electro",
+        "Ambient",
+        "Trance"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2437445205/streams/abdceced-3762-49b0-ad39-f636027eaa92/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
+      "id": "2434818153",
+      "title": "RIPISYLVE_mix_ep17_w_SmallWaterBodies",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-tkqjAUOBCk1qMt7e-SH833g-t500x500.jpg",
+      "pubDate": "2026/11/09 12:28:26 +0000",
+      "link": "https://soundcloud.com/radiobeguin/ripisylve_mix_ep17_w_smallwate?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+      "description": "anja ngozi - dua\nSpace Afrika - Ladybird Drone\nMike Weis - In Low Light: Number 1\nVisible Cloaks - Hýdōr\nEli Wewentxu & Indrė Jurgelevičiūtė - Cuerpos de agua - Lyja\nConcepción Huerta - From Another Place\nInken - hybrid set at AHA, Berlin 27/04/26 (excerpt)\nNomieye - Sun in River (feat. And Is Phi)\nfelix taylor - perfect memory\nEmilie Célarier - MÉCANIQUE ORGANIQUE\nHMOT - Yandım (feat. Rupert Clervaux)\nPark Jiha - Autumn Illusion",
+      "tags": [
+        "meditation core",
+        "Experimental",
+        "Drone",
+        "ambient jazz"
+      ],
+      "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2434818153/streams/6a8cc75d-8306-4ef6-8864-45181dc81a03/hls",
+      "streamProtocol": "hls",
+      "sharing": "public",
+      "trackAuthorization": null
+    },
+    {
       "id": "2430858606",
       "title": "Where's The After Ep 3 • Oscar DW (Nov 2026)",
       "artworkUrl": "https://i1.sndcdn.com/artworks-27XKGn1B6X7k1WxN-DynLyQ-t500x500.jpg",
@@ -23205,29 +23241,30 @@
     {
       "id": "2307111720",
       "title": "Correspondances Sonores",
-      "artworkUrl": "https://i1.sndcdn.com/artworks-tC15VXXGi9SMktIF-wo452Q-t500x500.jpg",
+      "artworkUrl": "https://i1.sndcdn.com/artworks-vTfb1zdfsF0eKm5j-swygGg-t500x500.jpg",
       "description": "DJ VHS Présente Correspondance Sonore \n\n''Ici c'est un peu comme un vidéo-club sonore. On y trouve de l'action, de l'émotion, des films d'auteur et parfois des ovnis, enfin bref tout genre de choses. Une sélection de musique principalement électronique, par dj VHS.\n\nDe la nouveauté et de l'ancien, pour un même objectif : le plaisir des oreilles.\n\nUn melting pot de mes dernières trouvailles, des albums qui m'ont forgé musicalement et des curiosités.''",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/correspondances-sonores?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 1,
+      "trackCount": 2,
       "tags": [],
-      "lastUpdated": "2026/10/11 09:50:36 +0000",
+      "lastUpdated": "2026/11/13 13:33:48 +0000",
       "episodeIds": [
+        "2437445205",
         "2410504296"
       ],
       "latestEpisode": {
-        "id": "2410504296",
-        "title": "Correspondances sonores #1 • VHS (08.10.2026)",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-tC15VXXGi9SMktIF-wo452Q-t500x500.jpg",
-        "pubDate": "2026/09/30 14:11:23 +0000",
-        "link": "https://soundcloud.com/radiobeguin/correspondances-sonores-1-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Ici c'est un peu comme un vidéo-club sonore. On y trouve de l'action, de l'émotion, des films d'auteur et parfois des ovnis, enfin bref tout genre de choses. Une sélection de musique principalement électronique, par dj VHS.\n\nDe la nouveauté et de l'ancien, pour un même objectif : le plaisir des oreilles.\nUn melting pot de mes dernières trouvailles, des albums qui m'ont forgé musicalement et des curiosités.\n\nTracklist \n1. Ravey Intro 2 - Dr, Rubinstein (joué en 33 tours)\n2. Nostalgia – De sang Froid\n3. Transpac Network - Transpac\n4. Mathematische Modelle - Der Zyklus\n5. Suspicion Transmission (No Drum Mix) -Jordan GCZ\n6. False Fight – V Vertigo\n7. Belgian Salsa – Orchid\n8. Tango Romeo Alpha – Sintex Botexx\n9. Days of Past – Central Intelligence\n10. Dub Acid – Tom Carruthers\n11. So Deep -  Jack Smooth\n12. ½ Gott – Erstling\n13. Sine Two ( Short Cut ) - Space Cat\n14. Sequent 'C – Tangerine Dream (~-8%)\n15. A New Home – Redshpae\n16. Vacuum – Eman (~-8%)\n17. Homage – Innershades\n18. The Hardest Heart (Suburban Mix) – Blank & Jones ft.Anne Clark (~-8%)\n19. Rave Runner – Fabrizio Rat (~-9%)\n20. From Kings To Queens – Frankie Bones (~-6%)\n21. Progression – Kayashi\n22. Intercadence – Trybet (~-8%)\n23. The politics of Dancing – Dandanedado\n24. 1:38... - Delph (-8%)",
+        "id": "2437445205",
+        "title": "Correspondances sonores #2 • VHS (nov 2026)",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-vTfb1zdfsF0eKm5j-swygGg-t500x500.jpg",
+        "pubDate": "2026/11/13 13:12:50 +0000",
+        "link": "https://soundcloud.com/radiobeguin/correspondances-sonores-2-o?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "Ici c'est un peu comme un vidéo-club sonore. On y trouve de l'action, de l'émotion, des films d'auteur et parfois des ovnis, enfin bref tout genre de choses. Une sélection de musique principalement électronique, par dj VHS.\n\nDe la nouveauté et de l'ancien, pour un même objectif : le plaisir des oreilles.\nUn melting pot de mes dernières trouvailles, des albums qui m'ont forgé musicalement et des curiosités.\n\nTracklist\n1. Manipulations - Schicksal\n2. Intro - Structure\n3. Rejekto (Perfekto mix) - Robotiko Rejekto\n4. From Below - Junq\n5. Compression - Frank De Wulf\n6. You Too (Bonzo Mix) - Zerocks\n7. Tragic Revolution - Intension\n8. Axis (Instrumental) - Equinoxious\n9. Müde - Meese X Hell\n10. Time 2 Time - Sam Kin\n11. Take One - N-Gynn\n12. Williams - Yaleesa Hall\n13. Velvet Sky of Sonar 6 - Sonar Base\n14. Cloudhopping - Alien Mutation vs Indigo Egg\n15. Kierron Rajoilla - Praktika\n16. Love Ball - Dr. DNA\n17. Polterguys - Kasjmir\n18. Youth Of The Galaxy - Doof (~-7%)\n19. Voices Of The Rainforest -Live At The Erotica, Paris (Blackout Mix) - New London School Of Electronics\n20. Reversed Field Pinch (RFP) - Prefix Moniker\n21. Flowers Of Intelligence - Zenith (~-5%)\n22. Emergence - Marc Namblard\n23. Change - Meredith Monk\n24. Bonus Track : Afterlude - Borderland (<3 Juan Atkins)\"",
         "tags": [
-          "Appels de Phares",
-          "Trance",
-          "acid",
-          "electro"
+          "Crépuscule",
+          "Electro",
+          "Ambient",
+          "Trance"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2410504296/streams/855745d5-ebf7-4c5c-bb99-2b2a66af822d/hls",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2437445205/streams/abdceced-3762-49b0-ad39-f636027eaa92/hls",
         "streamProtocol": "hls",
         "sharing": "public",
         "trackAuthorization": null
@@ -23311,7 +23348,7 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-1zLGlyzp6vUvGI6k-eEx8yg-t500x500.jpg",
       "description": "",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/wheres-the-afters?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 2,
+      "trackCount": 3,
       "tags": [],
       "lastUpdated": "2026/11/02 16:09:40 +0000",
       "episodeIds": [
@@ -23786,10 +23823,11 @@
       "artworkUrl": "https://i1.sndcdn.com/artworks-rvGaXmwjBiP68vq8-bTxrpw-t500x500.jpg",
       "description": "RIPISYLVE : émission ambient mensuelle par Margot (Xuri Mae) et Axel (Small Water Bodies), musicien-ne-s qui se retrouvent autour de sonorités fluides et calmes (électroniques, acoustiques ou captées dans des milieux naturels).\nL’émission propose une exploration des musiques ambient et des univers sonores voisins (expé, new age, fourth world, jazz, noise, musique de chambre, ...)\nRipisylve, c’est un terme qui désigne la zone naturelle située le long des cours d’eau, à la frontière entre le milieu aquatique et le milieu terrestre. Caractéristique du paysage lyonnais, ce mot exprime pour nous la connexion au lieu qui, depuis quelques années déjà, est notre maison.",
       "permalinkUrl": "https://soundcloud.com/radiobeguin/sets/ripisylve?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-      "trackCount": 17,
+      "trackCount": 18,
       "tags": [],
-      "lastUpdated": "2026/10/13 09:19:43 +0000",
+      "lastUpdated": "2026/11/10 10:33:05 +0000",
       "episodeIds": [
+        "2434818153",
         "2417397051",
         "2392547661",
         "2354554535",
@@ -23809,17 +23847,19 @@
         "2225004986"
       ],
       "latestEpisode": {
-        "id": "2417397051",
-        "title": "Ripisylve #16  w Xuri Mae",
-        "artworkUrl": "https://i1.sndcdn.com/artworks-IWwocejYfV3rcy45-LKZrOg-t500x500.jpg",
-        "pubDate": "2026/10/12 07:53:37 +0000",
-        "link": "https://soundcloud.com/radiobeguin/ripisylve-16-w-xuri-mae?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
-        "description": "Art Feynman - You Lined Him Up\nBree Van Reyk - IV\nCecile McLorin Salvant - A frog jumps in\nSkúli Sverrisson and Bill Frisell - Behind the Mountain\nYvonne Rogers - Cloud Chorale\nmore eaze - How can we get out of the structure\nMasakatsu Takagi - Marginalia #48\nBenjamin Shaw - The sauce\nDeniz Cuylan - Big Blue (feat. Sarah La Puerta & Six Missing)\nSessa - Helena\nLeo Seligo - Birdvillage\nAnna Butterss - Number One\nèvia - fading reflection\nSimeon ten Holt’s - Canto Ostinato Sections 74-87",
+        "id": "2434818153",
+        "title": "RIPISYLVE_mix_ep17_w_SmallWaterBodies",
+        "artworkUrl": "https://i1.sndcdn.com/artworks-tkqjAUOBCk1qMt7e-SH833g-t500x500.jpg",
+        "pubDate": "2026/11/09 12:28:26 +0000",
+        "link": "https://soundcloud.com/radiobeguin/ripisylve_mix_ep17_w_smallwate?utm_medium=api&utm_campaign=social_sharing&utm_source=id_319510",
+        "description": "anja ngozi - dua\nSpace Afrika - Ladybird Drone\nMike Weis - In Low Light: Number 1\nVisible Cloaks - Hýdōr\nEli Wewentxu & Indrė Jurgelevičiūtė - Cuerpos de agua - Lyja\nConcepción Huerta - From Another Place\nInken - hybrid set at AHA, Berlin 27/04/26 (excerpt)\nNomieye - Sun in River (feat. And Is Phi)\nfelix taylor - perfect memory\nEmilie Célarier - MÉCANIQUE ORGANIQUE\nHMOT - Yandım (feat. Rupert Clervaux)\nPark Jiha - Autumn Illusion",
         "tags": [
-          "meditation-core",
-          "ambient"
+          "meditation core",
+          "Experimental",
+          "Drone",
+          "ambient jazz"
         ],
-        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2417397051/streams/276e7c36-b447-45f0-b1f6-dd80baf31403/hls",
+        "audioUrl": "https://api.soundcloud.com/tracks/soundcloud:tracks:2434818153/streams/6a8cc75d-8306-4ef6-8864-45181dc81a03/hls",
         "streamProtocol": "hls",
         "sharing": "public",
         "trackAuthorization": null
@@ -26915,8 +26955,8 @@
     "Abysses",
     "Techno",
     "Métro Boulot",
-    "Talk",
     "Crépuscule",
+    "Talk",
     "Meditation Core",
     "Electro",
     "Breaks",
@@ -26932,8 +26972,8 @@
     "Hip Hop",
     "Deconstructed Club",
     "Electronica",
-    "Deep House",
     "Drone",
+    "Deep House",
     "Dub Techno",
     "Leftfield House",
     "Psychedelic Folk",
@@ -27028,6 +27068,7 @@
     "hyperpop",
     "Indian Traditional",
     "indie",
+    "meditation core",
     "Metal",
     "pop",
     "Raptor House",
@@ -27039,7 +27080,6 @@
     "footwork",
     "ghetto",
     "hip-hop",
-    "meditation core",
     "metro boulot",
     "Metro boulot",
     "Shatta",
@@ -27074,6 +27114,7 @@
     "trip hop",
     "Trip-Hop",
     "Afroclub",
+    "ambient jazz",
     "ambient techno",
     "appel de phares",
     "Appel de phares",
@@ -27141,5 +27182,5 @@
     "trip-hop",
     "UK funky"
   ],
-  "lastUpdated": "2026-11-07T09:26:08.561Z"
+  "lastUpdated": "2026-11-13T13:42:59.931Z"
 }
